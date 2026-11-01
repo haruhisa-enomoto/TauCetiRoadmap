@@ -1,9 +1,10 @@
 import Mathlib
 import TauCeti.CategoryTheory.AlmostSplit.Sequence
 import TauCeti.Algebra.Module.Injective.Envelope.Basic
+import TauCetiRoadmap.PurityOfBranchLocus.Suggested
 
 /-!
-# Krull-Schmidt categories and Auslander-Reiten theory of Artin algebras: target signatures
+# Krull-Schmidt categories and Auslander-Reiten theory of Artin algebras: suggested forms
 
 **This file is not the roadmap and is not exhaustive.** The definitive document is
 `README.md`. The statements here suggest Lean forms for particular milestones, so that
@@ -15,6 +16,43 @@ Layers as in `README.md`: 0 Krull-Schmidt categories; 1 finitely presented funct
 duality over a commutative Artinian ring; 3 `Ext¹` and almost-split conflations in exact
 categories; 4 Auslander-Reiten theory of Artin algebras; 5 the valued Auslander-Reiten quiver;
 6 finiteness theorems; 7 Morita theory, global and dominant dimension, and the correspondences.
+
+## The acceptance-test contract
+
+The headlines of the README and their Lean forms here:
+
+* Krull-Schmidt categories (Layer 0): `IsKrullSchmidt`, with
+  `indecomposable_iff_isLocalRing_end`, `isIdempotentComplete_of_isKrullSchmidt`, the
+  uniqueness theorem `exists_equiv_iso_of_iso_biproduct` and the recognition theorem
+  `isKrullSchmidt_of_module_finite`.
+* The Freyd-Auslander criterion (Layer 1): `IsFinitelyPresentedFunctor` and
+  `hasWeakKernels_iff_isFinitelyPresentedFunctor_kernel`.
+* Matlis duality (Layer 2): `exists_isInjectiveEnvelope_quotient_jacobson` and
+  `bijective_applyₗ_of_isInjectiveEnvelope`.
+* Existence of almost-split sequences for Artin algebras (Layer 4): `exists_isAlmostSplit`.
+* The Harada-Sai lemma and the first Brauer-Thrall conjecture (Layer 6): `chainComp`,
+  `chainComp_eq_zero_of_length_le` and `finite_skeleton_of_length_le`.
+* Global dimension (Layer 7): `leftGlobalDimension`, its comparison
+  `leftGlobalDimension_eq_globalDimension` with
+  `TauCetiRoadmap.PurityOfBranchLocus.globalDimension`, and `leftGlobalDimension_mulOpposite`.
+* The Morita-Tachikawa correspondence (Layer 7), on the predicates `IsGeneratorCogenerator` and
+  `HasProjectiveInjectiveCopresentation`: the forward direction
+  `hasProjectiveInjectiveCopresentation_end`, the converse
+  `exists_ringEquiv_end_of_hasProjectiveInjectiveCopresentation`, and injectivity up to Morita
+  equivalence `isMoritaEquivalent_of_ringEquiv_end`.
+* The Auslander correspondence (Layer 7), on `IsAdditiveGenerator`: the forward direction
+  `hasProjectiveDimensionLE_two`, and the converse
+  `exists_isAdditiveGenerator_ringEquiv_end`.
+
+The following headlines need carriers that are themselves targets of the README and do not exist at
+the pins, so they are specified there in prose with intended names and are not stated here: the
+`Ext¹` of an exact category (`ExactStructure.Ext1`, Layer 3) and with it Auslander-Reiten duality
+and the existence theorem for almost-split conflations in exact categories (Layer 3); the category
+`mod C` as an abelian category (Layer 1); the translate `τ` of an Artin algebra and its
+Auslander-Reiten formulas (Layer 4); the valued Auslander-Reiten quiver `valuedARQuiver` with its
+mesh and multiplicities (Layer 5) and hence Auslander's theorem on components of bounded length
+(Layer 6); and dominant dimension as a number (Layer 7), of which only the bound `≥ 2` is stated
+here, as `HasProjectiveInjectiveCopresentation`.
 -/
 
 namespace TauCetiRoadmap.RepresentationTheory.ArtinAlgebras
@@ -57,7 +95,7 @@ theorem exists_equiv_iso_of_iso_biproduct {ι κ : Type*} [Finite ι] [Finite κ
   sorry
 
 /-- **Recognition**: an idempotent-complete category that is Hom-finite over a commutative
-Artinian ring is Krull-Schmidt. -/
+Artinian ring is Krull-Schmidt. The category is arbitrary, not a category of modules. -/
 theorem isKrullSchmidt_of_module_finite (R : Type w) [CommRing R] [IsArtinianRing R]
     [Linear R C] [IsIdempotentComplete C] [∀ X : C, Module.Finite R (X ⟶ X)] :
     IsKrullSchmidt C :=
@@ -150,7 +188,7 @@ variable (R : Type u) [CommRing R] [IsArtinianRing R] (A : Type u) [Ring A] [Alg
 include R in
 /-- **The first Brauer-Thrall conjecture** (Roiter's theorem): if the finitely generated
 indecomposable modules over an Artin algebra have bounded length, there are only finitely many
-of them up to isomorphism. The conclusion is the body of `TauCeti.IsRepresentationFinite A`. -/
+of them up to isomorphism. -/
 theorem finite_skeleton_of_length_le (b : ℕ)
     (h : ∀ M : ModuleCat.{u} A, Module.Finite A M → Indecomposable M → Module.length A M ≤ b) :
     Finite (Skeleton (ObjectProperty.FullSubcategory
@@ -169,6 +207,12 @@ global dimension `⊥`, since a zero object has projective dimension `⊥`. -/
 noncomputable def leftGlobalDimension (A : Type u) [Ring A] : WithBot ℕ∞ :=
   ⨆ X : ModuleCat.{u} A, projectiveDimension X
 
+/-- On a commutative ring, the left global dimension is the global dimension of
+`TauCetiRoadmap.PurityOfBranchLocus` §0.3: the two definitions are the same supremum. -/
+theorem leftGlobalDimension_eq_globalDimension (R : Type u) [CommRing R] :
+    leftGlobalDimension R = TauCetiRoadmap.PurityOfBranchLocus.globalDimension R :=
+  rfl
+
 /-- **Auslander**: over a ring that is left and right Noetherian, the left and right global
 dimensions agree. -/
 theorem leftGlobalDimension_mulOpposite (A : Type u) [Ring A] [IsNoetherianRing A]
@@ -177,37 +221,80 @@ theorem leftGlobalDimension_mulOpposite (A : Type u) [Ring A] [IsNoetherianRing 
 
 end GlobalDimension
 
-section Auslander
+section Correspondences
 
-variable (R : Type u) [CommRing R] [IsArtinianRing R] (A : Type u) [Ring A] [Algebra R A]
-  [Module.Finite R A]
+variable (R : Type u) [CommRing R] [IsArtinianRing R]
 
-include R in
-/-- **Morita-Tachikawa, dominant dimension**: for a generator-cogenerator `M` of `mod A`, the
-regular module of `Γ = Module.End A M` has an injective copresentation `0 → Γ → I⁰ → I¹` by
-finitely generated projective-injective modules, that is, `dom.dim Γ ≥ 2`. -/
-theorem exists_projective_injective_copresentation (M : ModuleCat.{u} A) [Module.Finite A M]
-    (hproj : ∀ P : ModuleCat.{u} A, Module.Finite A P → Projective P → Indecomposable P →
-      ∃ (i : P ⟶ M) (q : M ⟶ P), i ≫ q = 𝟙 P)
-    (hinj : ∀ I : ModuleCat.{u} A, Module.Finite A I → Injective I → Indecomposable I →
-      ∃ (i : I ⟶ M) (q : M ⟶ I), i ≫ q = 𝟙 I) :
-    ∃ (I₀ I₁ : ModuleCat.{u} (Module.End A M)) (f : ModuleCat.of _ (Module.End A M) ⟶ I₀)
-      (g : I₀ ⟶ I₁) (hfg : f ≫ g = 0),
-      Mono f ∧ (ShortComplex.mk f g hfg).Exact ∧ Module.Finite (Module.End A M) I₀ ∧
-        Module.Finite (Module.End A M) I₁ ∧ Projective I₀ ∧ Injective I₀ ∧ Projective I₁ ∧
-          Injective I₁ :=
+/-- `M` is a **generator-cogenerator** of `mod A`: every finitely generated indecomposable
+projective module and every finitely generated indecomposable injective module is a direct
+summand of `M`. -/
+def IsGeneratorCogenerator {A : Type u} [Ring A] (M : ModuleCat.{u} A) : Prop :=
+  (∀ P : ModuleCat.{u} A, Module.Finite A P → Projective P → Indecomposable P →
+    Nonempty (Retract P M)) ∧
+  ∀ I : ModuleCat.{u} A, Module.Finite A I → Injective I → Indecomposable I →
+    Nonempty (Retract I M)
+
+/-- `M` is an **additive generator** of `mod A`: every finitely generated indecomposable module is
+a direct summand of `M`. -/
+def IsAdditiveGenerator {A : Type u} [Ring A] (M : ModuleCat.{u} A) : Prop :=
+  ∀ X : ModuleCat.{u} A, Module.Finite A X → Indecomposable X → Nonempty (Retract X M)
+
+/-- `dom.dim Γ ≥ 2`, in the explicit form: the regular module has an injective copresentation
+`0 → Γ → I⁰ → I¹` by finitely generated projective-injective modules. -/
+def HasProjectiveInjectiveCopresentation (Γ : Type u) [Ring Γ] : Prop :=
+  ∃ (I₀ I₁ : ModuleCat.{u} Γ) (f : ModuleCat.of Γ Γ ⟶ I₀) (g : I₀ ⟶ I₁) (hfg : f ≫ g = 0),
+    Mono f ∧ (ShortComplex.mk f g hfg).Exact ∧ Module.Finite Γ I₀ ∧ Module.Finite Γ I₁ ∧
+      Projective I₀ ∧ Injective I₀ ∧ Projective I₁ ∧ Injective I₁
+
+/-- **Morita-Tachikawa, forward**: for a generator-cogenerator `M` of `mod A`, the endomorphism
+ring `Γ = Module.End A M` has dominant dimension at least two. -/
+theorem hasProjectiveInjectiveCopresentation_end {A : Type u} [Ring A] [Algebra R A]
+    [Module.Finite R A] (M : ModuleCat.{u} A) [Module.Finite A M]
+    (hM : IsGeneratorCogenerator M) :
+    HasProjectiveInjectiveCopresentation (Module.End A M) :=
   sorry
 
-include R in
+/-- **Morita-Tachikawa, converse**: an Artin algebra `Γ` of dominant dimension at least two is the
+endomorphism ring of a generator-cogenerator `M` over an Artin algebra `B`. One choice is
+`B = Module.End Γ Q`, for `Q` the sum of the indecomposable projective-injective `Γ`-modules, and
+`M = Q`. -/
+theorem exists_ringEquiv_end_of_hasProjectiveInjectiveCopresentation (Γ : Type u) [Ring Γ]
+    [Algebra R Γ] [Module.Finite R Γ] (hΓ : HasProjectiveInjectiveCopresentation Γ) :
+    ∃ (B : Type u) (_ : Ring B) (_ : Algebra R B) (_ : Module.Finite R B) (M : ModuleCat.{u} B),
+      Module.Finite B M ∧ IsGeneratorCogenerator M ∧ Nonempty (Γ ≃+* Module.End B M) :=
+  sorry
+
+/-- **Morita-Tachikawa, injectivity**: generator-cogenerators with isomorphic endomorphism rings
+live over Morita equivalent Artin algebras. With the converse
+`exists_ringEquiv_end_of_hasProjectiveInjectiveCopresentation`, this makes `(A, M) ↦ Module.End A M`
+a bijection between Morita classes of pairs and isomorphism classes of Artin algebras of dominant
+dimension at least two. -/
+theorem isMoritaEquivalent_of_ringEquiv_end {A A' : Type u} [Ring A] [Algebra R A]
+    [Module.Finite R A] [Ring A'] [Algebra R A'] [Module.Finite R A'] (M : ModuleCat.{u} A)
+    (M' : ModuleCat.{u} A') [Module.Finite A M] [Module.Finite A' M']
+    (hM : IsGeneratorCogenerator M) (hM' : IsGeneratorCogenerator M')
+    (e : Module.End A M ≃+* Module.End A' M') : IsMoritaEquivalent R A A' :=
+  sorry
+
 /-- **The Auslander correspondence, global dimension**: for an additive generator `M` of `mod A`,
 every finitely generated module over `Γ = Module.End A M` has projective dimension at most two. -/
-theorem hasProjectiveDimensionLE_two (M : ModuleCat.{u} A) [Module.Finite A M]
-    (hM : ∀ X : ModuleCat.{u} A, Module.Finite A X → Indecomposable X →
-      ∃ (i : X ⟶ M) (q : M ⟶ X), i ≫ q = 𝟙 X)
+theorem hasProjectiveDimensionLE_two {A : Type u} [Ring A] [Algebra R A] [Module.Finite R A]
+    (M : ModuleCat.{u} A) [Module.Finite A M] (hM : IsAdditiveGenerator M)
     (X : ModuleCat.{u} (Module.End A M)) [Module.Finite (Module.End A M) X] :
     HasProjectiveDimensionLE X 2 :=
   sorry
 
-end Auslander
+/-- **The Auslander correspondence, converse**: an Artin algebra `Γ` with `gl.dim Γ ≤ 2` and
+dominant dimension at least two is the endomorphism ring of an additive generator of `mod B` for an
+Artin algebra `B`, which is then representation-finite. Dominant dimension alone does not suffice:
+`k[ε]/(ε²)` has infinite dominant dimension and infinite global dimension. -/
+theorem exists_isAdditiveGenerator_ringEquiv_end (Γ : Type u) [Ring Γ] [Algebra R Γ]
+    [Module.Finite R Γ] (hgl : leftGlobalDimension Γ ≤ 2)
+    (hΓ : HasProjectiveInjectiveCopresentation Γ) :
+    ∃ (B : Type u) (_ : Ring B) (_ : Algebra R B) (_ : Module.Finite R B) (M : ModuleCat.{u} B),
+      Module.Finite B M ∧ IsAdditiveGenerator M ∧ Nonempty (Γ ≃+* Module.End B M) :=
+  sorry
+
+end Correspondences
 
 end TauCetiRoadmap.RepresentationTheory.ArtinAlgebras
