@@ -219,9 +219,9 @@ theorem leftGlobalDimension_eq_iSup_cyclic (A : Type u) [Ring A] :
     leftGlobalDimension A = ⨆ I : Submodule A A, projectiveDimension (ModuleCat.of A (A ⧸ I)) :=
   sorry
 
-/-- **Auslander**: over a left Noetherian ring, the left global dimension is the supremum of the
-projective dimensions of the finitely generated modules. -/
-theorem leftGlobalDimension_eq_iSup_finite (A : Type u) [Ring A] [IsNoetherianRing A] :
+/-- **Auslander**: the left global dimension is the supremum of the projective dimensions of the
+finitely generated modules; it lies between the cyclic supremum and the full one. -/
+theorem leftGlobalDimension_eq_iSup_finite (A : Type u) [Ring A] :
     leftGlobalDimension A =
       ⨆ (X : ModuleCat.{u} A) (_ : Module.Finite A X), projectiveDimension X :=
   sorry
