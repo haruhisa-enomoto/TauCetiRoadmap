@@ -9,8 +9,9 @@ preadditive categories. It develops the homological algebra of flatness over a p
 `C`; a ring `A` is the one-object case `SingleObj A`. Layer 0 lays the foundations: the abelian
 category `Mod C` of additive functors; the identification of `A`-modules with modules over
 `SingleObj A`; the tensor product `F ⊗_C G` as a coend, linear over a commutative ring `R`, with its
-adjunctions, right exactness, projective factors and swap; duals `Hom_R(-, E)`; and the native ring
-API of `M ⊗_A N`. On these the roadmap builds `Tor` over `C` as a left derived functor, with its
+adjunctions, right exactness, projective factors and swap; duals `Hom_R(-, E)`; the native ring
+API of `M ⊗_A N`; and the finitely generated projective modules `proj C` with the duality
+`Hom(-, C)`. On these the roadmap builds `Tor` over `C` as a left derived functor, with its
 long exact sequences, its balance, `Tor` of the Auslander–Bridger transpose and its duality with
 `Ext`, and compares a category with finitely many objects with its category algebra. Layer 2 treats
 flat modules and flat functors: the ideal test, the `Tor` and Lambek tests with a Baer criterion for
@@ -20,17 +21,19 @@ finite sums of representables, purity) and the projectivity of finitely presente
 finitely accessible additive categories, Bass's flat module of a chain, and closure properties.
 Layer 3 treats flat dimension, the global dimension of an abelian category, the weak global
 dimension with its left-right symmetry, and Auslander's theorem that a left Noetherian category (or
-ring) has equal left global and weak global dimension. Then come projective covers over
-semiperfect rings and the characterization of semiperfect rings by projective covers; and left
-perfect rings. The summit is **Bass's Theorem P**: for a ring `A` with Jacobson radical `J`, the
-following are equivalent: `A ⧸ J` is semisimple and `J` is left T-nilpotent; every left module has a
-projective cover; every flat left module is projective; the principal *right* ideals satisfy the
-descending chain condition; every left module has equal flat and projective dimension. For small
-preadditive categories the summit is **Simson's Theorem 5.4** ([Simson, Thm. 5.4, p. 108]): every
-flat left module is projective exactly when every left module has a projective cover, exactly when
-`J(C)` is left T-nilpotent and `C ⧸ J(C)` is semisimple, exactly when every countable inverse system
-in `C` is factorizable; these are the perfect categories ([Harada]). Layers 0–3 are
-category-primary; Layer 4 is stated for rings for now and is to be converted to that design.
+ring) has equal left global and weak global dimension. Layer 4 treats T-nilpotent ideals of `C` and
+Nakayama's lemma for all modules, semilocal, semiperfect and left perfect categories and rings,
+projective covers over them, and the global dimension of perfect categories. The summit is
+**Bass's Theorem P**: for a ring `A` with Jacobson radical `J`, the following are equivalent:
+`A ⧸ J` is semisimple and `J` is left T-nilpotent; every left module has a projective cover; every
+flat left module is projective; the principal *right* ideals satisfy the descending chain condition;
+every left module has equal flat and projective dimension; filtered colimits of projective left
+modules are projective. For small preadditive categories the summit is **Simson's Theorem 5.4**
+([Simson, Thm. 5.4, p. 108]): every flat left module is projective exactly when every left module
+has a projective cover, exactly when `J(C)` is left T-nilpotent and `C ⧸ J(C)` is semisimple,
+exactly when every countable inverse system in `C` is factorizable; these are the perfect categories
+([Harada]). Here the categorical theorem is proved first and Bass's theorem is its one-object case.
+All layers are category-primary.
 
 ## Scope and ownership
 
@@ -43,7 +46,9 @@ This roadmap owns:
   adjunctions, right exactness, Yoneda isomorphisms, independence of `R` and change of base;
   tensoring with projectives; the swap `F ⊗_C G ≅ G ⊗_{Cᵒᵖ} F`; the ring API of `M ⊗_A N` and
   its comparison with the categorical tensor product and with Mathlib's tensor product over a
-  commutative ring; and duals with respect to an `R`-module `E` (Layer 0);
+  commutative ring; duals with respect to an `R`-module `E`; `I · M` and `C ⧸ I` for an ideal `I`
+  of `C`; and the finitely generated projective modules `proj C`, `proj C ≃ Karoubi (Mat_ C)` and
+  the duality `Hom(-, C)` (Layer 0);
 - `Tor` over a preadditive category and over an arbitrary ring as a left derived functor, its long
   exact sequences, its balance, the formula `stable Hom(X, N) ≅ Tor_1(Tr X, N)`, its duality with
   `Ext`, the comparison with Mathlib's
@@ -58,10 +63,12 @@ This roadmap owns:
   modules and universe independence; the weak global dimension, its left-right symmetry and its
   bounds by the global dimensions; the `FP_∞` lemma and Auslander's theorem for left Noetherian
   categories and rings; kernels of flat modules and countably presented flat modules (Layer 3);
-- T-nilpotent sets; projective covers of finitely generated modules over semiperfect rings, the
-  characterization of semiperfect rings by projective covers, and finite minimal projective
-  presentations over semiperfect rings; left perfect rings, projective covers over them, Bass's
-  Theorem P, and the global dimension of perfect rings (Layer 4).
+- T-nilpotent ideals of a preadditive category and Nakayama's lemma for all modules; semilocal rings
+  and categories, semiperfect and left perfect categories, and the ring class `IsLeftPerfectRing`;
+  projective covers over semiperfect and left perfect categories and rings, the characterization of
+  semiperfect categories and rings by projective covers, and finite minimal projective presentations
+  over semiperfect rings; the Mares–Simson lemma, Bass's Theorem P for categories and rings, and the
+  global dimension of perfect categories with the Bass–Eilenberg criterion (Layer 4).
 
 The boundaries are as follows.
 
@@ -97,13 +104,19 @@ The boundaries are as follows.
 - Tau Ceti's ring `TauCeti.globalDimension` becomes the case `ModuleCat A` of the global dimension
   of an abelian category (3.2): a refactor of main, with no compatibility shims.
 - Semiperfect rings are Tau Ceti's `TauCeti.IsSemiperfectRing`, with its idempotent
-  characterization. This roadmap owns their projective covers and their characterization by
-  projective covers (4.2). Minimal projective presentations are Tau Ceti's
-  `TauCeti.IsMinimalProjectivePresentation`; this roadmap owns only their existence over a
-  semiperfect ring (4.2).
+  characterization; it is refactored to `extends IsSemilocalRing` (4.2, Downstream consumers).
+  This roadmap owns their projective covers and their characterization by projective covers (4.2);
+  the placement of the ring items follows the scope contest on TauCetiProject/TauCeti#38013 (4.2).
+  Krull–Schmidt categories, the radical `TauCeti.jacobsonRadicalIdeal` and essential epimorphisms
+  are Tau Ceti's; Krause's criterion is restated with `IsSemiperfectCategory` (4.2). Minimal
+  projective presentations are Tau Ceti's `TauCeti.IsMinimalProjectivePresentation`; this roadmap
+  owns only their existence over a semiperfect ring (4.2).
 - Outside this roadmap: the tensor product of additive categories and functors of several variables
   ([Mitchell, §2]); Morita theory for functor categories, beyond the finite-object comparison of
-  1.7; the conditions of Theorem P on direct limits ([Bass, Theorem P (4), (5)]); Chase's theorem,
+  1.7; Bass's conditions on direct limits of modules of bounded projective dimension and on
+  orthogonal idempotents and socles ([Bass, Theorem P (4), (7)]), and Simson's Mittag-Leffler,
+  product, coperfectness and endomorphism-ring conditions ([Simson, Thm. 5.4 (2)–(4), (6)]), which
+  stay pointers (4.5); semiprimary categories as a class (4.3); Chase's theorem,
   coherent rings and products of flat modules (pointers in 2.6; kernels are in 3.5); flat covers
   (pointers in 2.4); purity beyond the purity test of 2.3 (pure-injective modules, pure global
   dimension); flat Mittag-Leffler modules; faithful flatness over noncommutative rings; the
@@ -113,6 +126,7 @@ The boundaries are as follows.
   ring; and Hoshino's flat-dominant dimension.
 
 Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 0.3–0.5, 0.7),
+`TauCeti/CategoryTheory/Preadditive/ModCat/Proj.lean` (0.8),
 `TauCeti/CategoryTheory/Preadditive/SingleObj.lean` (0.2),
 `TauCeti/LinearAlgebra/TensorProduct/Balanced/` (0.6),
 `TauCeti/CategoryTheory/Preadditive/ModCat/Tor/` (1.1–1.6), `TauCeti/Algebra/Homology/BalancedTor/`
@@ -122,9 +136,12 @@ Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 
 (ring items of Layer 2), `TauCeti/CategoryTheory/Abelian/GlobalDimension.lean` (3.2),
 `TauCeti/CategoryTheory/Preadditive/ModCat/Dimension/` (3.1, 3.3–3.5),
 `TauCeti/RingTheory/GlobalDimension/Weak.lean` (ring items of Layer 3),
-`TauCeti/RingTheory/Jacobson/TNilpotent.lean`,
+`TauCeti/CategoryTheory/Preadditive/MorphismIdeal/TNilpotent.lean` (4.1),
+`TauCeti/CategoryTheory/Preadditive/Semiperfect.lean` (semilocal and semiperfect categories, 4.2),
+`TauCeti/CategoryTheory/Preadditive/ModCat/Perfect/` (4.2–4.6 for categories),
+`TauCeti/RingTheory/Jacobson/TNilpotent.lean`, `TauCeti/RingTheory/Jacobson/Semilocal.lean`,
 `TauCeti/Algebra/Module/ProjectiveCover/Semiperfect.lean` and
-`TauCeti/RingTheory/Jacobson/LeftPerfect.lean` (Layer 4). Nothing goes under
+`TauCeti/RingTheory/Jacobson/LeftPerfect.lean` (ring items of Layer 4). Nothing goes under
 `TauCeti/RingTheory/Perfect/`, which is the characteristic-`p` notion.
 
 ## Conventions
@@ -180,15 +197,22 @@ Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 
    global dimension is that of `ModCat C`, the left one that of `LeftModCat C`.
    `TauCeti.globalDimension A` is the left global dimension; the right one is
    `TauCeti.globalDimension Aᵐᵒᵖ`.
-8. `J = Ring.jacobson A`. A subset `S` of `A` is **left T-nilpotent** if for every sequence
-   `a₀, a₁, …` in `S` some product `a₀ a₁ ⋯ aₙ₋₁` is `0` ([Bass, p. 466], [Lam-FC, (23.13)],
-   [AF, p. 314]). Right T-nilpotence asks `aₙ₋₁ ⋯ a₀ = 0`; it is left T-nilpotence of the image
-   of `S` in `Aᵐᵒᵖ`.
-9. `A` is **left perfect** if `A ⧸ J` is a semisimple ring and `J` is left T-nilpotent. By
-   Theorem P (4.5) this holds exactly when every left module has a projective cover, which is
-   Bass's definition ([Bass, p. 467]), and exactly when the *right* principal ideals satisfy the
-   descending chain condition. [Lam-FC] works with right modules: its "right perfect" is
-   `IsLeftPerfectRing Aᵐᵒᵖ` here.
+8. `J = Ring.jacobson A` for a ring, and `J(C) = TauCeti.jacobsonRadicalIdeal C` for a category,
+   with `J(C)(X, X) = Ring.jacobson (End X)`. An ideal `I` of `C` (Tau Ceti's
+   `TauCeti.MorphismIdeal`) is **left T-nilpotent** if every chain `c₀ ← c₁ ← ⋯` of morphisms in
+   `I` has a vanishing composite `c_n → c₀` ([Simson, p. 108]); right T-nilpotence is the same for
+   chains `c₀ → c₁ → ⋯`, that is, left T-nilpotence on `Cᵒᵖ` (4.1). A subset `S` of a ring `A` is
+   **left T-nilpotent** if for every sequence `a₀, a₁, …` in `S` some product `a₀ a₁ ⋯ aₙ₋₁` is `0`
+   ([Bass, p. 466], [Lam-FC, (23.13)], [AF, p. 314]); this is the categorical notion at
+   `SingleObj A`, where `f ≫ g = g * f`. Right T-nilpotence asks `aₙ₋₁ ⋯ a₀ = 0`; it is left
+   T-nilpotence of the image of `S` in `Aᵐᵒᵖ`.
+9. `C` is **left perfect** (`IsLeftPerfectCategory`) if every `End X` is semilocal and `J(C)` is
+   left T-nilpotent, equivalently `C ⧸ J(C)` is semisimple in Simson's sense and `J(C)` is left
+   T-nilpotent (4.2, 4.3). A ring `A` is **left perfect** (`IsLeftPerfectRing`) if `A ⧸ J` is a
+   semisimple ring and `J` is left T-nilpotent. By Theorem P (4.5) this holds exactly when every
+   left module has a projective cover, which is Bass's definition ([Bass, p. 467]), and exactly when
+   the *right* principal ideals satisfy the descending chain condition. [Lam-FC] works with right
+   modules: its "right perfect" is `IsLeftPerfectRing Aᵐᵒᵖ` here.
 10. Mathlib's `PerfectRing R p` and Tau Ceti's `TauCeti/RingTheory/Perfect/` concern the Frobenius
    map in characteristic `p`. The notion here is always called `IsLeftPerfectRing`.
 11. **Duals.** For an `R`-module `E`, the dual of a module is `F^E = Hom_R(F(-), E)` (0.7); for
@@ -196,8 +220,12 @@ Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 
    sit on the theorems, not on the definition. `CharacterModule M = M →+ ℚ ⧸ ℤ` is Mathlib's, the
    case `R = ℤ`, `E = ℚ ⧸ ℤ`. For a left module `M` it is a right module through Tau Ceti's scoped
    instance `CharacterModule.instModuleMulOpposite`; write `M⁺`.
-12. Projective covers are Tau Ceti's `TauCeti.IsProjectiveCover`: a surjection from a projective
-   module whose kernel is superfluous (`TauCeti.IsSuperfluous`). "`M` has a projective cover" is
+12. Over a category, a projective cover is an essential epimorphism (Tau Ceti's
+   `TauCeti.IsEssentialEpi`) from a projective object; "`M` has a projective cover" is
+   `TauCeti.HasProjectiveCover M` (4.2). Over a ring, projective covers are Tau Ceti's
+   `TauCeti.IsProjectiveCover`: a surjection from a projective module whose kernel is superfluous
+   (`TauCeti.IsSuperfluous`); the two agree by `TauCeti.isProjectiveCover_iff_forall_surjective`.
+   For rings, "`M` has a projective cover" is
    `∃ (P : Type u) (_ : AddCommGroup P) (_ : Module A P) (p : P →ₗ[A] M), IsProjectiveCover p`,
    with `P` in the universe of `A` (4.2, 4.5). For all modules over a left perfect ring, in every
    universe, it takes the form of Tau Ceti's `TauCeti.exists_isProjectiveCover` (4.4).
@@ -215,8 +243,13 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
 `TauCeti.Algebra.Category.ModuleCat.Projective.TensorHom`,
 `TauCeti.Algebra.Module.AuslanderReiten.TensorCokernel`,
 `TauCeti.Algebra.Module.CharacterModule.MulOpposite`,
-`TauCeti.CategoryTheory.FinitelyPresentedFunctor.Basic` and
-`TauCeti.RingTheory.MatlisDuality.Basic`, which need Tau Ceti at that commit or later.
+`TauCeti.CategoryTheory.FinitelyPresentedFunctor.Basic`, `TauCeti.RingTheory.MatlisDuality.Basic`,
+`TauCeti.Algebra.Category.ModuleCat.CartanMap.Basic`,
+`TauCeti.CategoryTheory.Preadditive.KrullSchmidt.Semiperfect`,
+`TauCeti.CategoryTheory.Preadditive.MorphismIdeal.Mul`,
+`TauCeti.CategoryTheory.Preadditive.MorphismIdeal.Opposite`,
+`TauCeti.CategoryTheory.Preadditive.Radical.Nilpotent`, `TauCeti.CategoryTheory.Projective.Cover`
+and `TauCeti.RingTheory.Jacobson.MulOpposite`, which need Tau Ceti at that commit or later.
 
 ### From Mathlib
 
@@ -281,8 +314,17 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   (`Mathlib/CategoryTheory/Subobject/NoetherianObject.lean`); `IsCardinalPresentable` with
   `Cardinal.isRegular_aleph_one`. Mathlib has no global dimension, flat dimension or weak global
   dimension, and no finitely generated objects of a category.
-- Checks of Layer 3: `DualNumber`, `Matrix.blockTriangularSubalgebra`, and `CategoryTheory.Free`
-  (the `R`-linear category on a category, `Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean`).
+- Checks of Layers 3 and 4: `DualNumber`, `Matrix.blockTriangularSubalgebra`, and
+  `CategoryTheory.Free` with `CategoryTheory.Free.embedding` (the `R`-linear category on a
+  category, `Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean`); `PowerSeries`, `LaurentSeries`
+  with its `Algebra R⟦X⟧ R⸨X⸩` instance, `MvPolynomial`, `OrderDual`.
+- Finitely generated projectives and perfect categories (0.8, Layer 4): `Mat_`,
+  `CategoryTheory.Idempotents.Karoubi`, `IsIdempotentComplete`, `ObjectProperty.lift`,
+  `ObjectProperty.homMk`, `HasFiniteBiproducts.of_hasFiniteProducts`, `Subobject` with its lattice
+  and `ComplementedLattice`, `CategoryTheory.Simple`, `Functor.ofOpSequence`, `homOfLE`,
+  `IsIdempotentElem.Corner`, `IsFiltered`. Mathlib has no semilocal, semiperfect or perfect rings,
+  no T-nilpotence, no projective covers, no duality for `Karoubi` or `Mat_`, and no instance
+  `HasFiniteBiproducts Cᵒᵖ`.
 - Commutative counterparts: `TensorProduct` with `LinearMap.rTensor` and `LinearMap.lTensor`;
   `CategoryTheory.Tor` and `CategoryTheory.Tor'` on `ModuleCat R`; `Module.Flat` with
   `Module.Flat.iff_characterModule_injective`, `Module.Flat.iff_forall_isTrivialRelation`,
@@ -349,11 +391,31 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   `TauCeti.Quiver.Kronecker.upperTriangularAlgEquiv`
   (`TauCeti.RepresentationTheory.Quiver.Kronecker.UpperTriangular`);
   `IsIdempotentElem.isMoritaEquivalent_corner` (`TauCeti.RingTheory.Morita.Corner`).
-- The Jacobson radical: the instance `TauCeti.IsSemiprimaryRing.mulOpposite`
+- The Jacobson radical: the instance `TauCeti.IsSemiprimaryRing.mulOpposite` and
+  `TauCeti.Ring.isSemisimpleRing_quotient_jacobson_mulOpposite_iff`
   (`TauCeti.RingTheory.Jacobson.MulOpposite`); `TauCeti.isSemisimpleModule_quotient_smul_top`
   (`TauCeti.RingTheory.Jacobson.Semiprimary`).
+- Ideals and the radical of a category (Layer 4): `TauCeti.MorphismIdeal` with
+  `TauCeti.MorphismIdeal.le_def`, `TauCeti.MorphismIdeal.Quotient` and `quotientFunctor`
+  (`TauCeti.CategoryTheory.Preadditive.MorphismIdeal.Basic`), its monoid structure
+  (`...MorphismIdeal.Mul`) and `TauCeti.MorphismIdeal.op` (`...MorphismIdeal.Opposite`);
+  `TauCeti.jacobsonRadicalIdeal` and `TauCeti.jacobsonRadical_self_eq_jacobson`
+  (`TauCeti.CategoryTheory.Preadditive.Radical.Basic`);
+  `TauCeti.exists_jacobsonRadicalIdeal_pow_eq_bot` (`...Radical.Nilpotent`).
+- Krull–Schmidt categories and covers (Layer 4): `TauCeti.IsKrullSchmidt`
+  (`TauCeti.CategoryTheory.Preadditive.KrullSchmidt.Basic`);
+  `TauCeti.isKrullSchmidt_iff_isIdempotentComplete_and_isSemiperfectRing_end`,
+  `TauCeti.isKrullSchmidt_of_isSemiperfectRing_end` and
+  `TauCeti.IsKrullSchmidt.isSemiperfectRing_end` (`...KrullSchmidt.Semiperfect`), the refactor
+  consumers of 4.2; `TauCeti.IsEssentialEpi` (`TauCeti.CategoryTheory.Projective.Cover`);
+  `TauCeti.isProjectiveCover_iff_forall_surjective`
+  (`TauCeti.Algebra.Module.ProjectiveCover.Basic`).
+- Finitely generated projective modules (0.8): `TauCeti.finiteProjectiveModules`
+  (`TauCeti.Algebra.Category.ModuleCat.CartanMap.Basic`); `TauCeti.projectivizationFunctor`
+  (`TauCeti.CategoryTheory.Preadditive.Projectivization`), as the one-object pattern.
 - Semiperfect rings: `TauCeti.IsSemiperfectRing` with the instance
-  `TauCeti.IsSemiperfectRing.of_isSemiprimaryRing` (`TauCeti.RingTheory.Jacobson.Semiperfect`);
+  `TauCeti.IsSemiperfectRing.of_isSemiprimaryRing` (`TauCeti.RingTheory.Jacobson.Semiperfect`), a
+  refactor consumer (4.2);
   `TauCeti.IsSemiperfectRing.exists_completeOrthogonalIdempotents_isLocalRing_corner` and
   `TauCeti.IsSemiperfectRing.of_isLocalRing_corner` (`TauCeti.RingTheory.Idempotents.Semiperfect`);
   `CompleteOrthogonalIdempotents.exists_surjective_of_isSimpleModule`
@@ -399,6 +461,10 @@ TauCetiProject/TauCeti#37151 (Auslander's defect formula, open):
 categorical form. The defect formula itself
 (`Function.Exact.dualContravariantDefectEquivCovariantDefect`) is not a target here.
 
+TauCetiProject/TauCeti#38013 (ArtinAlgebras §4.1, open): its Part 3 contains the ring items of 4.2,
+including `isSemiperfectRing_tfae`. Its scope is contested; the placement of the ring items of 4.2
+follows the outcome (4.2).
+
 TauCetiProject/TauCeti#40807 (ArtinAlgebras §7.5, open): a consumer, not a supplier. It uses the
 statements of `TauCeti.RingTheory.GlobalDimension.MulOpposite`, whose proofs 3.4 replaces; the left
 bound of 3.4 strengthens what it needs.
@@ -407,13 +473,13 @@ bound of 3.4 strengthens what it needs.
 
 | Layer | Construction | Principal outputs |
 | --- | --- | --- |
-| [0](#layer-0-modules-over-a-preadditive-category-and-their-tensor-product) | Modules over a preadditive category | `Mod C`, rings as one-object categories, tensor product over `C`, projective factors, swap, ring API, duals |
+| [0](#layer-0-modules-over-a-preadditive-category-and-their-tensor-product) | Modules over a preadditive category | `Mod C`, rings as one-object categories, tensor product over `C`, `I · M` and `C ⧸ I`, projective factors, swap, ring API, duals, `proj C` and the duality `Hom(-, C)` |
 | [1](#layer-1-tor) | `Tor` | Left derived functor, long exact sequences, balance, `Tor` of the transpose, `Tor`–`Ext` duality, comparisons, `Tor₁` of cyclic modules, category algebras |
 | [2](#layer-2-flat-modules-and-flat-functors) | Flat modules and flat functors | Ideal test, `Tor` and Lambek tests, Baer criterion, Lazard block, purity, flat = left exact, triangulated case, representation theorem, Bass's module, closure |
 | [3](#layer-3-flat-dimension-global-and-weak-global-dimension) | Dimensions | Flat dimension, global dimension of an abelian category, Auslander's lemma, weak global dimension, symmetry, `FP_∞` lemma, Auslander's theorem, kernels and countably presented flat modules |
-| [4](#layer-4-semiperfect-and-perfect-rings-and-basss-theorem-p) | Semiperfect and perfect rings | T-nilpotence, covers over semiperfect rings, `IsLeftPerfectRing`, covers over left perfect rings, Theorem P, global dimension |
+| [4](#layer-4-semiperfect-and-perfect-categories-and-basss-theorem-p) | Semiperfect and perfect categories | T-nilpotence and Nakayama's lemma for all modules, semilocal and semiperfect categories and rings, covers over semiperfect categories, left perfect categories and rings, covers over them, the Mares–Simson lemma, Theorem P, global dimension and the Bass–Eilenberg criterion |
 
-Each layer needs the previous ones; 4.1 and 4.2 need only Mathlib and Tau Ceti. A name in
+Each layer needs the previous ones; the ring items of 4.2 need only Mathlib and Tau Ceti. A name in
 parentheses is the proposed Lean name of a headline declaration; auxiliary names are for the
 implementer to choose.
 
@@ -524,7 +590,16 @@ Concretely it is the quotient of `⊕_c F(c) ⊗_R G(c)` by the elements `x f �
   the `R`-tensor product;
 - **independence of `R`** (`TauCeti.ModCat.tensorObjIntIso`), the case `ℤ → R`: the `ℤ`-coend
   already forces `r x ⊗ y = x ⊗ r y`, because `r` acts through the morphism `r • 𝟙` of `C`
-  ([Mitchell, §11, p. 52]).
+  ([Mitchell, §11, p. 52]);
+- **ideals** (`TauCeti.MorphismIdeal.smul`, `TauCeti.MorphismIdeal.quotientYoneda`,
+  `TauCeti.ModCat.tensorObjQuotientYonedaIso`): for a two-sided ideal `I` of `C` (Tau Ceti's
+  `TauCeti.MorphismIdeal`) and a left module `M`, `I · M` is the family of subgroups `(I · M)(c)`
+  generated by the `M(f)(x)` with `f ∈ I(d, c)` and `x ∈ M(d)`; for `C = SingleObj A` it is
+  `J • ⊤`. The right module `(C ⧸ I)(-, X) = Hom_{C ⧸ I}(-, X)` comes through Tau Ceti's quotient
+  functor `TauCeti.MorphismIdeal.quotientFunctor`. Then `(C ⧸ I)(-, X) ⊗_C M ≅ M(X) ⧸ (I · M)(X)`,
+  by right exactness and Yoneda ([OR, Lemma 1.2, p. 94], for a right ideal of `Hom(-, X)`). Layer
+  4 uses `I · M` for Nakayama's lemma (4.1) and the isomorphism for the Bass–Eilenberg criterion
+  (4.6).
 
 **Checks.**
 
@@ -532,7 +607,7 @@ Concretely it is the quotient of `⊕_c F(c) ⊗_R G(c)` by the elements `x f �
 - In the quiver example of 0.1, `F ⊗_C Hom(1, -) ≅ F(1)` by Yoneda.
 
 *Needs:* 0.1; Mathlib `coend`, `HasCoend`, `TensorProduct`, `ModuleCat.restrictScalars`,
-`Adjunction.leftAdjoint_preservesColimits`.
+`Adjunction.leftAdjoint_preservesColimits`; Tau Ceti `TauCeti.MorphismIdeal` and its quotient.
 
 ### 0.4 Projective factors
 
@@ -642,11 +717,50 @@ follows from the adjunction, already over a commutative base ring in [OR, (1.1),
 
 *Needs:* 0.3; Mathlib `IsCoseparator`, `ShortComplex.ShortExact`; Tau Ceti `TauCeti.MatlisDual`.
 
+### 0.8 Finitely generated projective modules and duality
+
+A left module is **finitely generated** (`TauCeti.LeftModCat.IsFinitelyGenerated`) if it is a
+quotient of a finite sum of representables `Hom(Z₁, -) ⊕ ⋯ ⊕ Hom(Zₘ, -)`; a right module is
+finitely generated as a left `Cᵒᵖ`-module (`TauCeti.ModCat.IsFinitelyGenerated`). `proj C`
+(`TauCeti.ModCat.proj C`) is the full subcategory of finitely generated projective **right**
+modules, so that `C ⊆ proj C` covariantly by Yoneda; the finitely generated projective left modules
+are `TauCeti.LeftModCat.proj C`, which is `proj Cᵒᵖ` up to `Cᵒᵖᵒᵖ = C` (0.5). In `Suggested.lean`
+`LeftModCat.proj` is the base definition and `ModCat.proj C := LeftModCat.proj Cᵒᵖ`, the pattern of
+`ModCat.Flat` (2.1).
+
+- **Closure** (instances): `proj C` has finite biproducts and split idempotents.
+- **Yoneda** (`TauCeti.ModCat.projYoneda : C ⥤ proj C`, `X ↦ Hom(-, X)`; and
+  `TauCeti.LeftModCat.projCoyoneda`): fully faithful, so `End Hom(-, X) = End X`.
+- **Karoubi** (`TauCeti.ModCat.projEquivKaroubiMat : proj C ≌ Karoubi (Mat_ C)`), a target: every
+  object of `proj C` is a summand of a finite sum of representables, and Yoneda is fully faithful
+  on finite sums. Tau Ceti's `TauCeti.projectivizationFunctor` (`add M` against the finitely
+  generated projective `End M`-modules) is the one-object pattern.
+- **Additive idempotent-complete `C`** (an instance `(ModCat.projYoneda C).IsEquivalence` for
+  `[HasFiniteBiproducts C] [IsIdempotentComplete C]`): `C ≃ proj C`.
+- **Duality** (`TauCeti.ModCat.projDual : (proj C)ᵒᵖ ≌ LeftModCat.proj C`,
+  `TauCeti.ModCat.projDualYonedaIso`): `(-)^∨ = Hom(-, C)`, with `Hom(-, X) ↦ Hom(X, -)`. It is
+  built from the two Karoubi equivalences and `(Mat_ C)ᵒᵖ ≌ Mat_ Cᵒᵖ` (transposed matrices); Mathlib
+  has no such duality for `Karoubi` or `Mat_`. The transpose of 1.4 is defined through it.
+- **Rings** (`TauCeti.finiteProjectiveModulesDual A`): `Hom_A(-, A)` from Tau Ceti's
+  `TauCeti.finiteProjectiveModules A` to `TauCeti.finiteProjectiveModules Aᵐᵒᵖ`, an equivalence
+  `(finiteProjectiveModules A)ᵒᵖ ≌ finiteProjectiveModules Aᵐᵒᵖ`; with the instance
+  `HasFiniteBiproducts (finiteProjectiveModules A).FullSubcategory` (4.2). Mathlib's
+  `Module.Dual A P` is defined over any semiring, but its API is commutative; Tau Ceti's
+  `TauCeti.AuslanderReitenTranspose` already uses it as a right module.
+
+**Checks.** For `C = SingleObj A`, `proj C` is the category of finitely generated projective right
+`A`-modules, and `projDual` is `Hom_A(-, A)`. For the quiver category of 0.1, `proj C` consists of
+the sums of the two representables, since idempotents split there.
+
+*Needs:* 0.1, 0.5; Mathlib `Mat_`, `CategoryTheory.Idempotents.Karoubi`, `IsIdempotentComplete`,
+`ObjectProperty.lift`; Tau Ceti `TauCeti.finiteProjectiveModules`, `TauCeti.projectivizationFunctor`
+(pattern).
+
 ### Examples
 
 Rings (0.2, 0.6); `k`-linear categories of quivers, whose modules are representations; Tau Ceti's
 `mod C` inside `Mod C`. The commutative comparison of 0.6 makes every Mathlib tensor computation an
-example of `M ⊗_A N`.
+example of `M ⊗_A N`. Finitely generated projective modules over a ring or a quiver category (0.8).
 
 ### Dependencies
 
@@ -770,18 +884,21 @@ since a map from `X` that factors through a projective factors through `P → N`
 M` naturally in `M`. So the kernel is `ker(Tr X ⊗ ΩN → Tr X ⊗ P)`, which is `Tor_1(Tr X, N)` by the
 long exact sequence of 1.3 and `Tor_1(Tr X, P) = 0` (1.1).
 
-- **Category** (`TauCeti.ModCat.matrixMap`, `TauCeti.ModCat.transpose`,
-  `TauCeti.ModCat.stableHomEquivTorTranspose`), a target. A finitely presented right module is the
-  cokernel `X` of a map `⊕_j Hom(-, Y_j) → ⊕_i Hom(-, Z_i)` given by a matrix `α_ji : Y_j → Z_i`;
-  its Auslander–Bridger transpose `Tr X` is the cokernel of the transposed matrix
-  `⊕_i Hom(Z_i, -) → ⊕_j Hom(Y_j, -)`, a left module. Then `stable Hom(X, N) ≃ Tor_1(N, Tr X)`
-  for every right module `N`, with Tau Ceti's projective stable category
-  (`TauCeti.ExactStructure.projectiveStableFunctor` of `TauCeti.ExactStructure.abelian`). Here the
-  needed long exact sequence is the one of 1.2, in the right-module variable. Left modules follow
-  over `Cᵒᵖ`.
+- **Category** (`TauCeti.ModCat.transpose`, `TauCeti.ModCat.stableHomEquivTorTranspose`), a target.
+  A finitely presented right module is the cokernel `X` of a map `f : P₁ → P₀` in `proj C` (0.8);
+  its Auslander–Bridger transpose is `Tr X = coker(P₀^∨ → P₁^∨)`, a left module, with the duality
+  `(-)^∨ = Hom(-, C)` of 0.8. Then `stable Hom(X, N) ≃ Tor_1(N, Tr X)` for every right module `N`,
+  with Tau Ceti's projective stable category (`TauCeti.ExactStructure.projectiveStableFunctor` of
+  `TauCeti.ExactStructure.abelian`). Here the needed long exact sequence is the one of 1.2, in the
+  right-module variable. Left modules follow over `Cᵒᵖ`. **Matrix description**, a lemma
+  (`TauCeti.ModCat.matrixMap`, `TauCeti.ModCat.projSigma`, `TauCeti.ModCat.matrixTranspose`,
+  `TauCeti.ModCat.transposeMatrixIso`): for `f` the map `⊕_j Hom(-, Y_j) → ⊕_i Hom(-, Z_i)` of a
+  matrix `α_ji : Y_j → Z_i`, `Tr X` is the cokernel of the transposed matrix
+  `⊕_i Hom(Z_i, -) → ⊕_j Hom(Y_j, -)`, since the dual of `Hom(-, Y)` is `Hom(Y, -)`.
 - **Rings** (`TauCeti.stableHomEquivBalancedTorTranspose`): for a presentation `f : P₁ → P₀`, `P₀ →
   X → 0` by finite projective left modules, `stable Hom_A(X, N) ≃ₗ[R] Tor_1^A(Tr X, N)`, with Tau
-  Ceti's `TauCeti.AuslanderReitenTranspose f`. Route: `Function.Exact.contravariantDefectEquivKer`
+  Ceti's `TauCeti.AuslanderReitenTranspose f` (`Hom_A(P₁, A)` modulo the image of `Hom_A(P₀, A)`,
+  the ring case of the definition above). Route: `Function.Exact.contravariantDefectEquivKer`
   (the snake lemma step) from the open TauCetiProject/TauCeti#37151, and Tau Ceti's
   `LinearMap.auslanderReitenTransposeTensorEquivCokernel` (`H(M) ≅ Tr X ⊗ M`, natural by
   `auslanderReitenTransposeTensorEquivCokernel_map`), once #37151 merges; the roadmap does not
@@ -793,7 +910,7 @@ Auslander's defect formula `D δ^*(X) ≅ δ_*(D Tr X)` itself stays with
 supplier, not a target here. Layer 2 uses this item for "finitely presented flat modules are
 projective" (2.3).
 
-*Needs:* 1.1–1.3; Tau Ceti `TauCeti.AuslanderReitenTranspose`,
+*Needs:* 0.8, 1.1–1.3; Tau Ceti `TauCeti.AuslanderReitenTranspose`,
 `LinearMap.auslanderReitenTransposeTensorEquivCokernel`,
 `TauCeti.ExactStructure.projectiveStableFunctor`, `TauCeti.ExactStructure.abelian`,
 `ModuleCat.tensorHomCokernelEquivProjectiveStableHom`; from
@@ -1160,6 +1277,10 @@ For a chain `c_0 ← c_1 ← c_2 ← ⋯` in `C`, with `f_i : c_{i+1} → c_i`:
 - **Telescope presentation** (`TauCeti.LeftModCat.bassTelescope`, `TauCeti.LeftModCat.bassπ`,
   `TauCeti.LeftModCat.bassTelescope_shortExact`): `0 → ⊕_i Hom(c_i, -) → ⊕_i Hom(c_i, -) → B → 0`,
   with `e_i ↦ e_i - Hom(f_i, -) e_{i+1}`. So `B` has projective dimension at most one.
+- **Zero Bass modules** (`TauCeti.LeftModCat.isZero_bassModule_iff`): `B = 0` exactly when every
+  tail of the chain has a zero composite, that is, for every `i` some `c_j → c_i`, `j ≥ i`,
+  vanishes; the class of `𝟙 c_i` is zero at a later stage exactly then. Layer 4 uses it for
+  T-nilpotence (4.1).
 - **Projective implies factorizable** (`TauCeti.IsFactorizable`,
   `TauCeti.LeftModCat.isFactorizable_of_projective_bassModule`). If `B` is projective, the inverse
   system `Functor.ofOpSequence f` is factorizable in Simson's sense ([Simson, Def. 3.1, p. 99]):
@@ -1208,7 +1329,7 @@ multiplication by `a_i` on `A` (Convention 4). It is flat, and if it is projecti
 `TauCeti.Module.balancedFlat_iff_of_exact` ([Lam-LMR, (4.13), p. 126]),
 `TauCeti.Submodule.inf_smul_eq_smul_of_balancedFlat`): the same, and the quotient test: if `F` and
 `F ⧸ K` are flat, then `K ⊓ I • F = I • K` for every two-sided ideal `I` ([Lam-LMR, (4.14), p. 126];
-the case `N = A ⧸ I`). Layer 4 uses it (4.5).
+the case `N = A ⧸ I`). The alternative ring route of 4.5 through `R ⧸ J` uses it.
 
 Pointers, not targets: products of flat right modules are flat exactly when `C` has weak cokernels
 ([CB, Thm. 2.1, p. 1648]; [OR, Thm. 4.1, p. 101]; Chase for rings, [Lam-LMR, (4.47), p. 139]); the
@@ -1554,47 +1675,158 @@ hereditary.
 
 Layers 1 and 2.
 
-## Layer 4: semiperfect and perfect rings, and Bass's Theorem P
+## Layer 4: semiperfect and perfect categories, and Bass's Theorem P
 
-*Under review: to be converted to the category-primary design of Layers 0–2; currently stated for
-rings. The categorical summit is Simson's Theorem 5.4 for small preadditive categories (Summary);
-Layer 2 supplies the categorical Bass module (2.5) for it. A flat module with a projective cover
-is projective by the argument of [Simson, Thm. 5.4, (9′) ⇒ (1′), pp. 109–110], which uses
-[Mares, Thm. 2.4, proof part (i), p. 349]. Equality of flat and projective dimension over a
-perfect `C` is a condition of Theorem P (4.5) and is handled there; Layer 3 supplies flat
-dimension (3.1) and the `FP_∞` lemma (3.4).*
+Throughout, `C : Type u` is preadditive with `Category.{v} C`. `J(C)` is Tau Ceti's radical
+`TauCeti.jacobsonRadicalIdeal C`, whose value at `(X, X)` is `Ring.jacobson (End X)`
+(`TauCeti.jacobsonRadical_self_eq_jacobson`), and `C ⧸ J(C)` is Tau Ceti's quotient category
+`(TauCeti.jacobsonRadicalIdeal C).Quotient`. Modules are left modules, that is covariant functors,
+as in [Simson] and [Harada]. Where a statement needs colimits of modules indexed by the objects of
+`C`, the hypothesis is `EssentiallySmall.{w} C` with modules in the universe `w`; `Suggested.lean`
+states the theorems in the universe `v`, where the representables and Bass's modules (2.5) live.
+Projective covers are essential epimorphisms from projective objects (Convention 12). Items 4.1–4.6
+end with their ring statements, which are derived from the categorical ones through `SingleObj A`
+(0.2). The categorical statements are adaptations of the ring theorems cited with them, unless a
+categorical source is named; the summit is [Simson, Thm. 5.4, p. 108].
 
-### 4.1 T-nilpotence
+### 4.1 T-nilpotence and Nakayama's lemma for all modules
 
-(`TauCeti.IsLeftTNilpotent (S : Set A) : Prop`): for every `a : ℕ → A` with values in `S` there is
-`n` with `(List.ofFn fun i : Fin n ↦ a i).prod = 0` (Convention 8). API: monotone in `S`
+(`TauCeti.MorphismIdeal.IsLeftTNilpotent I`, `TauCeti.MorphismIdeal.IsRightTNilpotent I`.) A
+two-sided ideal `I` of `C` (Tau Ceti's `TauCeti.MorphismIdeal`) is **left T-nilpotent** if every
+chain `c₀ ← c₁ ← ⋯` with all `fᵢ : cᵢ₊₁ → cᵢ` in `I` has a vanishing composite
+`p_n = f₀ ∘ ⋯ ∘ f_{n-1} : c_n → c₀` ([Simson, p. 108]; Convention 8). For `C = SingleObj A`,
+`p_n = a₀ a₁ ⋯ a_{n-1}`, Bass's left T-nilpotence. Right T-nilpotence is left T-nilpotence of Tau
+Ceti's opposite ideal `TauCeti.MorphismIdeal.op I` on `Cᵒᵖ`, that is, of the chains
+`c₀ → c₁ → ⋯`. API: monotone in `I`; a nilpotent ideal (`I ^ n = ⊥`, with Tau Ceti's monoid of
+ideals) is left and right T-nilpotent (`TauCeti.MorphismIdeal.isLeftTNilpotent_of_pow_eq_bot`,
+`TauCeti.MorphismIdeal.isRightTNilpotent_of_pow_eq_bot`).
+
+`I · M` is the family of subgroups of 0.3 (`TauCeti.MorphismIdeal.smul I M`); for `SingleObj A` it
+is `J • ⊤`. It is **superfluous** in `M` (`TauCeti.MorphismIdeal.IsSuperfluousSmul I M`) if every
+map `g : N → M` whose image generates `M` together with `I · M` is an epimorphism.
+
+**Nakayama's lemma for all modules** (`TauCeti.MorphismIdeal.isLeftTNilpotent_tfae`). The following
+are equivalent:
+
+1. `I` is left T-nilpotent;
+2. for every left module `M`, `I · M = M` implies `M = 0`;
+3. for every left module `M`, `I · M` is superfluous in `M`.
+
+Route. (1) ⇒ (2) by dependent choice: if `I · M = M` and `x₀ ∈ M(c₀)` is nonzero, write `x_n` as a
+sum of elements `M(f)(y)` with `f ∈ I(d, c_n)`; since `M(p_n)(x_n) ≠ 0`, some summand keeps
+`M(p_n ∘ f)(y) ≠ 0`, which gives `f_n = f` and `x_{n+1} = y`; so no `p_n` vanishes
+([Simson, Lemma 5.3, p. 108]; Bass uses König's graph theorem, [Bass, pp. 473–474]). (2) ⇔ (3) as
+usual, through the cokernel of `g`. (2) ⇒ (1) through Bass's module `B` of an `I`-chain (2.5):
+`B ≠ 0` while no `p_n` vanishes, since the class of `𝟙 c₀` is `p_n` at stage `n`; and `B = I · B`,
+since the class of `g : cᵢ → d` is that of `g ∘ fᵢ`, the image of the class of `𝟙 cᵢ₊₁` under
+`B(g ∘ fᵢ)` with `g ∘ fᵢ ∈ I`. With the lemma of 2.5 (a Bass module is zero exactly when every tail
+of its chain has a zero composite), `I` is left T-nilpotent exactly when the Bass modules of all
+`I`-chains vanish (`TauCeti.MorphismIdeal.isLeftTNilpotent_iff_forall_isZero_bassModule`).
+
+(1) ⇒ (2) and (1) ⇒ (3) hold in every universe, with no smallness
+(`TauCeti.MorphismIdeal.IsLeftTNilpotent.isZero_of_smul_eq_top`,
+`TauCeti.MorphismIdeal.IsLeftTNilpotent.isSuperfluousSmul`). (2) ⇒ (1) in the universe `w` uses
+`EssentiallySmall.{w} C` for Bass's module; `Suggested.lean` states the equivalence in the universe
+`v`, where no hypothesis is needed.
+
+**Rings** (`TauCeti.IsLeftTNilpotent (S : Set A)`): for every `a : ℕ → A` with values in `S` there
+is `n` with `(List.ofFn fun i : Fin n ↦ a i).prod = 0`. API: monotone in `S`
 (`IsLeftTNilpotent.mono`); a nilpotent ideal is left T-nilpotent
 (`TauCeti.isLeftTNilpotent_of_isNilpotent`); every element of a left T-nilpotent set is nilpotent
 (`IsLeftTNilpotent.isNilpotent`); images under ring homomorphisms (`IsLeftTNilpotent.image`).
+Bridge (`TauCeti.isLeftTNilpotent_jacobson_iff_singleObj`): for the Jacobson radical it is the
+categorical notion at `SingleObj A`. The ring form of Nakayama's lemma
+(`TauCeti.isLeftTNilpotent_tfae`; [AF, 28.3, pp. 314–315]; [Lam-FC, (23.16), p. 352],
+right-handed) is a corollary through `SingleObj A`: for a left ideal `J`, `J` is left T-nilpotent;
+`J • ⊤ = ⊤` implies `M = 0` for every module `M` in the universe of `A`; `J • ⊤` is superfluous in
+every such `M`; `J • ⊤` is superfluous in `ℕ →₀ A`. The forward direction holds in every universe
+(`IsLeftTNilpotent.isSuperfluous_smul_top`).
 
-**Nakayama's lemma for all modules** (`TauCeti.isLeftTNilpotent_tfae`). For a left ideal
-`J : Ideal A`, the following are equivalent ([AF, 28.3, pp. 314–315]; [Lam-FC, (23.16), p. 352],
-right-handed):
+**Checks.** The ideal `(X)` of `PowerSeries k` is not left T-nilpotent
+(`TauCeti.not_isLeftTNilpotent_span_X`). In `F = ℕ →₀ PowerSeries k`, the submodule `G` spanned by
+the `eᵢ - X • eᵢ₊₁` satisfies `G + X • F = F` and `G ≠ F` (`F ⧸ G` is Bass's module, the Laurent
+series field), so `X • F` is not superfluous, as the last item predicts. The categorical check is
+the linear `A_∞` category of the Layer 4 checks.
 
-1. `J` is left T-nilpotent;
-2. for every left module `M` in the universe of `A`, `J • ⊤ = ⊤` in `Submodule A M` implies
-   `M` is zero;
-3. for every such `M`, `J • ⊤` is superfluous in `M`;
-4. `J • ⊤` is superfluous in the free module `ℕ →₀ A`.
+*Needs:* 0.3 (`I · M`), 2.5; Tau Ceti `TauCeti.MorphismIdeal`, `TauCeti.MorphismIdeal.le_def`,
+`TauCeti.MorphismIdeal.op`, the monoid of ideals
+(`TauCeti.CategoryTheory.Preadditive.MorphismIdeal.Mul`); Mathlib `Functor.ofOpSequence`.
 
-(1) ⇒ (3) holds for modules in every universe (`IsLeftTNilpotent.isSuperfluous_smul_top`).
+### 4.2 Semilocal and semiperfect rings and categories
 
-**Checks.**
+**Semilocal rings** (`TauCeti.IsSemilocalRing R`), a class with field
+`isSemisimpleRing : IsSemisimpleRing (R ⧸ Ring.jacobson R)`, also an instance. Mathlib has no
+semilocal rings. API: the instance for `Rᵐᵒᵖ` (proved in `Suggested.lean` from Tau Ceti's
+`TauCeti.Ring.isSemisimpleRing_quotient_jacobson_mulOpposite_iff`); surjective images
+(`TauCeti.IsSemilocalRing.of_surjective`); a commutative ring is semilocal exactly when it has
+finitely many maximal ideals (`TauCeti.isSemilocalRing_iff_finite_isMaximal`). The ladder is
+Mathlib's `IsSemiprimaryRing` ⇒ `IsLeftPerfectRing` (4.3) ⇒ `TauCeti.IsSemiperfectRing` ⇒
+`IsSemilocalRing`. The last step is an instance here; it becomes the `extends` projection when
+Tau Ceti's `TauCeti.IsSemiperfectRing` is refactored to `extends IsSemilocalRing` (Downstream
+consumers). Risk: a future commutative Mathlib `IsSemilocalRing` (finitely many maximal ideals)
+would be reconciled through the commutative characterization.
 
-- The ideal `(X)` of `PowerSeries k` is not left T-nilpotent (the constant sequence `X`;
-  `TauCeti.not_isLeftTNilpotent_span_X`).
-- In `F = ℕ →₀ PowerSeries k`, the submodule `G` spanned by the `eᵢ - X • eᵢ₊₁` satisfies
-  `G + X • F = F` and `G ≠ F` (`F ⧸ G` is the Laurent series field), so `X • F` is not
-  superfluous, as (4) predicts.
+**Semilocal categories** (`TauCeti.IsSemilocalCategory C`): every `End X` is semilocal. Target
+(`TauCeti.isSemilocalCategory_iff_isSemisimpleCategory`): `C` is semilocal exactly when `C ⧸ J(C)`
+is semisimple in Simson's sense (`TauCeti.IsSemisimpleCategory`: every representable `Hom(X, -)` is
+a semisimple left module, that is, its subobjects are complemented,
+`TauCeti.LeftModCat.IsSemisimple`; [Simson, p. 93]). Route: [Simson, Prop. 1.2, p. 93]: a small
+preadditive category is semisimple exactly when it is von Neumann regular (every `f` has a `g` with
+`f = f g f`) and every `End X` is semisimple; and `End_{C ⧸ J}(X) = End X ⧸ Ring.jacobson (End X)`.
+Regularity of `D = C ⧸ J(C)` (`TauCeti.IsSemilocalCategory.exists_comp_comp_eq_self`;
+**agent-proved**, not from a source): for `f : X → Y` in `D`, the left ideal `{g ∘ f}` of the
+semisimple ring `End_D(X)` is `End_D(X) e` with `e = g₀ ∘ f` idempotent; then `u = f ∘ (1 - e)`
+satisfies `g ∘ u = (g ∘ f)(1 - e) = 0` for every `g : Y → X`, so `u` is radical in `D`; the radical
+of `D` is zero, because units lift modulo the Jacobson radical; so `f = f ∘ e = f ∘ g₀ ∘ f`. `Cᵒᵖ`
+is semilocal with `C` (an instance; `End (op X) = (End X)ᵐᵒᵖ`).
 
-### 4.2 Projective covers over semiperfect rings
+**Semiperfect categories** (`TauCeti.IsSemiperfectCategory C`, `extends IsSemilocalCategory C`, with
+field: every `End X` is semiperfect; compare [Simson, Thm. 5.6 (b), (c), p. 110]). Instances: from
+left perfect categories (4.3) and from Krull–Schmidt categories
+(`TauCeti.IsKrullSchmidt.isSemiperfectCategory`, from Tau Ceti's
+`TauCeti.IsKrullSchmidt.isSemiperfectRing_end`). **Krause's criterion with the class**
+(`TauCeti.isKrullSchmidt_iff_isIdempotentComplete_and_isSemiperfectCategory`): a category with
+finite biproducts is Krull–Schmidt exactly when idempotents split and it is semiperfect. This
+restates main's `TauCeti.isKrullSchmidt_iff_isIdempotentComplete_and_isSemiperfectRing_end` (the
+owner's TauCetiProject/TauCeti#33561) with the class; a downstream refactor, with no alias. It is
+proved in `Suggested.lean` from main's statement.
 
-Here `R` is a ring and `J = Ring.jacobson R`.
+Small targets: finitely generated modules (0.8); `TauCeti.IsSemiperfectRing.mulOpposite` (an
+instance: semiperfectness is left-right symmetric; needed because `End Hom(X, -) = (End X)ᵐᵒᵖ`);
+`TauCeti.IsKrullSchmidt Cᵒᵖ` (an instance, by Krause's criterion on both sides; with the instance
+`HasFiniteBiproducts Cᵒᵖ`, which Mathlib does not register, proved in `Suggested.lean` from
+`HasFiniteBiproducts.of_hasFiniteProducts`); corners (`TauCeti.IsSemiperfectRing.corner`: `eRe` is
+semiperfect for an idempotent `e` of a semiperfect `R`, on Mathlib's `IsIdempotentElem.Corner`).
+
+**Semiperfect categories by projective covers** (`TauCeti.isSemiperfectCategory_tfae`;
+`TauCeti.HasProjectiveCover M`: an essential epimorphism onto `M` from a projective object). The
+following are equivalent ([Simson, Thm. 5.6, p. 110]; [Krause, Prop. 4.1]):
+
+1. `C` is semiperfect;
+2. every `Hom(X, -)` is a finite sum of projective modules with local endomorphism rings;
+3. every finitely generated left module has a projective cover;
+4. every simple left module has a projective cover;
+5. `proj C` (0.8) is Krull–Schmidt.
+
+Route: as for rings below, with `End Hom(X, -) = (End X)ᵐᵒᵖ` (Yoneda) and the `Rᵐᵒᵖ` instance.
+(1) ⇔ (5): `proj C` has finite biproducts and split idempotents (0.8), so Krause's criterion
+applies; `End Hom(-, X) = End X` (0.8); a finite sum of representables has a semiperfect
+endomorphism ring, since `1` is a sum of orthogonal local idempotents
+(`TauCeti.IsSemiperfectRing.of_isLocalRing_corner`), and every object of `proj C` is a summand of
+one, whose endomorphism ring is a corner. Theorem P uses only (1) and (4).
+
+**Covers of simple modules** (`TauCeti.LeftModCat.hasProjectiveCover_of_simple`), directly through a
+summand `Hom(X, -) e`, not through `Karoubi`: a simple `S` has `S(X) ≠ 0` for some `X`; write
+`1 = e₁ + ⋯ + eₙ` in `End X` with local corners; some `S(eᵢ)` does not kill a nonzero `x ∈ S(X)`,
+and the summand `Hom(X, -) eᵢ` of `Hom(X, -)`, projective with local endomorphism ring
+`eᵢ (End X) eᵢ`, maps onto `S`; a surjection from a projective with local endomorphism ring onto a
+nonzero module is a cover (as for rings).
+
+**Rings** (TauCetiProject/TauCeti#38013, Part 3). Here `R` is a ring and `J = Ring.jacobson R`. The
+ring items stay native. Their placement follows the scope contest on #38013: if Part 3 moves to
+this roadmap, the categorical TFAE above is proved first and the ring TFAE is derived from it
+through `SingleObj R` (0.2, 0.8); if Part 3 stays in #38013, the ring TFAE is a supplier and the
+categorical one follows the same route.
 
 - **Covers of projective modules** (`TauCeti.IsProjectiveCover.bijective_of_projective`). A
   projective cover of a projective module is bijective: compare it with the identity cover by
@@ -1642,11 +1874,14 @@ Here `R` is a ring and `J = Ring.jacobson R`.
   2. `R`, as a left module over itself, is a finite product of projective modules with local
      endomorphism rings;
   3. every finitely generated left module `M : Type u` has a projective cover;
-  4. every simple left module `S : Type u` has a projective cover.
+  4. every simple left module `S : Type u` has a projective cover;
+  5. the finitely generated projective modules (Tau Ceti's `TauCeti.finiteProjectiveModules R`)
+     form a Krull–Schmidt category.
 
   Route: (1) ⇒ (3) is the previous item, (3) ⇒ (4) is immediate, (4) ⇒ (2) applies the cover
   from simple quotients to `M = R`, which is bijective because `R` is projective, with local
-  factors because each is the cover of a simple module; (2) ⇒ (1) is the decomposition item.
+  factors because each is the cover of a simple module; (2) ⇒ (1) is the decomposition item;
+  (1) ⇔ (5) is Krause's criterion, as in the categorical item.
 - **Minimal presentations** (`TauCeti.FiniteProjectivePresentation.exists_isMinimal`, with weaker
   hypotheses). A finitely presented module `M : ModuleCat.{v} R` over a semiperfect ring with
   `[Small.{v} R]` has a finite minimal projective presentation
@@ -1667,20 +1902,35 @@ Here `R` is a ring and `J = Ring.jacobson R`.
 - For the upper triangular algebra `T₂(k)`, `T₂(k) = T e₁₁ × T e₂₂` is the decomposition of
   item (2), and the two simple modules have covers `T e₁₁` and `T e₂₂`.
 
-*Needs:* Tau Ceti `TauCeti.IsSemiperfectRing`, the idempotent results listed in "From Tau Ceti",
+*Needs:* 0.8, 4.1; Tau Ceti `TauCeti.IsSemiperfectRing`, the idempotent results listed in "From Tau
+Ceti", `TauCeti.IsKrullSchmidt` with Krause's criterion, `TauCeti.IsEssentialEpi`,
 `TauCeti.IsProjectiveCover` and its API, `TauCeti.FiniteProjectivePresentation`,
-`TauCeti.IsMinimalProjectivePresentation`; Mathlib `IsCompactElement`, `Submodule.fg_iff_compact`,
-`isSimpleModule_iff_isCoatom`, `Module.jacobson`.
+`TauCeti.IsMinimalProjectivePresentation`, `TauCeti.MorphismIdeal.Quotient`,
+`TauCeti.Ring.isSemisimpleRing_quotient_jacobson_mulOpposite_iff`; Mathlib `IsCompactElement`,
+`Submodule.fg_iff_compact`, `isSimpleModule_iff_isCoatom`, `Module.jacobson`, `Subobject`,
+`ComplementedLattice`, `Simple`, `IsIdempotentElem.Corner`,
+`HasFiniteBiproducts.of_hasFiniteProducts`.
 
-TauCetiProject/TauCeti#38013 contains a version of the items of 4.2.
+### 4.3 Left perfect rings and categories
 
-### 4.3 Left perfect rings
+(`TauCeti.IsLeftPerfectCategory C`, `extends IsSemilocalCategory C`, with field
+`isLeftTNilpotent : MorphismIdeal.IsLeftTNilpotent (TauCeti.jacobsonRadicalIdeal C)`.) By 4.2 this
+is Simson's condition: `J(C)` is left T-nilpotent and `C ⧸ J(C)` is semisimple ([Simson, Thm. 5.4
+(7)]). Right perfect is `IsLeftPerfectCategory Cᵒᵖ`. API:
 
-(`TauCeti.IsLeftPerfectRing A`), a class with fields
-`isSemisimpleRing : IsSemisimpleRing (A ⧸ Ring.jacobson A)` and
-`isLeftTNilpotent : IsLeftTNilpotent (Ring.jacobson A : Set A)`. Right perfect is
+- an instance `IsLeftPerfectCategory C → IsSemiperfectCategory C`: `Ring.jacobson (End X) =
+  J(C)(X, X)` is left T-nilpotent, hence nil, so idempotents lift
+  (`exists_isIdempotentElem_eq_of_ker_isNilpotent`; [Lam-FC, (23.19), p. 353]);
+- a semilocal category with nilpotent radical is left and right perfect
+  (`TauCeti.IsLeftPerfectCategory.of_pow_eq_bot`, `TauCeti.IsLeftPerfectCategory.op_of_pow_eq_bot`;
+  4.1). There is no class of semiprimary categories; this is the pointer.
+
+**Rings** (`TauCeti.IsLeftPerfectRing A`, `extends IsSemilocalRing A`, with field
+`isLeftTNilpotent : IsLeftTNilpotent (Ring.jacobson A : Set A)`). Right perfect is
 `IsLeftPerfectRing Aᵐᵒᵖ`. API:
 
+- bridge (`TauCeti.isLeftPerfectRing_iff_singleObj`): `IsLeftPerfectRing A ↔ IsLeftPerfectCategory
+  (SingleObj A)`, with `p_n = a₀ ⋯ a_{n-1}` (4.1);
 - instances `IsSemiprimaryRing A → IsLeftPerfectRing A`
   (`TauCeti.IsLeftPerfectRing.of_isSemiprimaryRing`; [Lam-FC, (23.19), p. 353]; with
   `TauCeti.IsSemiprimaryRing.mulOpposite` also for `Aᵐᵒᵖ`) and
@@ -1690,103 +1940,233 @@ TauCetiProject/TauCeti#38013 contains a version of the items of 4.2.
 - surjective images, in particular quotients by two-sided ideals and ring isomorphisms
   (`TauCeti.IsLeftPerfectRing.of_surjective`; [Lam-FC, (24.19), p. 365]; [AF, 28.7, p. 318]).
 
-**Checks.**
+*Needs:* 4.1, 4.2; Mathlib `IsSemiprimaryRing`, `exists_isIdempotentElem_eq_of_ker_isNilpotent`;
+Tau Ceti `TauCeti.IsSemiprimaryRing.mulOpposite`.
 
-- `A = k[x₀, x₁, …] ⧸ (xᵢxⱼ)` (on `MvPolynomial ℕ k`) is semiprimary (`J² = 0`, `A ⧸ J = k`),
-  hence perfect, and not Noetherian.
-- `A = k[x₁, x₂, …] ⧸ (xᵢ^{i+1}, xᵢxⱼ for i ≠ j)` is perfect but not semiprimary: `J` is not
-  nilpotent because `xₙⁿ ≠ 0`, and it is T-nilpotent because an element of `J` involves only
-  finitely many variables, so a product `a₀ ⋯ aₙ₋₁` of elements of `J` vanishes once `n` exceeds
-  the largest variable index in `a₀` (an instance of [Bass, §3, Example (2), p. 475]).
-- Lam's ring: in `Module.End k (ℕ →₀ k)`, let `J` be the endomorphisms with finite matrix
-  supported strictly above the diagonal, and `R = k · 1 + J`. Then `R` is local,
-  `IsLeftPerfectRing Rᵐᵒᵖ` holds and `IsLeftPerfectRing R` fails: the products
-  `E₀₁E₁₂ ⋯ Eₙ₋₁,ₙ = E₀ₙ` never vanish ([Lam-FC, (23.22), p. 356]).
-- `PowerSeries k` is semiperfect and not left perfect (4.1).
+### 4.4 Projective covers over left perfect categories
 
-### 4.4 Projective covers over left perfect rings
+(`TauCeti.IsLeftPerfectCategory.hasProjectiveCover`.) Over a left perfect `C` every left module has
+a projective cover ([Simson, Thm. 5.4, (7) ⇒ (8), p. 109]; [Bass, Lemma 2.6, p. 473], for rings).
+Route: `C` is semiperfect (4.3). `M ⧸ J · M` is a module over `C ⧸ J(C)`, which is semisimple (4.2),
+so it is a direct sum of simple modules; each has a cover `Hom(X, -) e` (4.2). Lift the sum `P` of
+these covers to `P → M`. The lift is onto because `J · M` is superfluous in `M` (4.1), and its
+kernel lies in `J · P`, which is superfluous in `P` (4.1).
 
-(`TauCeti.IsLeftPerfectRing.exists_isProjectiveCover`). Over a left perfect ring every left
-module, in every universe, has a projective cover, in the form of Tau Ceti's
+**Rings** (`TauCeti.IsLeftPerfectRing.exists_isProjectiveCover`). Over a left perfect ring every
+left module, in every universe, has a projective cover, in the form of Tau Ceti's
 `TauCeti.exists_isProjectiveCover`, which it generalizes from semiprimary rings ([Lam-FC, (24.12)];
-[AF, 28.4, (b) ⇒ (a), p. 315]). Route: `M ⧸ J • M` is semisimple
-(`TauCeti.isSemisimpleModule_quotient_smul_top`), a direct sum of simple modules; each has a
-cover `Ae_α` (4.2); lift `⊕ Ae_α → M ⧸ J • M` to `M`. The lift is onto because `J • M` is
-superfluous in `M` (4.1), and its kernel lies in `J • P`, which is superfluous in `P` (4.1;
-`TauCeti.isProjectiveCover_mkQ_iff_le_jacobson`).
+[AF, 28.4, (b) ⇒ (a), p. 315]). The same route, with `M ⧸ J • M` semisimple
+(`TauCeti.isSemisimpleModule_quotient_smul_top`) and
+`TauCeti.isProjectiveCover_mkQ_iff_le_jacobson`.
+
+*Needs:* 4.1–4.3; Tau Ceti `TauCeti.exists_isProjectiveCover`,
+`TauCeti.isSemisimpleModule_quotient_smul_top`, `TauCeti.isProjectiveCover_mkQ_iff_le_jacobson`.
 
 ### 4.5 Bass's Theorem P
 
-(`TauCeti.isLeftPerfectRing_tfae (A : Type u) [Ring A]`). The following are equivalent:
+**The Mares–Simson lemma** (`TauCeti.LeftModCat.Flat.projective_of_isEssentialEpi`), a standalone
+target: a flat module with a projective cover is projective, for any `C` and with no hypothesis on
+the radical ([Simson, Thm. 5.4, (9′) ⇒ (1′), pp. 109–110], using the argument of [Mares, Thm. 2.4,
+proof part (i), p. 349]). Route, for a cover `0 → K → P → M → 0` with `M` flat:
 
-1. `IsLeftPerfectRing A`;
-2. every left module `M : Type u` has a projective cover (Convention 12);
-3. every flat left module `M : Type u` is projective;
-4. `WellFoundedLT {I : Submodule Aᵐᵒᵖ A // I.IsPrincipal}`: the principal right ideals satisfy
-   the descending chain condition;
-5. `flatDimension M = projectiveDimension M` for every `M : ModuleCat.{u} A`.
+- **Villamayor step** (`TauCeti.LeftModCat.exists_hom_app_apply_eq_of_flat`; [Lam-LMR, (4.23),
+  p. 129], Villamayor's theorem for rings): every `x ∈ K(c)` is fixed by some `θ : P → K`. `P` is a
+  summand of a free module `F` (a sum of representables); `x` lies in a finite subsum `L`; the
+  factorization of 2.3 applied to `L ⧸ (x) → M` gives a finitely generated free `G` with maps
+  `α`, `β`, and `θ = (ι - βα) ∘ π_L`.
+- **Mares**: `s = i ∘ θ` has image in the superfluous `K`, so `1 - s` is onto; it splits, since `P`
+  is projective, and its kernel is a summand of `P` inside `K`, hence zero. But `(1 - s)(x) = 0`, so
+  `x = 0`.
 
-Sources: [Bass, Theorem P, pp. 467–468], whose items (1), (2), (6) and (3) are (1), (2), (4)
-and (5) here; [AF, 28.4, pp. 315–317], left-handed as here; [Lam-FC, (24.18), p. 365, and
-(24.25), p. 369], right-handed. Route ([Lam-FC], mirrored):
+This is an agent assembly of [Mares], [Simson] and Villamayor; it replaces the earlier ring proof of
+"perfect ⇒ flat modules are projective" through `K ≤ J · P` ([Lam-FC, (24.25)]), which is kept as an
+alternative.
 
-- (1) ⇒ (2) is 4.4.
-- (2) ⇒ (1): simple modules have covers, so `A` is semiperfect (`TauCeti.isSemiperfectRing_tfae`,
-  4.2). A nonzero module `M` with a cover `P → M` has `J • M ≠ M`, because
-  `J • P = Module.jacobson A P ≠ P` (4.2); so `J` is left T-nilpotent by 4.1.
-- (1) ⇒ (3): take a cover `P → M` with kernel `K`; then `K ≤ Module.jacobson A P = J • P`
-  (`TauCeti.IsProjectiveCover.ker_le_jacobson`, 4.2). Flatness of `M` gives
-  `K = K ⊓ J • P = J • K` (2.6), so `K = 0` by 4.1.
-- (3) ⇒ (4): Bass's flat module (2.5).
-- (4) ⇒ (1): if `a₀ ⋯ aₙ A = a₀ ⋯ aₙ₊₁ A` with `aₙ₊₁ ∈ J`, then
-  `a₀ ⋯ aₙ (1 - aₙ₊₁ r) = 0` for some `r`, and `1 - aₙ₊₁ r` is a unit; so `J` is left
-  T-nilpotent. The ring `A ⧸ J` inherits the chain condition and has zero radical, so it is
-  semisimple (`TauCeti.isSemisimpleRing_of_wellFoundedLT_isPrincipal`: a ring with zero Jacobson
-  radical and the descending chain condition on principal right ideals is semisimple; [Lam-FC,
-  (4.14)], cited in the proof of (24.25), not read).
-- (3) ⇔ (5): flat dimension is at most projective dimension (3.1). Given (3), if
-  `flatDimension M = n`, the `n`-th syzygy of a projective resolution is flat (dimension shifting),
-  hence projective, so `projectiveDimension M ≤ n` ([Lam-LMR, (5.70), p. 187]). Conversely (5)
-  at a flat module gives projective dimension `≤ 0`.
+**Theorem P** (`TauCeti.isLeftPerfect_tfae`), for `EssentiallySmall.{w} C` (the universe `v` in
+`Suggested.lean`). The following are equivalent:
 
-### 4.6 Global dimension of perfect rings
+1. `C` is left perfect: `J(C)` is left T-nilpotent and `C ⧸ J(C)` is semisimple (4.3);
+2. every left module has a projective cover;
+2′. every semisimple left module has a projective cover;
+3. every flat left module is projective;
+3′. every countably presented flat left module is projective (Mathlib's `IsCardinalPresentable` at
+   `ℵ₁`; Bass's modules are countably presented, which makes this item free);
+4. for every object `c`, the principal right ideals into `c` satisfy the descending chain condition;
+   the principal right ideal `g C` of `g : d → c` is `{g ∘ h}`, the cyclic subfunctor of `Hom(-, c)`
+   generated by `g`, the image of `Hom(-, d) → Hom(-, c)`;
+4′. every chain `c₀ ← c₁ ← ⋯` stabilizes: some `p_n = f₀ ∘ ⋯ ∘ f_{n-1}` factors through every later
+   `p_m` ([Simson, Def. 3.1, p. 99], at the first term, in the direction of 2.5);
+5. `flatDimension M = projectiveDimension M` for every left module `M`;
+6. filtered colimits of projective left modules are projective.
 
-- (`TauCeti.globalDimension_eq_weakGlobalDimension_of_isLeftPerfectRing`) For
-  `[IsLeftPerfectRing A]` and `[Small.{v} A]`, `globalDimension A = weakGlobalDimension A`
-  (4.5 (5), in the universe `v` through 4.4; [Lam-LMR, (5.70), p. 187]).
-- (`TauCeti.globalDimension_mulOpposite_of_isLeftPerfectRing`) For `[IsLeftPerfectRing A]` and
-  `[IsLeftPerfectRing Aᵐᵒᵖ]`, `globalDimension Aᵐᵒᵖ = globalDimension A` (with 3.3). In
-  particular, for every semiprimary ring the left, right and weak global dimensions agree, with no
-  Noetherian hypothesis ([Au, Cor. 9, p. 73]; [Lam-LMR, (5.71), p. 188]).
+Sources: [Simson, Thm. 5.4, p. 108], whose conditions (7), (8), (1) and (5) are 1, 2, 3 and 4′ (at
+every term), with 3′ the countable form of (1) and (9) the case of flat modules in 2; [Harada, Thm.
+5, p. 339], for finitely induced categories; [Bass, Theorem P, pp. 467–468] for rings; 2′ is
+[Sandomierski, Thm. 5, p. 206] for rings ("R right perfect iff every semisimple right R-module has a
+projective cover").
 
-**Checks.**
+Route: the cycle 1 ⇒ 2 ⇒ 3 ⇒ 3′ ⇒ 4′ ⇒ 1, with 4 ⇔ 4′, 3 ⇔ 5, 3 ⇔ 6 and 2 ⇒ 2′ ⇒ 1.
 
-- `ℤ` is not semiperfect (4.2), so not perfect; `ℚ` is flat and not projective.
-- `PowerSeries k` is local, hence semiperfect, and not left perfect; Bass's module for the
-  constant sequence `X` is the Laurent series field, flat and not projective.
-- `k[ε]/(ε²)` is semiprimary, hence perfect; its modules have equal flat and projective dimension,
-  and global dimension `⊤ = ` weak global dimension.
-- The second commutative ring of 4.3 satisfies the descending chain condition on principal ideals
-  by Theorem P, although it is not Noetherian.
-- Lam's ring `R` of 4.3: `E₀₁R ⊋ E₀₂R ⊋ ⋯` (the strict inclusions show directly that (4) fails),
-  and Bass's module for `E₀₁, E₁₂, E₂₃, …` is a flat left `R`-module that is not projective.
+- 1 ⇒ 2 is 4.4.
+- 2 ⇒ 3 is the Mares–Simson lemma; 3 ⇒ 3′ is immediate.
+- 3′ ⇒ 4′: Bass's module of the chain (2.5) is flat and countably presented (the telescope), so it
+  is projective, and the chain is factorizable (2.5; [Bass, Lemma 1.3]).
+- 4′ ⇒ 1. T-nilpotence: for a chain in `J(C)`, 4′ gives `t` with
+  `p_n = p_{n+1} ∘ t = p_n ∘ f_n ∘ t`, so `p_n ∘ (1 - f_n ∘ t) = 0`; `f_n ∘ t` is radical, so
+  `1 - f_n ∘ t` is invertible and `p_n = 0`. Semilocality, object by object: chains with one object
+  `X` give the descending chain condition on the principal right ideals of `End X`, and hence of
+  `End X ⧸ Ring.jacobson (End X)`, which has zero radical; a ring with zero radical and this chain
+  condition is semisimple (Brauer; `TauCeti.isSemisimpleRing_of_wellFoundedLT_isPrincipal`; [Lam-FC,
+  (4.14)], cited in the proof of (24.25), not read). Thanks to the objectwise definition (4.2),
+  [Simson, Prop. 1.2] is not needed here.
+- 4 ⇔ 4′: a chain gives the principal right ideals `p_i C`, with `p_{i+1} = p_i ∘ f_i`; conversely a
+  descending chain `g₀ C ⊇ g₁ C ⊇ ⋯` has `g_{i+1} = g_i ∘ f_i` for some `f_i`.
+- 3 ⇔ 5 through 3.1: flat dimension is at most projective dimension; given 3, the syzygy at the flat
+  dimension is flat, hence projective ([Lam-LMR, (5.70), p. 187]); 5 at a flat module gives
+  projective dimension `≤ 0`.
+- 3 ⇔ 6: filtered colimits of flat modules are flat (2.6), and every flat module is a filtered
+  colimit of finite sums of representables (2.3).
+- 2 ⇒ 2′ is immediate. 2′ ⇒ 1 (after [Sandomierski]): simple modules have covers, so `C` is
+  semiperfect (4.2); for a free `F`, the cover of the semisimple `F ⧸ J · F` lifts to a split
+  epimorphism from `F`, so `J · F` is superfluous; Bass's module `B` of a chain in `J(C)` has
+  `B = J · B` and is a quotient of the free telescope, so `B = 0`, and `J(C)` is left T-nilpotent
+  (4.1).
 
-*Needs:* Layers 2 and 3; 4.1–4.4; Tau Ceti `TauCeti.IsSemiperfectRing`,
-`TauCeti.IsProjectiveCover`, `TauCeti.IsProjectiveCover.ker_le_jacobson`,
-`TauCeti.exists_isProjectiveCover`, `TauCeti.isSemisimpleModule_quotient_smul_top`; Mathlib
-`WellFoundedLT`, `Submodule.IsPrincipal`, `IsSemiprimaryRing`,
-`exists_isIdempotentElem_eq_of_ker_isNilpotent`.
+Alternatives, in prose only: Rentschler's direct ring proof of 1 ⇒ 4 ([Rowen, Thm. 2.7.33,
+pp. 222–223]; Rentschler's paper not read); [Lam-FC, (24.25), pp. 369–370] for 1 ⇒ 3 through
+`R ⧸ J` (`K ≤ J · P`, and flatness gives `K = J · K`); Simson's route through Mittag-Leffler objects
+([Simson, Thms. 3.16 and 5.4]); the exchange route 3 ⇒ 2 ([AHS, Thm. 1.1], with an agent assembly
+that was not audited); the pp-formula proof of the Bass obstruction ([PR, §3]); and the earlier ring
+proof of 2 ⇒ 1 (simple modules have covers, so `A` is semiperfect; a nonzero module with a cover has
+`J • M ≠ M`, since `J • P ≠ P` for a nonzero projective `P`, [Bass, Prop. 2.7, p. 474]; then 4.1).
+Pointers only, not targets: Bass's conditions (4), direct limits of modules of projective dimension
+`≤ n`, and (7), orthogonal idempotents and socles; Simson's conditions (2), (3), (4) and (6)
+(Mittag-Leffler objects, the product map, coperfectness, endomorphism rings of finitely generated
+projectives); Harada's minimal-subobject condition ([Harada, Thm. 5, 5)]).
+
+**Rings** (`TauCeti.isLeftPerfectRing_tfae (A : Type u)`): the same items, with 2 and 2′ in Tau
+Ceti's `TauCeti.IsProjectiveCover` form (Convention 12), 3 and 3′ with `Module.BalancedFlat`, 4 the
+descending chain condition `WellFoundedLT {I : Submodule Aᵐᵒᵖ A // I.IsPrincipal}` on principal
+right ideals, 4′ Bass's chain `a₀A ⊇ a₀a₁A ⊇ ⋯`, 5 for `M : ModuleCat.{u} A`, and 6 in
+`ModuleCat.{u} A`. All are derived from the categorical theorem through 0.2: covers through
+`TauCeti.isProjectiveCover_iff_forall_surjective`, flatness through Layer 2, dimensions through
+Layer 3 and Tau Ceti's `CategoryTheory.Equivalence.projectiveDimension_functor_obj`; the principal
+right ideals of `SingleObj A` into `∗` are the `aA`. There are no independent ring proofs. Covers in
+other universes come from 4.4. Also: the ring Mares–Simson lemma
+(`TauCeti.Module.BalancedFlat.projective_of_isProjectiveCover`) and the auxiliary
+`TauCeti.isSemisimpleRing_of_wellFoundedLT_isPrincipal`. Ring sources: [Bass, Theorem P], whose
+items (1), (2), (6), (3) and (5) are 1, 2, 4, 5 and 6 here; [AF, 28.4, pp. 315–317], left-handed as
+here; [Lam-FC, (24.18), p. 365, and (24.25), p. 369], right-handed.
+
+*Needs:* Layers 2 and 3, 4.1–4.4; Mathlib `IsCardinalPresentable`, `imageSubobject`, `IsFiltered`,
+`WellFoundedLT`, `Submodule.IsPrincipal`; Tau Ceti `TauCeti.IsEssentialEpi`,
+`TauCeti.isProjectiveCover_iff_forall_surjective`,
+`CategoryTheory.Equivalence.projectiveDimension_functor_obj`.
+
+### 4.6 Global dimension of perfect categories
+
+- **Equality with the weak global dimension**
+  (`TauCeti.LeftModCat.globalDimension_eq_weakGlobalDimension_of_isLeftPerfectCategory`). For a
+  left perfect `C`, `Abelian.globalDimension (LeftModCat C) = LeftModCat.weakGlobalDimension C`,
+  the supremum of Theorem P (5).
+- **Sides**
+  (`TauCeti.ModCat.globalDimension_eq_globalDimension_leftModCat_of_isLeftPerfectCategory`). If `C`
+  and `Cᵒᵖ` are left perfect, the left and right global dimensions agree (3.3's symmetry). By 4.3
+  this covers every semilocal `C` with `J(C)ⁿ = 0`.
+- **The Bass–Eilenberg criterion** (`TauCeti.LeftModCat.hasProjectiveDimensionLE_iff_isZero_tor`;
+  [Bass, p. 475], where Bass reproduces Eilenberg's argument). Over a left perfect `C`,
+  `pd M = sup {n : Tor_n(C ⧸ J, M) ≠ 0}`: `pd M ≤ n` exactly when
+  `Tor_{n+1}((C ⧸ J)(-, X), M) = 0` for every `X`, with the right modules `(C ⧸ J)(-, X)` of 0.3.
+  Route: a minimal projective resolution by covers (4.4) has differentials into `J · P_n`, since
+  the kernel of a cover lies in `J · P`; so `(C ⧸ J) ⊗_C P` has zero differentials and
+  `Tor_n((C ⧸ J)(-, X), M) ≅ P_n(X) ⧸ (J · P_n)(X)` by the lemma of 0.3; and `J · P ≠ P` for
+  `P ≠ 0` (4.1).
+- **Corollary** (`TauCeti.LeftModCat.globalDimension_eq_iSup_flatDimension_quotientYoneda`; an agent
+  derivation): the left global dimension of a left perfect `C` is the flat dimension of the right
+  module `C ⧸ J`, the supremum over `X` of the flat dimensions of `(C ⧸ J)(-, X)`, by the criterion
+  and 3.1.
+
+**Rings.** `TauCeti.globalDimension_eq_weakGlobalDimension_of_isLeftPerfectRing` (for
+`[IsLeftPerfectRing A]` and `[Small.{v} A]`, `globalDimension A = weakGlobalDimension A`;
+[Lam-LMR, (5.70), p. 187]); `TauCeti.globalDimension_mulOpposite_of_isLeftPerfectRing` (left and
+right perfect: equal left and right global dimension); and
+`TauCeti.globalDimension_mulOpposite_of_isSemiprimaryRing`: for every semiprimary ring the left,
+right and weak global dimensions agree, with no Noetherian hypothesis ([Au, Cor. 9, p. 73];
+[Lam-LMR, (5.71), p. 188]). The Tor criterion for rings comes through 0.2 and is not stated
+separately. Main's `TauCeti.globalDimension_eq_projectiveDimension_quotient_jacobson`
+(`TauCeti/RingTheory/GlobalDimension/Semiprimary.lean`: for a semiprimary ring, the projective
+dimension of the left module `A ⧸ J`) is unchanged and is not a consumer. The projective dimension
+of `A ⧸ J` over a ring that is perfect on one side only is not claimed.
+
+*Needs:* 0.3, 3.1, 3.3, 4.4, 4.5; Tau Ceti `TauCeti.globalDimension`.
+
+### Layer 4 checks
+
+In Lean (last section of `Suggested.lean`):
+
+- `PowerSeries k`: the ideal `(X)` is not left T-nilpotent (`TauCeti.not_isLeftTNilpotent_span_X`);
+  the ring is local, so semiperfect, and not left perfect
+  (`TauCeti.isSemiperfectRing_powerSeries_and_not_isLeftPerfectRing`); Bass's module for the
+  constant sequence `X` is the Laurent series field, flat (2.5) and not projective
+  (`TauCeti.bassRelations_X_linearEquiv_laurentSeries`).
+- `ℤ` is not semiperfect (`TauCeti.not_isSemiperfectRing_int`, 4.2), so not perfect; `ℚ` is flat and
+  not projective (`TauCeti.balancedFlat_rat_and_not_projective`, 2.6).
+- `T₂(k)` is semiprimary, hence left and right perfect
+  (`TauCeti.isLeftPerfectRing_upperTriangular`); its decomposition and the covers of its simple
+  modules are the checks of 4.2.
+- `k[ε]/(ε²)` (Mathlib's `DualNumber k`) is perfect, so its modules have equal flat and projective
+  dimension (`TauCeti.isLeftPerfectRing_dualNumber`); its global and weak global dimensions are `⊤`
+  (Layer 3 checks).
+- `k[x₀, x₁, …] ⧸ (xᵢxⱼ)` (on `MvPolynomial ℕ k`, `TauCeti.squareZeroPolynomialRing k`) is
+  semiprimary (`J² = 0`, `A ⧸ J = k`), hence perfect, and not Noetherian
+  (`TauCeti.isSemiprimaryRing_squareZeroPolynomialRing`).
+- `k[x₀, x₁, …] ⧸ (xᵢ^{i+2}, xᵢxⱼ for i ≠ j)` (`TauCeti.bassPolynomialRing k`) is perfect and not
+  semiprimary: `J` is not nilpotent because `xᵢ^{i+1} ≠ 0`, and it is T-nilpotent because an
+  element of `J` involves only finitely many variables, so a product `a₀ ⋯ a_{n-1}` of elements of
+  `J` vanishes once `n` exceeds a bound given by `a₀`. By Theorem P its principal ideals satisfy the
+  descending chain condition, although it is not Noetherian
+  (`TauCeti.isLeftPerfectRing_bassPolynomialRing`; [Bass, §3, Example (2), p. 475], with the
+  variables shifted by one).
+- The linear `A_∞` category `⋯ → 2 → 1 → 0`, the `k`-linearization `CategoryTheory.Free k ℕᵒᵈ` of
+  `(ℕ, ≥)` (as Layer 3 encodes `A₂` by `CategoryTheory.Free k (Fin 2)`): semilocal (every `End X`
+  is `k`), not left perfect (the arrows `i + 1 → i` into `0` compose to nonzero paths), and its
+  opposite is left perfect (a radical path strictly lowers the index)
+  (`TauCeti.isSemilocalCategory_free_orderDual_nat`). Bass's module of the arrows into `0` is
+  nonzero and equals `J · B` (`TauCeti.bassModule_free_orderDual_nat`, with the arrows
+  `TauCeti.aInftyArrow k i`), as 4.1 predicts.
+- The `A₂` category `CategoryTheory.Free k (Fin 2)`: `J(C)² = 0`, it is left and right perfect, and
+  `proj C` is Krull–Schmidt (`TauCeti.isLeftPerfectCategory_free_fin_two`); its category algebra is
+  `T₂(k)` (1.7).
+
+In prose:
+
+- Lam's ring: in `Module.End k (ℕ →₀ k)`, let `J` be the endomorphisms with finite matrix supported
+  strictly above the diagonal, and `R = k · 1 + J`. Then `R` is local, `IsLeftPerfectRing Rᵐᵒᵖ`
+  holds and `IsLeftPerfectRing R` fails: the products `E₀₁E₁₂ ⋯ Eₙ₋₁,ₙ = E₀ₙ` never vanish
+  ([Lam-FC, (23.22), p. 356]). Also `E₀₁R ⊋ E₀₂R ⊋ ⋯`, and Bass's module for `E₀₁, E₁₂, E₂₃, …` is a
+  flat left `R`-module that is not projective. The linear `A_∞` category above is its many-object
+  version.
+- `mod Λ` for a representation-finite Artin algebra `Λ`: a Krull–Schmidt category with an additive
+  generator `G` whose `End G` is semiprimary has `J(C)ⁿ = 0` (Tau Ceti's
+  `TauCeti.exists_jacobsonRadicalIdeal_pow_eq_bot`), so it is left and right perfect (4.3), and its
+  left and right global dimensions agree (4.6) with the global dimension of the Auslander algebra
+  `End G`, which is at most two (ArtinAlgebras §7.5, TauCetiProject/TauCeti#40807).
+- `PowerSeries k`, as the one-object category `SingleObj (PowerSeries k)`, is a semiperfect category
+  that is not perfect.
 
 ### Examples
 
-Semiprimary rings (Artin algebras among them) are perfect; the commutative ring of 4.3 is perfect
-and not semiprimary; Lam's ring is perfect on one side only; `PowerSeries k` is semiperfect and not
-perfect; `ℤ` is not semiperfect.
+Semiprimary rings (Artin algebras among them) are perfect; `bassPolynomialRing k` is perfect and not
+semiprimary; Lam's ring is perfect on one side only; `PowerSeries k` is semiperfect and not perfect;
+`ℤ` is not semiperfect. Categories: Krull–Schmidt categories are semiperfect; finite quiver
+categories and `mod Λ` for representation-finite `Λ` are perfect on both sides; the linear `A_∞`
+category is perfect on one side only.
 
 ### Dependencies
 
-4.1 and 4.2 need only Mathlib and Tau Ceti; 4.3 needs 4.1; 4.4 needs 4.1, 4.2 and 4.3; 4.5 needs
-Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.3.
+4.1 needs 0.3 and 2.5; 4.2 needs 0.8 and 4.1 (its ring items need only Mathlib and Tau Ceti); 4.3
+needs 4.1 and 4.2; 4.4 needs 4.1–4.3; 4.5 needs Layers 2 and 3 and 4.1–4.4; 4.6 needs 0.3, 3.1,
+3.3 and 4.4–4.5.
 
 ## Downstream consumers
 
@@ -1814,12 +2194,33 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.3.
 - Hoshino's flat-dominant dimension ([Ho], [Xi, §1], as cited in ArtinAlgebras §7.3) asks the
   terms of a minimal injective coresolution to be flat; ArtinAlgebras leaves it out because
   flatness over noncommutative rings is missing. Layer 2 supplies that flatness.
+- Tau Ceti's `TauCeti.IsSemiperfectRing` (`TauCeti/RingTheory/Jacobson/Semiperfect.lean`) is
+  refactored to `extends IsSemilocalRing` (4.2), so that its field `isSemisimpleRing` becomes the
+  `IsSemilocalRing` parent; no compatibility shims.
+- The explicit hypotheses `[IsSemisimpleRing (R ⧸ Ring.jacobson R)]` on Tau Ceti main (nine binders
+  in six files at the baseline) become `[IsSemilocalRing R]` (4.2):
+  `TauCeti/Algebra/Module/ProjectiveCover/Simple.lean` (two theorems),
+  `TauCeti/RingTheory/Idempotents/Corner/Local.lean` (one theorem),
+  `TauCeti/RingTheory/Semisimple/BasicAlgebra.lean` (two theorems),
+  `TauCeti/RingTheory/MatlisDuality/Basic.lean` (one `variable`),
+  `TauCeti/RingTheory/MatlisDuality/Semilocal.lean` (two `variable`s) and
+  `TauCeti/Algebra/Category/ModuleCat/MatlisDual.lean` (one `variable`). The last three are over a
+  commutative ring, where `IsSemilocalRing` means finitely many maximal ideals (4.2).
+- Krause's criterion (the owner's TauCetiProject/TauCeti#33561,
+  `TauCeti/CategoryTheory/Preadditive/KrullSchmidt/Semiperfect.lean`):
+  `TauCeti.isKrullSchmidt_iff_isIdempotentComplete_and_isSemiperfectRing_end`,
+  `TauCeti.isKrullSchmidt_of_isSemiperfectRing_end` and the instance
+  `TauCeti.IsKrullSchmidt.isSemiperfectRing_end` are restated with `IsSemiperfectCategory` (4.2),
+  with no alias.
 
 ## Sources and locators
 
 - [AF] F. W. Anderson, K. R. Fuller, *Rings and Categories of Modules*, 2nd ed., Graduate Texts in
   Mathematics 13, Springer (1992). §28: left and right T-nilpotence, p. 314; Lemma 28.3,
   pp. 314–315; Theorem 28.4 (Bass), pp. 315–317; Corollary 28.7, p. 318.
+- [AHS] L. Angeleri Hügel, M. Saorín, *Modules with perfect decompositions*, Math. Scand. 98
+  (2006), 19–43. Thm. 1.1, p. 21 (decompositions and the exchange property, through its implication
+  (1) ⇒ (5), as read in the route notes); for the exchange route of 4.5, an alternative only.
 - [Auslander78] M. Auslander, *Functors and morphisms determined by objects*, in *Representation
   Theory of Algebras* (Philadelphia, 1976), Lecture Notes in Pure and Applied Mathematics 37,
   Dekker (1978), 1–244. I, Prop. 3.2 (`stable Hom(X, Y) ≅ Tor_1(Tr X, Y)` for finitely presented
@@ -1830,7 +2231,10 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.3.
 - [Bass] H. Bass, *Finitistic dimension and a homological generalization of semi-primary rings*,
   Trans. Amer. Math. Soc. 95 (1960), 466–488. T-nilpotence, p. 466; Theorem P, pp. 467–468;
   Lemmas 1.1–1.3, pp. 468–470 (the telescope module and its splitting; the splitting argument is
-  Lemma 1.3); Theorem 2.1, p. 471; §3, Examples, p. 475.
+  Lemma 1.3); Theorem 2.1, p. 471; Lemma 2.6, p. 473 (covers from `B = NB ⇒ B = 0`), with the
+  König graph argument for T-nilpotent radicals, pp. 473–474; Prop. 2.7, p. 474 (`P ≠ NP` for a
+  nonzero projective `P`); Eilenberg's argument for `Pd = Wd` over left perfect rings, reproduced
+  on p. 475 (`Tor_n(R ⧸ N, A) ≅ P_n ⧸ NP_n` for a minimal resolution); §3, Examples, p. 475.
 - [BEE] L. Bican, R. El Bashir, E. Enochs, *All modules have flat covers*, Bull. London Math. Soc.
   33 (2001), 385–390. Theorem 3. Pointer only.
 - [Beligiannis] A. Beligiannis, *On the Freyd categories of an additive category*, Homology Homotopy
@@ -1931,16 +2335,27 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.3.
   Thm. 4.1, p. 101.
 - [Osofsky-Card] B. L. Osofsky, *Homological dimension and cardinality*, Trans. Amer. Math. Soc.
   151 (1970), 641–649. Nice families, p. 641; Thm. A, p. 644.
+- [PR] A. Pillay, P. Rothmaler, *Bass modules and embeddings into free modules*, arXiv:2501.04174v1,
+  §3, Definition 4 and Lemma 5 (numbering of the HTML version of v1); the pp-formula view of the
+  Bass obstruction, credited there to Puninski–Rothmaler (not read). An alternative only.
+- [Rowen] L. H. Rowen, *Ring Theory*, vol. I, Academic Press (1988). Thm. 2.7.7 (ii), pp. 213–214,
+  and Thm. 2.7.33, pp. 222–223 (Rentschler's direct proof that a perfect ring has the descending
+  chain condition on principal ideals, in Rowen's conventions); read for the route comparison, not
+  re-read here. R. Rentschler's paper, Arch. Math. 17 (1966), 298–301, was not read; the attribution
+  is Lam's, after [Lam-FC, (24.25)].
 - [Rump] W. Rump, *Flat covers in abelian and in non-abelian categories*, Adv. Math. 225 (2010),
   1589–1615. Theorem 2 and Corollary 2, pp. 1603–1604, read in a transcription. Pointer only.
 - [Sandomierski] F. L. Sandomierski, *On semiperfect and perfect rings*, Proc. Amer. Math. Soc. 21
-  (1969), 205–207. Proposition 1 (d) and Lemma 2, p. 205; Theorem 4, p. 206 (stated for right
-  modules).
+  (1969), 205–207. Proposition 1 (d) and Lemma 2, p. 205; Theorems 4 and 5, p. 206 (stated for
+  right modules; Theorem 5: a ring is right perfect iff every semisimple right module has a
+  projective cover).
 - [Simson] D. Simson, *On pure global dimension of locally finitely presented Grothendieck
   categories*, Fund. Math. 96 (1977), 91–116. §1, pp. 92–93: "additive" means preadditive (finite
-  sums are added only in Cor. 1.3 (b), p. 94), the radical `J(C)`, and semisimple categories; Thm.
+  sums are added only in Cor. 1.3 (b), p. 94), the radical `J(C)`, and semisimple categories;
+  Prop. 1.2, p. 93 (semisimple iff von Neumann regular with semisimple endomorphism rings); Thm.
   2.1, pp. 94–95; Thm. 2.12 (c), p. 98 (`ℵ_n`-presented flat functors); Def. 3.1, pp. 98–99
-  (factorizable inverse systems); Thm. 5.4, p. 108 (statement checked on the page image), with the
+  (factorizable inverse systems); left T-nilpotence of `J(C)` and Lemma 5.3 (Bass's Nakayama
+  lemma), p. 108; Thm. 5.4, p. 108 (statement checked on the page image), with the
   proofs of (3′) ⇒ (4), (7) ⇒ (8) and (9′) ⇒ (1′), pp. 108–110; Thm. 5.6, p. 110. The steps through
   Thm. 3.16 and (5) ⇒ (4) were not fully read. The earlier paper *Functor categories in which every
   flat object is projective*, Bull. Acad. Polon. Sci. 22 (1974), 375–380, was not obtained.
