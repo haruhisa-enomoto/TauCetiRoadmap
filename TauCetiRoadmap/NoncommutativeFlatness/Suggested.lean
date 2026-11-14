@@ -21,27 +21,30 @@ contributors and reviewers converge on names and signatures; discharging all of 
 neither a layer nor the roadmap. `sorry` is allowed in this human-owned roadmap library -- these
 are goals, not proofs.
 
-Layers as in `README.md`: 0 modules over a preadditive category and their tensor product; 1 `Tor`
-over an arbitrary ring; 2 flat modules; 3 flat dimension and weak global dimension; 4 semiperfect
+Layers as in `README.md`: 0 modules over a preadditive category and their tensor product; 1 `Tor`;
+2 flat modules; 3 flat dimension and weak global dimension; 4 semiperfect
 and perfect rings and Bass's Theorem P.
 
-Layer 0 is category-primary (README, "Conventions"). `C : Type u` is preadditive with
+Layers 0 and 1 are category-primary (README, "Conventions"). `C : Type u` is preadditive with
 `Category.{v} C`. `ModCat C` (`Mod C`) is the full subcategory of additive functors
 `Cᵒᵖ ⥤ AddCommGrpCat.{w}` (right modules), and `LeftModCat C` that of additive functors
 `C ⥤ AddCommGrpCat.{w}`. For an `R`-linear `C` the `R`-structure of a module is derived: `r` acts
 on `F(c)` by `F(r • 𝟙 c)`. `F ⊗_C G` is a coend in `ModuleCat R`; it exists when `C` is
 `EssentiallySmall.{w}`. A ring `A` is the one-object category `SingleObj A`. Ring-level objects are
 native: `M ⊗_A N` is `TauCeti.BalancedTensorProduct R A M N`, with `R`-linear maps, compared with
-the categorical tensor product in 0.6.
+the categorical tensor product in 0.6. `Tor^C_n(F, G)` is the left derived functor of
+`G ↦ F ⊗_C G` (Mathlib's classical `Functor.leftDerived`); ring `Tor` is `BalancedTor R A n`,
+compared with `Tor` over `SingleObj A`.
 
-Layers 1–4 are under review: they are to be converted to the category-primary design and are
+Layers 2–4 are under review: they are to be converted to the category-primary design and are
 currently stated for rings. A right `A`-module is a left `Aᵐᵒᵖ`-module and a right ideal is a
 `Submodule Aᵐᵒᵖ A`. `Tor` takes values in `ModuleCat R`; Layers 2 and 3 use `R = ℤ`.
 Declarations that Tau Ceti already has are referred to by their full `TauCeti.` names.
 
 Not stated here, and specified in prose in `README.md`: the transfer lemmas of 0.2, the `ULift`ed
-representables for large `C`, the `Tor` swap, the naturality of the isomorphisms, and the
-acceptance checks other than those in the last section.
+representables for large `C`, the naturality of the isomorphisms in the variables not visible in
+the statements (for example of the `Tor`–`Ext` duality), and the acceptance checks other than those
+in the last section.
 -/
 
 namespace TauCetiRoadmap.NoncommutativeFlatness
@@ -92,6 +95,9 @@ noncomputable example : Abelian (ModCat.{w} C) := inferInstance
 
 /-- **0.1** `Mod C` has enough projectives when `C` is `w`-small. -/
 instance [EssentiallySmall.{w} C] : EnoughProjectives (ModCat.{w} C) := sorry
+
+/-- **0.1** Left `C`-modules have enough projectives when `C` is `w`-small. -/
+instance [EssentiallySmall.{w} C] : EnoughProjectives (LeftModCat.{w} C) := sorry
 
 /-- **0.1** The Yoneda embedding into `Mod C`, `X ↦ Hom(-, X)`. -/
 def ModCat.yoneda : C ⥤ ModCat.{v} C :=
@@ -160,6 +166,9 @@ def Functor.toModuleCat (F : D ⥤ AddCommGrpCat.{w}) [F.Additive] : D ⥤ Modul
 
 /-- **0.1** For an `R`-linear `C`, `Mod C` is `R`-linear through the derived actions. -/
 instance : Linear R (ModCat.{w} D) := sorry
+
+/-- **0.1** Left modules over an `R`-linear `C` form an `R`-linear category. -/
+instance : Linear R (LeftModCat.{w} D) := sorry
 
 end Linear
 
@@ -664,103 +673,378 @@ theorem ModCat.mono_tensor_map_app_iff [Linear R C] [EssentiallySmall.{w} C]
 
 end Dual
 
-/-! ## Layer 1: `Tor` over an arbitrary ring
+/-! ## Layer 1: `Tor`
 
-Layers 1–4 are under review: they are to be converted to the category-primary design of Layer 0
-and are currently stated for rings. `Tor` takes values in `ModuleCat R` for an `R`-algebra `A`;
-Layers 2 and 3 use `R = ℤ` (by 0.3 the choice of `R` does not change the underlying groups). -/
+`Tor` is category-primary. `Tor^C_n(F, -)` is Mathlib's classical `Functor.leftDerived` of
+`G ↦ F ⊗_C G`, derived in the left-module variable, as Mathlib's `CategoryTheory.Tor`. There is one
+`Tor`: the version that resolves the right module is `Tor` over `Cᵒᵖ` through the swap of 0.5. For
+rings, `BalancedTor R A n` is the left derived functor of the ring bifunctor of 0.6, compared with
+`Tor` over `SingleObj A`. Layers 2 and 3 use `R = ℤ`. -/
+
+/-! ### 1.1 Definition -/
+
+namespace ModCat
+
+section Tor
+
+variable (R : Type*) [CommRing R] {C : Type u} [Category.{v} C] [Preadditive C] [Linear R C]
+  [EssentiallySmall.{w} C]
+
+/-- **1.1** `Tor^C_n(F, G)`: the `n`-th left derived functor of `G ↦ F ⊗_C G` (Mathlib's
+classical `Functor.leftDerived`, as in `CategoryTheory.Tor`), a bifunctor to `ModuleCat R`. -/
+noncomputable def tor (n : ℕ) : ModCat.{w} C ⥤ LeftModCat.{w} C ⥤ ModuleCat.{w} R where
+  obj F := ((tensor R).obj F).leftDerived n
+  map f := NatTrans.leftDerived ((tensor R).map f) n
+
+/-- **1.1** `Tor₀` is the tensor product: `Functor.leftDerivedZeroIsoSelf` and right exactness
+(0.3). -/
+noncomputable def torZeroIso : tor.{w} R (C := C) 0 ≅ tensor R :=
+  sorry
+
+/-- **1.1** `Tor_{n+1}(F, G) = 0` for a projective left module `G`. -/
+theorem isZero_tor_succ_of_projective (F : ModCat.{w} C) (G : LeftModCat.{w} C) [Projective G]
+    (n : ℕ) : IsZero (((tor R (n + 1)).obj F).obj G) :=
+  Functor.isZero_leftDerived_obj_projective_succ _ _ _
+
+/-- **1.1** `Tor` from any projective resolution `P` of the left module: the homology of
+`F ⊗_C P`. -/
+noncomputable def torObjIsoHomology (F : ModCat.{w} C) {G : LeftModCat.{w} C}
+    (P : ProjectiveResolution G) (n : ℕ) :
+    ((tor R n).obj F).obj G ≅
+      (HomologicalComplex.homologyFunctor _ _ n).obj
+        ((((tensor R).obj F).mapHomologicalComplex _).obj P.complex) :=
+  P.isoLeftDerivedObj _ n
+
+/-- **1.1** `Tor` is additive in the right-module variable (`NatTrans.leftDerived_add`). -/
+instance (G : LeftModCat.{w} C) (n : ℕ) : ((tor R n).flip.obj G).Additive :=
+  sorry
+
+/-- **1.1** `Tor` is `R`-linear in the right-module variable. -/
+instance (G : LeftModCat.{w} C) (n : ℕ) : ((tor R n).flip.obj G).Linear R :=
+  sorry
+
+/-- **1.1** `Tor` is `R`-linear in the left-module variable. -/
+instance (F : ModCat.{w} C) (n : ℕ) : ((tor R n).obj F).Linear R :=
+  sorry
+
+end Tor
+
+end ModCat
 
 /-- **1.1** `Small.{v} Aᵐᵒᵖ` from `Small.{v} A`, so that right modules have projective
 resolutions in `ModuleCat.{v} Aᵐᵒᵖ`. -/
 instance small_mulOpposite (A : Type u) [Small.{v} A] : Small.{v} Aᵐᵒᵖ :=
   small_of_injective MulOpposite.unop_injective
 
-section Tor
+section BalancedTor
 
 variable (R : Type t) [CommRing R] (A : Type u) [Ring A] [Algebra R A] [Small.{v} A]
 
-/-- **1.1** `Tor_n^A(M, N)`, derived in the left-module variable `N`, the shape of Mathlib's
-`CategoryTheory.Tor`. -/
+/-- **1.1, rings** `Tor_n^A(M, N)`: the left derived functor of the ring bifunctor of 0.6 in the
+left-module variable `N`, the shape of Mathlib's `CategoryTheory.Tor`. -/
 noncomputable def BalancedTor (n : ℕ) :
     ModuleCat.{v} Aᵐᵒᵖ ⥤ ModuleCat.{v} A ⥤ ModuleCat.{v} R where
   obj M := ((BalancedTensorProduct.functor R A).obj M).leftDerived n
   map f := NatTrans.leftDerived ((BalancedTensorProduct.functor R A).map f) n
 
-/-- **1.1** `Tor_n^A(M, N)`, derived in the right-module variable `M`, the shape of Mathlib's
-`CategoryTheory.Tor'`. -/
-noncomputable def BalancedTor' (n : ℕ) :
-    ModuleCat.{v} Aᵐᵒᵖ ⥤ ModuleCat.{v} A ⥤ ModuleCat.{v} R :=
-  Functor.flip
-    { obj N := ((BalancedTensorProduct.functor R A).flip.obj N).leftDerived n
-      map g := NatTrans.leftDerived ((BalancedTensorProduct.functor R A).flip.map g) n }
-
-/-- **1.1** `Tor_0` is the tensor product. -/
+/-- **1.1, rings** `Tor_0` is the tensor product. -/
 noncomputable def balancedTorZeroIso :
     BalancedTor.{v} R A 0 ≅ BalancedTensorProduct.functor.{v} R A :=
   sorry
 
-/-- **1.1** `Tor'_0` is the tensor product. -/
-noncomputable def balancedTor'ZeroIso :
-    BalancedTor'.{v} R A 0 ≅ BalancedTensorProduct.functor.{v} R A :=
+/-- **1.1, rings** Ring `Tor` is `Tor` over the one-object category `SingleObj A`, through the
+equivalences of 0.2. -/
+noncomputable def balancedTorIsoTorSingleObj (n : ℕ) :
+    BalancedTor.{v} R A n ≅
+      (moduleCatMulOppositeEquivModCat.{v} A).functor ⋙ ModCat.tor R n ⋙
+        (Functor.whiskeringLeft _ _ _).obj (moduleCatEquivLeftModCat.{v} A).functor :=
   sorry
 
 variable {R A}
 
-/-- **1.1** Higher `Tor` vanishes at a projective left module. -/
+/-- **1.1, rings** Higher `Tor` vanishes at a projective left module. -/
 theorem isZero_balancedTor_succ_of_projective (M : ModuleCat.{v} Aᵐᵒᵖ) (N : ModuleCat.{v} A)
     [Projective N] (n : ℕ) : IsZero (((BalancedTor R A (n + 1)).obj M).obj N) :=
-  sorry
+  Functor.isZero_leftDerived_obj_projective_succ _ _ _
 
-/-- **1.1** Higher `Tor'` vanishes at a projective right module. -/
-theorem isZero_balancedTor'_succ_of_projective (M : ModuleCat.{v} Aᵐᵒᵖ) [Projective M]
-    (N : ModuleCat.{v} A) (n : ℕ) : IsZero (((BalancedTor' R A (n + 1)).obj M).obj N) :=
-  sorry
+end BalancedTor
+
+/-! ### 1.2 Long exact sequences in the underived variable -/
 
 section LongExact
 
-variable {S : ShortComplex (ModuleCat.{v} Aᵐᵒᵖ)}
+open ModCat
 
-/-- **1.2** The connecting map `Tor_{n+1}(M₃, N) → Tor_n(M₁, N)` of a short exact sequence of
-right modules. -/
+variable (R : Type*) [CommRing R] {C : Type u} [Category.{v} C] [Preadditive C] [Linear R C]
+  [EssentiallySmall.{w} C] {S : ShortComplex (ModCat.{w} C)}
+
+/-- **1.2** The connecting map `Tor_{n+1}(F₃, G) → Tor_n(F₁, G)` of a short exact sequence
+`0 → F₁ → F₂ → F₃ → 0` of right modules: the homology connecting map of the short exact sequence
+of complexes `Fᵢ ⊗_C Q`, `Q` a projective resolution of `G` (exact termwise by 0.3 and 0.4). -/
+noncomputable def ShortComplex.ShortExact.torδ (hS : S.ShortExact) (G : LeftModCat.{w} C)
+    (n : ℕ) : ((tor R (n + 1)).obj S.X₃).obj G ⟶ ((tor R n).obj S.X₁).obj G :=
+  sorry
+
+/-- **1.2** Exactness at `Tor_n(F₁, G)`. -/
+theorem tor_exact₁ (hS : S.ShortExact) (G : LeftModCat.{w} C) (n : ℕ) :
+    Function.Exact (ShortComplex.ShortExact.torδ R hS G n).hom
+      (((tor R n).map S.f).app G).hom :=
+  sorry
+
+/-- **1.2** Exactness at `Tor_n(F₂, G)`. -/
+theorem tor_exact₂ (hS : S.ShortExact) (G : LeftModCat.{w} C) (n : ℕ) :
+    Function.Exact (((tor R n).map S.f).app G).hom (((tor R n).map S.g).app G).hom :=
+  sorry
+
+/-- **1.2** Exactness at `Tor_{n+1}(F₃, G)`. -/
+theorem tor_exact₃ (hS : S.ShortExact) (G : LeftModCat.{w} C) (n : ℕ) :
+    Function.Exact (((tor R (n + 1)).map S.g).app G).hom
+      (ShortComplex.ShortExact.torδ R hS G n).hom :=
+  sorry
+
+end LongExact
+
+section BalancedTorLongExact
+
+variable (R : Type t) [CommRing R] {A : Type u} [Ring A] [Algebra R A] [Small.{v} A]
+  {S : ShortComplex (ModuleCat.{v} Aᵐᵒᵖ)}
+
+/-- **1.2, rings** The connecting map `Tor_{n+1}(M₃, N) → Tor_n(M₁, N)` of a short exact sequence
+of right modules. -/
 noncomputable def ShortComplex.ShortExact.balancedTorδ (hS : S.ShortExact) (N : ModuleCat.{v} A)
     (n : ℕ) :
     ((BalancedTor R A (n + 1)).obj S.X₃).obj N ⟶ ((BalancedTor R A n).obj S.X₁).obj N :=
   sorry
 
-/-- **1.2** Exactness at `Tor_n(M₁, N)`. -/
+/-- **1.2, rings** Exactness at `Tor_n(M₁, N)`. -/
 theorem balancedTor_exact₁ (hS : S.ShortExact) (N : ModuleCat.{v} A) (n : ℕ) :
-    Function.Exact (ShortComplex.ShortExact.balancedTorδ hS N n).hom
+    Function.Exact (ShortComplex.ShortExact.balancedTorδ R hS N n).hom
       (((BalancedTor R A n).map S.f).app N).hom :=
   sorry
 
-/-- **1.2** Exactness at `Tor_n(M₂, N)`. -/
+/-- **1.2, rings** Exactness at `Tor_n(M₂, N)`. -/
 theorem balancedTor_exact₂ (hS : S.ShortExact) (N : ModuleCat.{v} A) (n : ℕ) :
     Function.Exact (((BalancedTor R A n).map S.f).app N).hom
       (((BalancedTor R A n).map S.g).app N).hom :=
   sorry
 
-/-- **1.2** Exactness at `Tor_{n+1}(M₃, N)`. -/
+/-- **1.2, rings** Exactness at `Tor_{n+1}(M₃, N)`. -/
 theorem balancedTor_exact₃ (hS : S.ShortExact) (N : ModuleCat.{v} A) (n : ℕ) :
     Function.Exact (((BalancedTor R A (n + 1)).map S.g).app N).hom
-      (ShortComplex.ShortExact.balancedTorδ hS N n).hom :=
+      (ShortComplex.ShortExact.balancedTorδ R hS N n).hom :=
   sorry
 
-end LongExact
+end BalancedTorLongExact
 
-variable (R A) in
-/-- **1.3, balance**: the two derivations of `Tor` agree. -/
-noncomputable def balancedTorIso (n : ℕ) : BalancedTor.{v} R A n ≅ BalancedTor'.{v} R A n :=
+/-! ### 1.3 Balance -/
+
+namespace ModCat
+
+section Balance
+
+variable (R : Type*) [CommRing R] {C : Type u} [Category.{v} C] [Preadditive C] [Linear R C]
+  [EssentiallySmall.{w} C]
+
+/-- **1.3, balance**: `Tor^C_n(F, G) ≅ Tor^{Cᵒᵖ}_n(G, F)`, with `G` a right `Cᵒᵖ`-module and `F`
+a left `Cᵒᵖ`-module as in 0.5. Route: the bicomplex `P ⊗_C Q` of projective resolutions and Tau
+Ceti's `HomologicalComplex₂.quasiIso_totalAugmentation_of_rows` for it and its flip. -/
+noncomputable def torBalanceIso (n : ℕ) :
+    tor.{w} R (C := C) n ≅ (LeftModCat.toModCatOp C ⋙ tor R (C := Cᵒᵖ) n).flip :=
   sorry
 
-/-- **1.4, commutative rings**: over a commutative ring, `BalancedTor R R` is Mathlib's
+/-- **1.3** Higher `Tor` vanishes at a projective right module (balance and 1.1 over `Cᵒᵖ`). -/
+theorem isZero_tor_succ_of_projective_left (F : ModCat.{w} C) [Projective F]
+    (G : LeftModCat.{w} C) (n : ℕ) : IsZero (((tor R (n + 1)).obj F).obj G) :=
+  sorry
+
+end Balance
+
+end ModCat
+
+section BalanceLongExact
+
+open ModCat
+
+variable (R : Type*) [CommRing R] {C : Type u} [Category.{v} C] [Preadditive C] [Linear R C]
+  [EssentiallySmall.{w} C] {S : ShortComplex (LeftModCat.{w} C)}
+
+/-- **1.3** The connecting map `Tor_{n+1}(F, G₃) → Tor_n(F, G₁)` of a short exact sequence of left
+modules: 1.2 over `Cᵒᵖ`, transported by the balance. -/
+noncomputable def ShortComplex.ShortExact.torδ' (F : ModCat.{w} C) (hS : S.ShortExact) (n : ℕ) :
+    ((tor R (n + 1)).obj F).obj S.X₃ ⟶ ((tor R n).obj F).obj S.X₁ :=
+  sorry
+
+/-- **1.3** Exactness at `Tor_n(F, G₁)`. -/
+theorem tor_exact₁' (F : ModCat.{w} C) (hS : S.ShortExact) (n : ℕ) :
+    Function.Exact (ShortComplex.ShortExact.torδ' R F hS n).hom
+      (((tor R n).obj F).map S.f).hom :=
+  sorry
+
+/-- **1.3** Exactness at `Tor_n(F, G₂)`. -/
+theorem tor_exact₂' (F : ModCat.{w} C) (hS : S.ShortExact) (n : ℕ) :
+    Function.Exact (((tor R n).obj F).map S.f).hom (((tor R n).obj F).map S.g).hom :=
+  sorry
+
+/-- **1.3** Exactness at `Tor_{n+1}(F, G₃)`. -/
+theorem tor_exact₃' (F : ModCat.{w} C) (hS : S.ShortExact) (n : ℕ) :
+    Function.Exact (((tor R (n + 1)).obj F).map S.g).hom
+      (ShortComplex.ShortExact.torδ' R F hS n).hom :=
+  sorry
+
+end BalanceLongExact
+
+section BalancedTorBalance
+
+variable (R : Type t) [CommRing R] (A : Type u) [Ring A] [Algebra R A] [Small.{v} A]
+
+/-- **1.3, rings: swap** `Tor_n^A(M, N) ≅ Tor_n^{Aᵐᵒᵖ}(N, M)`, with `N` a right `Aᵐᵒᵖ`-module
+through `RingEquiv.opOp A`: 1.1's comparison and the balance at `SingleObj A`. -/
+noncomputable def balancedTorSwapIso (n : ℕ) :
+    BalancedTor.{v} R A n ≅
+      (ModuleCat.restrictScalars.{v} (RingEquiv.opOp A).symm.toRingHom ⋙
+        BalancedTor.{v} R Aᵐᵒᵖ n).flip :=
+  sorry
+
+variable {R A}
+
+/-- **1.3, rings** Higher `Tor` vanishes at a projective right module. -/
+theorem isZero_balancedTor_succ_of_projective_left (M : ModuleCat.{v} Aᵐᵒᵖ) [Projective M]
+    (N : ModuleCat.{v} A) (n : ℕ) : IsZero (((BalancedTor R A (n + 1)).obj M).obj N) :=
+  sorry
+
+variable (R) {S : ShortComplex (ModuleCat.{v} A)}
+
+/-- **1.3, rings** The connecting map `Tor_{n+1}(M, N₃) → Tor_n(M, N₁)` of a short exact sequence
+of left modules. -/
+noncomputable def ShortComplex.ShortExact.balancedTorδ' (M : ModuleCat.{v} Aᵐᵒᵖ)
+    (hS : S.ShortExact) (n : ℕ) :
+    ((BalancedTor R A (n + 1)).obj M).obj S.X₃ ⟶ ((BalancedTor R A n).obj M).obj S.X₁ :=
+  sorry
+
+/-- **1.3, rings** Exactness at `Tor_n(M, N₁)`. -/
+theorem balancedTor_exact₁' (M : ModuleCat.{v} Aᵐᵒᵖ) (hS : S.ShortExact) (n : ℕ) :
+    Function.Exact (ShortComplex.ShortExact.balancedTorδ' R M hS n).hom
+      (((BalancedTor R A n).obj M).map S.f).hom :=
+  sorry
+
+/-- **1.3, rings** Exactness at `Tor_n(M, N₂)`. -/
+theorem balancedTor_exact₂' (M : ModuleCat.{v} Aᵐᵒᵖ) (hS : S.ShortExact) (n : ℕ) :
+    Function.Exact (((BalancedTor R A n).obj M).map S.f).hom
+      (((BalancedTor R A n).obj M).map S.g).hom :=
+  sorry
+
+/-- **1.3, rings** Exactness at `Tor_{n+1}(M, N₃)`. -/
+theorem balancedTor_exact₃' (M : ModuleCat.{v} Aᵐᵒᵖ) (hS : S.ShortExact) (n : ℕ) :
+    Function.Exact (((BalancedTor R A (n + 1)).obj M).map S.g).hom
+      (ShortComplex.ShortExact.balancedTorδ' R M hS n).hom :=
+  sorry
+
+end BalancedTorBalance
+
+/-! ### 1.4 `Tor`–`Ext` duality -/
+
+namespace ModCat
+
+section Duality
+
+variable (R : Type*) [CommRing R] {C : Type u} [Category.{v} C] [Preadditive C] [Linear R C]
+  [EssentiallySmall.{w} C]
+
+/-- **1.4** `Ext` groups of `Mod C` live in `Type w` (Mathlib's `hasExt_of_enoughProjectives`, as
+for `ModuleCat`). -/
+instance : HasExt.{w} (ModCat.{w} C) :=
+  sorry
+
+/-- **1.4, `Tor`–`Ext` duality**: for an injective `R`-module `E`,
+`Hom_R(Tor_n^C(F, G), E) ≅ Ext^n(F, G^E)`, `R`-linearly, with Mathlib's `Abelian.Ext`. Route:
+resolve `F` (by the balance), the adjunction of 0.7 termwise, and Mathlib's
+`ProjectiveResolution.extEquivCohomologyClass`. -/
+noncomputable def torExtDualityEquiv (E : ModuleCat.{w} R) [Injective E] (F : ModCat.{w} C)
+    (G : LeftModCat.{w} C) (n : ℕ) :
+    ((((tor R n).obj F).obj G) ⟶ E) ≃ₗ[R]
+      Abelian.Ext.{w} F ((LeftModCat.dual R E).obj (op G)) n :=
+  sorry
+
+end Duality
+
+end ModCat
+
+section BalancedTorDuality
+
+open scoped ModuleCat.Algebra
+
+variable {R : Type t} [CommRing R] {A : Type u} [Ring A] [Algebra R A] [Small.{v} A]
+
+/-- **1.4, rings**: `Hom_R(Tor_n^A(M, N), E) ≅ Ext^n_{Aᵐᵒᵖ}(M, Hom_R(N, E))` for an injective
+`R`-module `E` (`R = ℤ`, `E = ℚ ⧸ ℤ`: [Lambek, p. 241]). -/
+noncomputable def balancedTorExtDualityEquiv (E : ModuleCat.{v} R) [Injective E]
+    (M : ModuleCat.{v} Aᵐᵒᵖ) (N : ModuleCat.{v} A) (n : ℕ) :
+    ((((BalancedTor R A n).obj M).obj N) ⟶ E) ≃ₗ[R]
+      Abelian.Ext.{v} M ((BalancedTensorProduct.homRight R A N).obj E) n :=
+  sorry
+
+end BalancedTorDuality
+
+/-! ### 1.5 Comparisons and first computations -/
+
+/-- **1.5, commutative rings**: over a commutative ring, `BalancedTor R R` is Mathlib's
 `CategoryTheory.Tor`. -/
 noncomputable def balancedTorIsoTor (R : Type u) [CommRing R] (n : ℕ) :
     ModuleCat.restrictScalars.{u} (RingEquiv.toOpposite R).symm.toRingHom ⋙ BalancedTor.{u} R R n ≅
       Tor (ModuleCat.{u} R) n :=
   sorry
 
-/-- **1.4, cyclic modules**: for a right ideal `I` and a left ideal `K`,
-`Tor_1^A(A ⧸ I, A ⧸ K) ≃+ (I ∩ K) ⧸ IK`, with `IK` the additive subgroup generated by products. -/
+/-- **1.5** With the balance, Mathlib's two `Tor`s on `ModuleCat R` agree, the comparison that
+`Mathlib/CategoryTheory/Monoidal/Tor.lean` leaves open. -/
+noncomputable def torIsoTor' (R : Type u) [CommRing R] (n : ℕ) :
+    Tor (ModuleCat.{u} R) n ≅ Tor' (ModuleCat.{u} R) n :=
+  sorry
+
+namespace ModCat
+
+variable (R : Type*) [CommRing R] {C : Type u} [Category.{v} C] [Preadditive C] [Linear R C]
+  [EssentiallySmall.{w} C]
+
+/-- **1.5, change of base** along `R → R'`, when the `R`-structure of `C` comes from the
+`R'`-structure (0.3). -/
+noncomputable def torRestrictScalarsIso {R' : Type*} [CommRing R'] [Algebra R R'] [Linear R' C]
+    (h : ∀ (X Y : C) (r : R) (f : X ⟶ Y), r • f = algebraMap R R' r • f) (n : ℕ)
+    (F : ModCat.{w} C) (G : LeftModCat.{w} C) :
+    (ModuleCat.restrictScalars (algebraMap R R')).obj (((tor R' n).obj F).obj G) ≅
+      ((tor R n).obj F).obj G :=
+  sorry
+
+/-- **1.5, independence of `R`**: the `R`-`Tor` and the `ℤ`-`Tor` have the same underlying
+groups. -/
+noncomputable def torIntIso (n : ℕ) (F : ModCat.{w} C) (G : LeftModCat.{w} C) :
+    (ModuleCat.restrictScalars (algebraMap ℤ R)).obj (((tor R n).obj F).obj G) ≅
+      ((tor ℤ n).obj F).obj G :=
+  sorry
+
+end ModCat
+
+section BalancedTorBase
+
+variable (R : Type t) [CommRing R] {A : Type u} [Ring A] [Algebra R A] [Small.{v} A]
+
+/-- **1.5, rings: change of base** along `R → R' → A`. -/
+noncomputable def balancedTorRestrictScalarsIso (R' : Type t) [CommRing R'] [Algebra R R']
+    [Algebra R' A] [IsScalarTower R R' A] (n : ℕ) (M : ModuleCat.{v} Aᵐᵒᵖ) (N : ModuleCat.{v} A) :
+    (ModuleCat.restrictScalars (algebraMap R R')).obj (((BalancedTor R' A n).obj M).obj N) ≅
+      ((BalancedTor R A n).obj M).obj N :=
+  sorry
+
+/-- **1.5, rings: independence of `R`.** -/
+noncomputable def balancedTorIntIso (n : ℕ) (M : ModuleCat.{v} Aᵐᵒᵖ) (N : ModuleCat.{v} A) :
+    (ModuleCat.restrictScalars (algebraMap ℤ R)).obj (((BalancedTor R A n).obj M).obj N) ≅
+      ((BalancedTor ℤ A n).obj M).obj N :=
+  sorry
+
+end BalancedTorBase
+
+/-- **1.5, cyclic modules**: for a right ideal `I` and a left ideal `K`,
+`Tor_1^A(A ⧸ I, A ⧸ K) ≃+ (I ∩ K) ⧸ IK`, with `IK` the additive subgroup generated by products
+([Weibel, Exer. 3.1.3, p. 68]). -/
 noncomputable def balancedTorOneQuotientEquiv (A : Type u) [Ring A] (I : Submodule Aᵐᵒᵖ A)
     (K : Ideal A) :
     (((BalancedTor.{u} ℤ A 1).obj (ModuleCat.of Aᵐᵒᵖ (A ⧸ I))).obj (ModuleCat.of A (A ⧸ K))) ≃+
@@ -769,7 +1053,58 @@ noncomputable def balancedTorOneQuotientEquiv (A : Type u) [Ring A] (I : Submodu
           (I.toAddSubgroup ⊓ K.toAddSubgroup) :=
   sorry
 
-end Tor
+/-! ### 1.6 Categories with finitely many objects -/
+
+/-- **1.6** The category algebra `⊕_{x,y} Hom(x, y)` of a category with finitely many objects
+([Mitchell, §7, p. 33]): families `a x y : x ⟶ y`, with `(a * b) x z = ∑ y, b x y ≫ a y z` and
+the identities on the diagonal as unit. The product follows Mathlib's `SingleObj` convention
+`f ≫ g = g * f`, so `CategoryAlgebra (SingleObj A) ≅ A`. -/
+def CategoryAlgebra (C : Type u) [Category.{v} C] : Type (max u v) :=
+  ∀ x y : C, x ⟶ y
+
+section CategoryAlgebra
+
+variable (C : Type u) [Category.{v} C] [Preadditive C] [Fintype C] [DecidableEq C]
+
+/-- **1.6** The ring structure of the category algebra. -/
+instance : Ring (CategoryAlgebra C) :=
+  sorry
+
+/-- **1.6** For an `R`-linear `C`, the category algebra is an `R`-algebra. -/
+instance (R : Type*) [CommRing R] [Linear R C] : Algebra R (CategoryAlgebra C) :=
+  sorry
+
+/-- **1.6** Left `C`-modules are left modules over the category algebra, `G ↦ ⊕_x G(x)`
+([Mitchell, Thm. 7.1, pp. 33–35]; the pattern of Tau Ceti's `quiverRepEquivalence`). -/
+noncomputable def leftModCatEquivCategoryAlgebra :
+    LeftModCat.{w} C ≌ ModuleCat.{w} (CategoryAlgebra C) :=
+  sorry
+
+/-- **1.6** Right `C`-modules are right modules over the category algebra. -/
+noncomputable def modCatEquivCategoryAlgebra :
+    ModCat.{w} C ≌ ModuleCat.{w} (CategoryAlgebra C)ᵐᵒᵖ :=
+  sorry
+
+/-- **1.6** The equivalences carry the tensor product over `C` to the balanced tensor product
+over the category algebra ([Mitchell, §7, p. 37]). -/
+noncomputable def tensorObjCategoryAlgebraIso (R : Type t) [CommRing R] [Linear R C]
+    [EssentiallySmall.{w} C] (F : ModCat.{w} C) (G : LeftModCat.{w} C) :
+    ModCat.tensorObj R F G ≅
+      ((BalancedTensorProduct.functor R (CategoryAlgebra C)).obj
+        ((modCatEquivCategoryAlgebra C).functor.obj F)).obj
+          ((leftModCatEquivCategoryAlgebra C).functor.obj G) :=
+  sorry
+
+/-- **1.6** The equivalences carry `Tor` over `C` to `Tor` over the category algebra
+([Mitchell, §7, p. 37, (1)]). -/
+noncomputable def torCategoryAlgebraIso (R : Type t) [CommRing R] [Linear R C]
+    [EssentiallySmall.{w} C] [Small.{w} (CategoryAlgebra C)] (n : ℕ) :
+    ModCat.tor.{w} R (C := C) n ≅
+      (modCatEquivCategoryAlgebra.{w} C).functor ⋙ BalancedTor R (CategoryAlgebra C) n ⋙
+        (Functor.whiskeringLeft _ _ _).obj (leftModCatEquivCategoryAlgebra.{w} C).functor :=
+  sorry
+
+end CategoryAlgebra
 
 /-! ## Layer 2: flat modules -/
 

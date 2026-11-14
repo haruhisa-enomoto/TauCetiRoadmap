@@ -9,7 +9,9 @@ This roadmap develops the homological algebra of flatness over a preadditive cat
 `Mod C` of additive functors; the identification of `A`-modules with modules over `SingleObj A`;
 the tensor product `F ⊗_C G` as a coend, linear over a commutative ring `R`, with its adjunctions,
 right exactness, projective factors and swap; duals `Hom_R(-, E)`; and the native ring API of
-`M ⊗_A N`. On these the roadmap builds `Tor` with its balance; flat modules, Lambek's
+`M ⊗_A N`. On these the roadmap builds `Tor` over `C` as a left derived functor, with its long
+exact sequences, its balance and its duality with `Ext`, and compares a category with finitely many
+objects with its category algebra; then flat modules, Lambek's
 character-module criterion and the projectivity of finitely presented flat modules; flat dimension
 and weak global dimension, its left-right symmetry, and Auslander's theorem that a left Noetherian
 ring has equal left global and weak global dimension; projective covers over semiperfect rings and
@@ -19,8 +21,8 @@ is **Bass's Theorem P**: for a ring `A` with Jacobson radical `J`, the following
 flat left module is projective; the principal *right* ideals satisfy the descending chain
 condition; every left module has equal flat and projective dimension. Theorem P extends to perfect
 categories, functor categories `Mod C` in which every object has a projective cover ([Harada]).
-Layers 1–4 are stated for rings for now and are to be converted to the category-primary design of
-Layer 0.
+Layers 0 and 1 are category-primary; Layers 2–4 are stated for rings for now and are to be
+converted to that design.
 
 ## Scope and ownership
 
@@ -34,9 +36,10 @@ This roadmap owns:
   tensoring with projectives; the swap `F ⊗_C G ≅ G ⊗_{Cᵒᵖ} F`; the ring API of `M ⊗_A N` and
   its comparison with the categorical tensor product and with Mathlib's tensor product over a
   commutative ring; and duals with respect to an `R`-module `E` (Layer 0);
-- `Tor` over an arbitrary ring, derived in either variable, its long exact sequences, its balance,
-  the comparison with Mathlib's `CategoryTheory.Tor` over a commutative ring, and `Tor₁` of two
-  cyclic modules (Layer 1);
+- `Tor` over a preadditive category and over an arbitrary ring as a left derived functor, its long
+  exact sequences, its balance, its duality with `Ext`, the comparison with Mathlib's
+  `CategoryTheory.Tor` over a commutative ring, change of base, `Tor₁` of two cyclic modules, and
+  the comparison of a category with finitely many objects with its category algebra (Layer 1);
 - flat modules over an arbitrary ring: the definition, the tensor, ideal, character-module and
   `Tor` tests, closure properties, flat quotients, Bass's flat module, and projectivity of finitely
   presented flat modules (Layer 2);
@@ -65,9 +68,10 @@ The boundaries are as follows.
   it, `BalancedFlat` is replaced by `Module.Flat`.
 - [Operator K-theory](../OperatorKTheory/README.md), §8.2, owns the computations of `Ext` and
   `Tor` over `ℤ` (free presentations, cyclic groups, universal coefficients). The comparison of
-  1.4 covers every commutative ring; no other `ℤ`-specific computation is done here.
+  1.5 covers every commutative ring; no other `ℤ`-specific computation is done here.
 - [Derived and module algebra](../DerivedModuleAlgebra/README.md) owns the derived tensor
-  product and `Tor` amplitude over commutative rings. This roadmap uses no derived categories.
+  product and `Tor` amplitude over commutative rings. This roadmap uses derived categories only
+  through Mathlib's `Abelian.Ext` (1.4).
 - [Krull-Schmidt categories and Auslander-Reiten theory of Artin
   algebras](../RepresentationTheory/ArtinAlgebras/README.md), §7.2, owns the comparison of left
   and right global dimension through character modules and the formula for semiprimary rings.
@@ -78,22 +82,23 @@ The boundaries are as follows.
   projective covers (4.2). Minimal projective presentations are Tau Ceti's
   `TauCeti.IsMinimalProjectivePresentation`; this roadmap owns only their existence over a
   semiperfect ring (4.2).
-- Outside this roadmap: the tensor product of additive categories and functors of several
-  variables ([Mitchell, §2]); Morita theory for functor categories; Lazard's theorem (flat modules
-  are direct limits of free modules) and the conditions of Theorem P on direct limits ([Bass,
-  Theorem P (4), (5)]); Chase's theorem, coherent rings and products of flat modules; pure exact
-  sequences; faithful flatness over noncommutative rings; the conditions on maximal submodules and
-  socles ([AF, 28.4 (c), (f)]), on finitely generated submodules (Björk) and on principal left
-  ideals with the ascending chain condition (Jonah); finitistic dimensions ([Bass, Part II]);
-  `Tor` of bimodules and its module structure over a base ring; and Hoshino's flat-dominant
-  dimension.
+- Outside this roadmap: the tensor product of additive categories and functors of several variables
+  ([Mitchell, §2]); Morita theory for functor categories, beyond the finite-object comparison of
+  1.6; Lazard's theorem (flat modules are direct limits of free modules) and the conditions of
+  Theorem P on direct limits ([Bass, Theorem P (4), (5)]); Chase's theorem, coherent rings and
+  products of flat modules; pure exact sequences; faithful flatness over noncommutative rings; the
+  conditions on maximal submodules and socles ([AF, 28.4 (c), (f)]), on finitely generated
+  submodules (Björk) and on principal left ideals with the ascending chain condition (Jonah);
+  finitistic dimensions ([Bass, Part II]); `Tor` of bimodules and its module structure over a base
+  ring; and Hoshino's flat-dominant dimension.
 
 Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 0.3–0.5, 0.7),
 `TauCeti/CategoryTheory/Preadditive/SingleObj.lean` (0.2),
-`TauCeti/LinearAlgebra/TensorProduct/Balanced/` (0.6), `TauCeti/Algebra/Homology/BalancedTor/`
-(Layer 1), `TauCeti/RingTheory/Flat/Balanced/`
-(Layer 2), `TauCeti/RingTheory/GlobalDimension/Weak.lean` (Layer 3),
-`TauCeti/RingTheory/Jacobson/TNilpotent.lean`,
+`TauCeti/LinearAlgebra/TensorProduct/Balanced/` (0.6),
+`TauCeti/CategoryTheory/Preadditive/ModCat/Tor/` (1.1–1.5), `TauCeti/Algebra/Homology/BalancedTor/`
+(ring `Tor`), `TauCeti/CategoryTheory/Preadditive/CategoryAlgebra.lean` (1.6),
+`TauCeti/RingTheory/Flat/Balanced/` (Layer 2), `TauCeti/RingTheory/GlobalDimension/Weak.lean`
+(Layer 3), `TauCeti/RingTheory/Jacobson/TNilpotent.lean`,
 `TauCeti/Algebra/Module/ProjectiveCover/Semiperfect.lean` and
 `TauCeti/RingTheory/Jacobson/LeftPerfect.lean` (Layer 4). Nothing goes under
 `TauCeti/RingTheory/Perfect/`, which is the characteristic-`p` notion.
@@ -138,8 +143,9 @@ Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 
    comparison of 0.6, whichever is simpler; the rule constrains definitions only. Every later layer
    is to end with a "rings" item restating its theorems for `ModuleCat A`, so that downstream code
    never sees functor categories.
-6. `Tor_n^A(M, N)` has the right module first and takes values in `ModuleCat R`. Over a commutative
-   ring it is compared directly with Mathlib's `CategoryTheory.Tor` (1.4). Layers 2 and 3 use
+6. `Tor^C_n(F, G)` and `Tor_n^A(M, N)` have the right module first, are derived in the left-module
+   variable, and take values in `ModuleCat R` (1.1). Over a commutative ring, ring `Tor` is compared
+   directly with Mathlib's `CategoryTheory.Tor` (1.5). Layers 2 and 3 use
    `R = ℤ` for now; by the independence of `R` (0.3, 0.6) this does not change the underlying
    groups. Modules live in `ModuleCat.{v} A` and `ModuleCat.{v} Aᵐᵒᵖ` with `[Small.{v} A]`, as for
    `TauCeti.globalDimension`; the instance `Small.{v} Aᵐᵒᵖ` is part of 1.1.
@@ -210,9 +216,21 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   `CategoryTheory.ProjectiveResolution` with `ProjectiveResolution.isoLeftDerivedObj`,
   `CategoryTheory.Functor.leftDerivedZeroIsoSelf`,
   `CategoryTheory.Functor.isZero_leftDerived_obj_projective_succ`,
-  `CategoryTheory.HasProjectiveResolutions`, `ModuleCat.enoughProjectives`.
+  `CategoryTheory.HasProjectiveResolutions`, `ModuleCat.enoughProjectives`,
+  `CategoryTheory.Functor.mapHomologicalComplex`, `HomologicalComplex.homologyFunctor`,
+  `CategoryTheory.Functor.whiskeringLeft`. Named only as a future refactor path (1.1):
+  `CategoryTheory.Functor.HasLeftDerivedFunctor`, `CategoryTheory.Functor.totalLeftDerived`,
+  `CategoryTheory.LocalizerMorphism.IsLeftDerivabilityStructure`.
+- `Ext`: `CategoryTheory.Abelian.Ext`, `CategoryTheory.HasExt`,
+  `CategoryTheory.hasExt_of_enoughProjectives`, the instance `Module R (Ext X Y n)` for an
+  `R`-linear category (`Mathlib/Algebra/Homology/DerivedCategory/Ext/Linear.lean`),
+  `CategoryTheory.ProjectiveResolution.extEquivCohomologyClass`
+  (`Mathlib/CategoryTheory/Abelian/Projective/Ext.lean`), and the scoped instance
+  `ModuleCat.Algebra.instLinear`.
 - Homology: `CategoryTheory.ShortComplex.ShortExact.δ` with `homology_exact₁`, `homology_exact₂`
   and `homology_exact₃`; `HomologicalComplex₂` and `HomologicalComplex₂.total`.
+- Morita equivalence: `IsMoritaEquivalent` and `MoritaEquivalence`
+  (`Mathlib/RingTheory/Morita/Basic.lean`), for rings only.
 - Dimensions: `CategoryTheory.projectiveDimension`, `CategoryTheory.HasProjectiveDimensionLT`,
   `CategoryTheory.HasProjectiveDimensionLE`, `CategoryTheory.injectiveDimension`,
   `CategoryTheory.HasInjectiveDimensionLE`.
@@ -255,11 +273,22 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   `TauCeti.globalDimension_eq_zero_of_isSemisimpleRing` (`TauCeti.RingTheory.GlobalDimension`);
   `TauCeti.globalDimension_mulOpposite` and `TauCeti.hasInjectiveDimensionLE_characterModule_iff`
   (`TauCeti.RingTheory.GlobalDimension.MulOpposite`).
-- Left derived functors: `CategoryTheory.NatTrans.leftDerived_add` and
-  `CategoryTheory.Functor.isZero_leftDerived_succ`
+- Left derived functors: `CategoryTheory.NatTrans.leftDerived_add`,
+  `CategoryTheory.Functor.isZero_leftDerived_succ` and
+  `CategoryTheory.ShortComplex.ShortExact.leftDerivedOneIsoKernel`
   (`TauCeti.CategoryTheory.Abelian.LeftDerived`); the acyclic assembly lemma
   `HomologicalComplex₂.quasiIso_totalAugmentation_of_rows`
-  (`TauCeti.Algebra.Homology.TotalComplex.Basic`).
+  (`TauCeti.Algebra.Homology.TotalComplex.Basic`) and the instance
+  `HomologicalComplex₂.totalComplexShapeSymmetryDownNat`
+  (`TauCeti.Algebra.Homology.ComplexShape.Signs`).
+- `Tor` over commutative rings: the results on Mathlib's `Tor` and `Tor'` in
+  `TauCeti.Algebra.Category.ModuleCat.Monoidal.Tor` and `TauCeti.CategoryTheory.Monoidal.Tor`
+  (1.5).
+- Quivers and Morita theory (1.6): `TauCeti.quiverRepEquivalence`
+  (`TauCeti.RepresentationTheory.Quiver.Representation.AsModule`), as the pattern;
+  `TauCeti.Quiver.Kronecker.upperTriangularAlgEquiv`
+  (`TauCeti.RepresentationTheory.Quiver.Kronecker.UpperTriangular`);
+  `IsIdempotentElem.isMoritaEquivalent_corner` (`TauCeti.RingTheory.Morita.Corner`).
 - The Jacobson radical: the instance `TauCeti.IsSemiprimaryRing.mulOpposite`
   (`TauCeti.RingTheory.Jacobson.MulOpposite`); `TauCeti.isSemisimpleModule_quotient_smul_top`
   (`TauCeti.RingTheory.Jacobson.Semiprimary`).
@@ -299,7 +328,7 @@ None.
 | Layer | Construction | Principal outputs |
 | --- | --- | --- |
 | [0](#layer-0-modules-over-a-preadditive-category-and-their-tensor-product) | Modules over a preadditive category | `Mod C`, rings as one-object categories, tensor product over `C`, projective factors, swap, ring API, duals |
-| [1](#layer-1-tor-over-an-arbitrary-ring) | `Tor` | Both derivations, long exact sequences, balance, commutative comparison, `Tor₁` of cyclic modules |
+| [1](#layer-1-tor) | `Tor` | Left derived functor, long exact sequences, balance, `Tor`–`Ext` duality, comparisons, `Tor₁` of cyclic modules, category algebras |
 | [2](#layer-2-flat-modules) | Flat modules | Tests, closure, flat quotients, Bass's flat module, finitely presented flat modules |
 | [3](#layer-3-flat-dimension-and-weak-global-dimension) | Dimensions | Flat dimension, weak global dimension, symmetry, Auslander's theorem |
 | [4](#layer-4-semiperfect-and-perfect-rings-and-basss-theorem-p) | Semiperfect and perfect rings | T-nilpotence, covers over semiperfect rings, `IsLeftPerfectRing`, covers over left perfect rings, Theorem P, global dimension |
@@ -327,13 +356,13 @@ Throughout, `C : Type u` is preadditive with `Category.{v} C`, modules take valu
   `preadditiveYoneda`; `TauCeti.LeftModCat.coyoneda`). `Hom(-, X)` is projective, since
   `Hom(Hom(-, X), F) ≅ F(X)` by Yoneda. When `C` is `EssentiallySmall.{w}`, every module is a
   quotient of a coproduct of representables (lifted by `ULift` when `w ≠ v`), so `Mod C` has
-  enough projectives ([Mitchell, §3, pp. 15–18]).
+  enough projectives ([Mitchell, §3, pp. 15–18]); so do the left modules, through `Hom(X, -)`.
 - **`R`-linear structure** (`TauCeti.Functor.objModule`, `TauCeti.Functor.toModuleCat`, and an
   instance `Linear R (ModCat C)`). For `Linear R C`, `r` acts on `F(c)` by `F(r • 𝟙 c)`; every
   `F(f)` is then `R`-linear, so `F` becomes a functor to `ModuleCat R`, and every natural
-  transformation is `R`-linear. `Mod C` is `R`-linear with `(r • α)_c = r • α_c`. [Mitchell, §11,
-  p. 51]: for an `R`-linear `C`, the `R`-linear functors to `R`-modules are the additive functors
-  to abelian groups.
+  transformation is `R`-linear. `Mod C` is `R`-linear with `(r • α)_c = r • α_c`, and so are the
+  left modules. [Mitchell, §11, p. 51]: for an `R`-linear `C`, the `R`-linear functors to
+  `R`-modules are the additive functors to abelian groups.
 - **`mod C ⊆ Mod C`** (`TauCeti.isFinitelyPresentedFunctor_le_additiveFunctor`, with the inclusion
   `TauCeti.ModCat.ιFinitelyPresented`; `w = v`). Tau Ceti's finitely presented functors are an
   `ObjectProperty` on the same ambient category `Cᵒᵖ ⥤ AddCommGrpCat.{v}`, and they are additive
@@ -541,84 +570,222 @@ example of `M ⊗_A N`.
 
 Mathlib and Tau Ceti only.
 
-## Layer 1: `Tor` over an arbitrary ring
+## Layer 1: `Tor`
 
-*Under review: to be converted to the category-primary design of Layer 0; currently stated for
-rings.*
+Throughout, `C : Type u` is an `R`-linear category with `Category.{v} C` and
+`EssentiallySmall.{w} C`, modules take values in `AddCommGrpCat.{w}`, and `Tor` takes values in
+`ModuleCat.{w} R`. There is one `Tor`, derived in the left-module variable. The version that
+resolves the right module is `Tor` over `Cᵒᵖ`, read through the swap of 0.5. Items 1.1–1.5 end
+with their ring statements.
 
 ### 1.1 Definition
 
-(`TauCeti.BalancedTor R A n : ModuleCat.{v} Aᵐᵒᵖ ⥤ ModuleCat.{v} A ⥤ ModuleCat.{v} R`), for an
-`R`-algebra `A` with `[Small.{v} A]`: the object at `M` is
-`((BalancedTensorProduct.functor R A).obj M).leftDerived n`,
-and maps act by `NatTrans.leftDerived`. This is the shape of Mathlib's `CategoryTheory.Tor`,
-derived in the second variable. (`TauCeti.BalancedTor' R A n`) is derived in the first variable, as
-Mathlib's `CategoryTheory.Tor'`. `BalancedTor'` needs projective resolutions of right modules,
-so this item includes the instance `Small.{v} Aᵐᵒᵖ` from `Small.{v} A`
-(`TauCeti.small_mulOpposite`). API:
+(`TauCeti.ModCat.tor R n : ModCat C ⥤ LeftModCat C ⥤ ModuleCat R`.) The object at `F` is
+`((ModCat.tensor R).obj F).leftDerived n`, Mathlib's classical `Functor.leftDerived` of
+`G ↦ F ⊗_C G`, and maps act by `NatTrans.leftDerived`. This is the shape of Mathlib's
+`CategoryTheory.Tor`. It needs projective resolutions of left modules: enough projectives (0.1) and
+Mathlib's instance `HasProjectiveResolutions` for abelian categories with enough projectives. API:
 
-- degree zero (`TauCeti.balancedTorZeroIso`, `TauCeti.balancedTor'ZeroIso`):
-  `BalancedTor R A 0 ≅ BalancedTensorProduct.functor R A` and the same for `BalancedTor'`
-  (`leftDerivedZeroIsoSelf` and 0.6);
-- vanishing (`TauCeti.isZero_balancedTor_succ_of_projective`,
-  `TauCeti.isZero_balancedTor'_succ_of_projective`): `BalancedTor R A (n + 1)` vanishes at a
-  projective left module, `BalancedTor' R A (n + 1)` at a projective right module;
-- additivity in the underived variable (`NatTrans.leftDerived_add`).
+- degree zero (`TauCeti.ModCat.torZeroIso : tor R 0 ≅ tensor R`): `Functor.leftDerivedZeroIsoSelf`,
+  since `F ⊗_C -` preserves colimits (0.3);
+- vanishing (`TauCeti.ModCat.isZero_tor_succ_of_projective`): `Tor_{n+1}(F, G) = 0` for a
+  projective left module `G` (`Functor.isZero_leftDerived_obj_projective_succ`);
+- computation from any projective resolution `P` of `G` (`TauCeti.ModCat.torObjIsoHomology`):
+  `Tor_n(F, G) ≅ H_n(F ⊗_C P)`, Mathlib's `ProjectiveResolution.isoLeftDerivedObj`;
+- linearity: additive and `R`-linear in each variable; in `F` through `NatTrans.leftDerived`
+  and Tau Ceti's `NatTrans.leftDerived_add`.
+
+**Rings** (`TauCeti.BalancedTor R A n : ModuleCat.{v} Aᵐᵒᵖ ⥤ ModuleCat.{v} A ⥤ ModuleCat.{v} R`),
+for an `R`-algebra `A` with `[Small.{v} A]`. Native, as Convention 5 asks: the object at `M` is
+`((BalancedTensorProduct.functor R A).obj M).leftDerived n`, the left derived functor of the ring
+bifunctor of 0.6. API as above (`TauCeti.balancedTorZeroIso`,
+`TauCeti.isZero_balancedTor_succ_of_projective`), and the comparison
+(`TauCeti.balancedTorIsoTorSingleObj`) with `Tor` over `SingleObj A` through the equivalences of
+0.2, from 0.6's comparison of tensor products: the equivalences preserve projective resolutions.
+This item includes the instance `Small.{v} Aᵐᵒᵖ` from `Small.{v} A` (`TauCeti.small_mulOpposite`),
+used for resolutions of right modules.
+
+**Future refactor.** Mathlib's `Functor.leftDerived` is the classical construction through the
+homotopy category. Mathlib's TODO in `Mathlib/CategoryTheory/Abelian/LeftDerived.lean` is to
+redefine it through derived categories and projective derivability structures, in the framework of
+`Functor.HasLeftDerivedFunctor`, `Functor.totalLeftDerived` and
+`LocalizerMorphism.IsLeftDerivabilityStructure`. When that lands, `tor` follows it; nothing here
+depends on the construction beyond the API above.
+
+*Needs:* 0.1, 0.3, 0.6; Mathlib `Functor.leftDerived`, `NatTrans.leftDerived`,
+`Functor.leftDerivedZeroIsoSelf`, `Functor.isZero_leftDerived_obj_projective_succ`,
+`ProjectiveResolution.isoLeftDerivedObj`, `HasProjectiveResolutions`; Tau Ceti
+`NatTrans.leftDerived_add`.
 
 ### 1.2 Long exact sequences in the underived variable
 
-For a short exact sequence `0 → M₁ → M₂ → M₃ → 0` of right modules and a projective resolution
-`Q` of a left module `N`, the complexes `Mᵢ ⊗_A Q` form a short exact sequence of complexes, by
-the projective factors of 0.6. Mathlib's `ShortComplex.ShortExact.δ` then gives
-`δ : Tor_{n+1}(M₃, N) → Tor_n(M₁, N)` (`ShortComplex.ShortExact.balancedTorδ`) and exactness at
-the three places (`balancedTor_exact₁`, `balancedTor_exact₂`, `balancedTor_exact₃`), natural in
-`N` and in the sequence. The same for `BalancedTor'` in its left-module variable.
+For a short exact sequence `0 → F₁ → F₂ → F₃ → 0` of right modules and a projective resolution `Q`
+of a left module `G`, the complexes `Fᵢ ⊗_C Q` form a short exact sequence of complexes: termwise,
+right exactness (0.3) and the projective factors of 0.4 (`Q_q` projective, so `- ⊗_C Q_q`
+preserves monomorphisms). Mathlib's homology sequence of a short exact sequence of complexes
+(`ShortComplex.ShortExact.homology_exact₁`, `homology_exact₂`, `homology_exact₃`, with the
+connecting map `ShortComplex.ShortExact.δ`) and 1.1's computation from `Q` then give
+`δ : Tor_{n+1}(F₃, G) → Tor_n(F₁, G)` (`ShortComplex.ShortExact.torδ`) and exactness at the three
+places (`TauCeti.ModCat.tor_exact₁`, `tor_exact₂`, `tor_exact₃`), natural in `G` and in the
+sequence.
+
+This is the only long exact sequence proved directly. The one in the derived variable comes from
+the balance (1.3). So neither a horseshoe lemma nor a general long exact sequence for
+`Functor.leftDerived` is needed; Mathlib has neither.
+
+**Rings** (`ShortComplex.ShortExact.balancedTorδ`, `TauCeti.balancedTor_exact₁`,
+`balancedTor_exact₂`, `balancedTor_exact₃`): the same for a short exact sequence of right
+`A`-modules, by the same proof with 0.6's projective factors, or through 1.1's comparison.
+
+*Needs:* 0.3, 0.4, 1.1; Mathlib `ShortComplex.ShortExact.δ`, `homology_exact₁`–`homology_exact₃`.
 
 ### 1.3 Balance
 
-(`TauCeti.balancedTorIso : BalancedTor R A n ≅ BalancedTor' R A n`), natural in both variables.
-Route: for projective resolutions `P` of `M` and `Q` of `N`, form the first-quadrant bicomplex
-`P_p ⊗_A Q_q`. Its augmented rows `P_p ⊗ Q → P_p ⊗ N` and columns `P ⊗ Q_q → M ⊗ Q_q` are exact,
-because tensoring with a projective module is exact (0.4, 0.6). Tau Ceti's
-`HomologicalComplex₂.quasiIso_totalAugmentation_of_rows`, for the bicomplex and its flip,
-identifies both `H_n(P ⊗ N)` and `H_n(M ⊗ Q)` with the homology of the total complex ([Weibel,
-Thm. 2.7.2], not read). Consequently each of `BalancedTor` and `BalancedTor'` has the long exact
-sequences of 1.2 in both variables.
+(`TauCeti.ModCat.torBalanceIso : tor R n ≅ (LeftModCat.toModCatOp C ⋙ tor R n).flip`.)
+`Tor^C_n(F, G) ≅ Tor^{Cᵒᵖ}_n(G, F)`, `R`-linear and natural in both variables, where `G` is a right
+`Cᵒᵖ`-module and `F` a left `Cᵒᵖ`-module as in 0.5. Route ([Weibel, Thm. 2.7.2, pp. 58–59]): for
+projective resolutions `P` of `F` and `Q` of `G`, form the first-quadrant bicomplex `P_p ⊗_C Q_q`.
+Its augmented rows `P_p ⊗ Q → P_p ⊗ G` and columns `P ⊗ Q_q → F ⊗ Q_q` are exact, since tensoring
+with a projective is exact on both sides (0.3, 0.4). Tau Ceti's
+`HomologicalComplex₂.quasiIso_totalAugmentation_of_rows`, applied to the bicomplex and to its flip
+(with Tau Ceti's `HomologicalComplex₂.totalComplexShapeSymmetryDownNat`), identifies both
+`H_n(F ⊗_C Q)` and `H_n(P ⊗_C G)` with the homology of the total complex; this is Weibel's acyclic
+assembly argument ([Weibel, 2.7.3, p. 59]). The swap of 0.5 turns `P ⊗_C G` into `G ⊗_{Cᵒᵖ} P`,
+whose homology is `Tor^{Cᵒᵖ}_n(G, F)` by 1.1 over `Cᵒᵖ`.
 
-**Swap** (`TauCeti.balancedTorSwapIso`). `Tor_n^A(M, N) ≅ Tor_n^{Aᵐᵒᵖ}(N, M)`, naturally, through
-0.6's swap and `ModuleCat.restrictScalarsEquivalenceOfRingEquiv (RingEquiv.opOp A)`.
+Consequences:
 
-### 1.4 Comparison and first computations
+- higher `Tor` vanishes at a projective right module
+  (`TauCeti.ModCat.isZero_tor_succ_of_projective_left`);
+- the long exact sequence in the derived variable (`ShortComplex.ShortExact.torδ'`,
+  `TauCeti.ModCat.tor_exact₁'`, `tor_exact₂'`, `tor_exact₃'`): 1.2 over `Cᵒᵖ`, transported by the
+  balance.
 
-- **Commutative rings** (`TauCeti.balancedTorIsoTor`). For `[CommRing R]`, `BalancedTor R R n`
-  is naturally isomorphic to Mathlib's `CategoryTheory.Tor (ModuleCat R) n`, after restricting
-  `ModuleCat R` to `ModuleCat Rᵐᵒᵖ` along `(RingEquiv.toOpposite R).symm`; the same for
-  `BalancedTor'` and `CategoryTheory.Tor'`. With 1.3 this gives `Tor ≅ Tor'` for `ModuleCat R`,
-  the comparison that Mathlib's
-  `Mathlib/CategoryTheory/Monoidal/Tor.lean` leaves open.
+**Rings.** The swap (`TauCeti.balancedTorSwapIso`): `Tor_n^A(M, N) ≅ Tor_n^{Aᵐᵒᵖ}(N, M)`,
+naturally, with `N` a right `Aᵐᵒᵖ`-module through
+`ModuleCat.restrictScalars (RingEquiv.opOp A).symm`; from the balance at `SingleObj A`, 1.1's
+comparison and `TauCeti.singleObjMulOppositeEquiv` (0.2). Vanishing at a projective right module
+(`TauCeti.isZero_balancedTor_succ_of_projective_left`) and the long exact sequence in the
+left-module variable (`ShortComplex.ShortExact.balancedTorδ'`, `TauCeti.balancedTor_exact₁'`,
+`balancedTor_exact₂'`, `balancedTor_exact₃'`) follow.
+
+*Needs:* 0.3–0.5, 1.1, 1.2; Mathlib `HomologicalComplex₂`, `HomologicalComplex₂.total`; Tau Ceti
+`HomologicalComplex₂.quasiIso_totalAugmentation_of_rows`,
+`HomologicalComplex₂.totalComplexShapeSymmetryDownNat`.
+
+### 1.4 `Tor`–`Ext` duality
+
+(`TauCeti.ModCat.torExtDualityEquiv`.) For an injective `R`-module `E`,
+
+    Hom_R(Tor_n^C(F, G), E) ≃ₗ[R] Ext^n(F, G^E),
+
+natural in `F` and `G`, where `G^E` is the dual of 0.7 and `Ext` is Mathlib's derived-category
+`Abelian.Ext` (the `Ext` that Tau Ceti uses throughout). Mathlib's `Abelian.Ext` is an `R`-module
+for an `R`-linear abelian category (`Mathlib/Algebra/Homology/DerivedCategory/Ext/Linear.lean`), so
+the statement is `R`-linear. Route: compute `Tor` from a projective resolution `P` of `F` (by the
+balance); then `Hom_R(H_n(P ⊗_C G), E) ≅ H^n(Hom_R(P ⊗_C G, E))`, since `Hom_R(-, E)` is exact;
+the adjunction of 0.7 termwise gives `Hom_R(P ⊗_C G, E) ≅ Hom(P, G^E)`; and Mathlib's
+`ProjectiveResolution.extEquivCohomologyClass`
+(`Mathlib/CategoryTheory/Abelian/Projective/Ext.lean`) identifies `Ext^n(F, G^E)` with the degree-`n` cohomology classes from `P`. No classical `Ext` and
+no comparison of `Ext`s is needed ([CE, VI, Prop. 5.1, p. 120]; [Lambek, p. 241] for `R = ℤ`,
+`E = ℚ ⧸ ℤ`). This item includes the instance `HasExt.{w} (Mod C)` (Mathlib's
+`hasExt_of_enoughProjectives`, as for `ModuleCat`).
+
+**Rings** (`TauCeti.balancedTorExtDualityEquiv`):
+`Hom_R(Tor_n^A(M, N), E) ≃ₗ[R] Ext^n_{Aᵐᵒᵖ}(M, Hom_R(N, E))`, with `Hom_R(N, E)` Tau Ceti's
+`MatlisDual R E N` (0.6) and the `R`-linear structure of `ModuleCat Aᵐᵒᵖ` from Mathlib's scoped
+`ModuleCat.Algebra.instLinear`.
+
+Consumers: Lambek's criterion in Layer 2 (`R = ℤ`, `E = ℚ ⧸ ℤ`, `n = 1`), the character-module
+formula for flat dimension in Layer 3, and Auslander-Reiten formulas with Matlis duals (`E` an
+injective hull of the residue field of a commutative base, as in ArtinAlgebras).
+
+*Needs:* 0.7, 1.1, 1.3; Mathlib `Abelian.Ext`, `HasExt`, `hasExt_of_enoughProjectives`,
+`ProjectiveResolution.extEquivCohomologyClass`, the `Module R (Ext X Y n)` instance; Tau Ceti
+`TauCeti.MatlisDual`.
+
+### 1.5 Comparisons and first computations
+
+- **Commutative rings** (`TauCeti.balancedTorIsoTor`). For `[CommRing R]`, `BalancedTor R R n` is
+  naturally isomorphic to Mathlib's `CategoryTheory.Tor (ModuleCat R) n`, after restricting
+  `ModuleCat R` to `ModuleCat Rᵐᵒᵖ` along `(RingEquiv.toOpposite R).symm`, by 0.6's
+  `equivTensorProduct`. With the balance this gives (`TauCeti.torIsoTor'`)
+  `CategoryTheory.Tor (ModuleCat R) n ≅ CategoryTheory.Tor' (ModuleCat R) n`, the comparison that
+  Mathlib's `Mathlib/CategoryTheory/Monoidal/Tor.lean` leaves open; a candidate for upstreaming.
+  Tau Ceti's results on Mathlib's `Tor` and `Tor'` over commutative rings
+  (`TauCeti.Algebra.Category.ModuleCat.Monoidal.Tor`, `TauCeti.CategoryTheory.Monoidal.Tor`) then
+  apply to `BalancedTor R R`.
+- **Change of base and independence of `R`** (`TauCeti.ModCat.torRestrictScalarsIso`,
+  `TauCeti.ModCat.torIntIso`; rings `TauCeti.balancedTorRestrictScalarsIso`,
+  `TauCeti.balancedTorIntIso`): restricting `Tor` over `R'` to `R` gives `Tor` over `R`, when the
+  `R`-structure comes from the `R'`-structure; the case `ℤ → R` says the underlying groups do not
+  depend on `R`. Route: 1.1's computation from one resolution, and 0.3 or 0.6 termwise.
 - **Cyclic modules** (`TauCeti.balancedTorOneQuotientEquiv`). For a right ideal
   `I : Submodule Aᵐᵒᵖ A` and a left ideal `K : Ideal A`, with `R = ℤ`,
   `Tor_1^A(A ⧸ I, A ⧸ K) ≃+ (I ∩ K) ⧸ IK`, where `IK` is the additive subgroup generated by the
-  products: from 1.2 for `0 → I → A → A ⧸ I → 0` and the first check of 0.6 (locator not
-  checked).
+  products ([Weibel, Exer. 3.1.3, p. 68]; for a two-sided ideal, `Tor_1^A(A ⧸ I, A ⧸ I) ≅ I ⧸ I²`).
+  Route: 1.2 for `0 → I → A → A ⧸ I → 0`, the vanishing of `Tor_1(A, -)`, and the first check of
+  0.6, which identifies `I ⊗_A (A ⧸ K) → A ⊗_A (A ⧸ K)` with `I ⧸ IK → A ⧸ K`; Tau Ceti's
+  `ShortComplex.ShortExact.leftDerivedOneIsoKernel` (`TauCeti.CategoryTheory.Abelian.LeftDerived`)
+  is the pattern for `Tor_1` as a kernel.
+
+*Needs:* 0.3, 0.6, 1.1–1.3; Mathlib `CategoryTheory.Tor`, `CategoryTheory.Tor'`,
+`ModuleCat.restrictScalars`.
+
+### 1.6 Categories with finitely many objects
+
+For a preadditive `C` with finitely many objects (`[Fintype C] [DecidableEq C]`), the **category
+algebra** (`TauCeti.CategoryAlgebra C`) is `⊕_{x,y} Hom(x, y)`, the families `a x y : x ⟶ y` with
+`(a * b) x z = ∑_y b x y ≫ a y z` and the identities on the diagonal as unit ([Mitchell, §7,
+p. 33], where it is `[C]`). The product follows Mathlib's `SingleObj` convention `f ≫ g = g * f`,
+so `CategoryAlgebra (SingleObj A) ≅ A`. For an `R`-linear `C` it is an `R`-algebra.
+
+- **Morita equivalence** (`TauCeti.leftModCatEquivCategoryAlgebra :
+  LeftModCat C ≌ ModuleCat (CategoryAlgebra C)` and `TauCeti.modCatEquivCategoryAlgebra :
+  ModCat C ≌ ModuleCat (CategoryAlgebra C)ᵐᵒᵖ`), `R`-linear: `G ↦ ⊕_x G(x)`, with `a` acting by
+  the `G(a x y)` ([Mitchell, Thm. 7.1, pp. 33–35]). The construction is the one of Tau Ceti's
+  `TauCeti.quiverRepEquivalence : QuiverRep k Q ≌ ModuleCat (pathAlgebra k Q)` (carrier `⊕ᵥ Mᵥ`).
+  Mathlib's `IsMoritaEquivalent` compares two rings; through these equivalences, two
+  finite-object categories with `R`-linearly equivalent module categories have Morita equivalent
+  category algebras. For a full subcategory `C' ⊆ C` on some of the objects, the category algebra
+  of `C'` is the corner `e Λ e` of `Λ = CategoryAlgebra C` at `e = ∑_{x ∈ C'} 𝟙 x`, so Tau Ceti's
+  `IsIdempotentElem.isMoritaEquivalent_corner` applies when `e` is full.
+- **Tensor and `Tor`** (`TauCeti.tensorObjCategoryAlgebraIso`,
+  `TauCeti.torCategoryAlgebraIso`): the equivalences carry `F ⊗_C G` to the balanced tensor product
+  over the category algebra and `Tor^C_n` to `BalancedTor R (CategoryAlgebra C) n` ([Mitchell, §7,
+  p. 37, (1)]). Route: by the adjunctions (0.3, 0.6) both tensor products represent the same
+  functor; the equivalences preserve projective resolutions.
+
+This generalizes the one-object comparisons of 0.2, 0.6 and 1.1. It sits in Layer 1 because its
+point is the comparison of `Tor`; its tensor part uses only Layer 0.
+
+**Check.** For the `k`-linear category `C` of the quiver `1 → 2` (0.1), the category algebra is the
+path algebra `kA₂`, which Tau Ceti identifies with the upper triangular matrices `T₂(k)`
+(`TauCeti.Quiver.Kronecker.upperTriangularAlgEquiv`; [Mitchell, §7, Example 1, p. 33] for posets).
+So `Tor^C` is `Tor^{T₂(k)}`, and the checks below for `T₂(k)` can be computed with the
+representables of `C`.
+
+*Needs:* 0.1–0.3, 0.6, 1.1; Mathlib `Fintype`; Tau Ceti `TauCeti.quiverRepEquivalence` (pattern),
+`TauCeti.Quiver.Kronecker.upperTriangularAlgEquiv`, `IsIdempotentElem.isMoritaEquivalent_corner`.
 
 **Checks.**
 
+- Representables: `Tor_0(Hom(-, X), G) ≅ G(X)` (1.1 and 0.3's Yoneda), and `Tor_{n+1}(Hom(-, X), G)
+  = 0` (1.3, since `Hom(-, X)` is projective); symmetrically `Tor_0(F, Hom(X, -)) ≅ F(X)` and
+  `Tor_{n+1}(F, Hom(X, -)) = 0` (1.1).
 - `Tor_1^ℤ(ℤ ⧸ m, ℤ ⧸ n) ≅ ℤ ⧸ gcd(m, n)` (cyclic formula: `(mℤ ∩ nℤ) ⧸ mnℤ`).
 - For `B = k[ε]/(ε²)`, `Tor_n^B(k, k) ≅ k` for every `n`: `k` has the periodic resolution
   `⋯ → B → B → k` by multiplication by `ε`, which becomes zero after tensoring with `k`.
-- For the upper triangular algebra `T = T₂(k)` with radical `J = k e₁₂`,
-  `Tor_1^T(T ⧸ J, T ⧸ J) ≅ J ⧸ J² = J` is one-dimensional, and `Tor_n^T(T ⧸ J, -) = 0` for
-  `n ≥ 2`, since `J = e₁₂T ≅ e₂₂T` is projective.
-
-*Needs:* Layer 0; Mathlib `Functor.leftDerived`, `ShortComplex.ShortExact.δ`,
-`HomologicalComplex₂`, `CategoryTheory.Tor`, `CategoryTheory.Tor'`; Tau Ceti
-`HomologicalComplex₂.quasiIso_totalAugmentation_of_rows`, `NatTrans.leftDerived_add`.
+- For `T = T₂(k)` with radical `J = k e₁₂`, `Tor_1^T(T ⧸ J, T ⧸ J) ≅ J ⧸ J² = J` is
+  one-dimensional (cyclic formula), and `Tor_n^T(T ⧸ J, -) = 0` for `n ≥ 2`, since
+  `J = e₁₂T ≅ e₂₂T` is projective. By 1.6 the same groups are computed over the quiver category
+  of `1 → 2`, with the representables as projectives.
 
 ### Examples
 
-Over `ℤ`, `B = k[ε]/(ε²)` and `T₂(k)` as in the checks. The balance makes `Tor` computable from a
-resolution of either variable, which the checks use for `T₂(k)`.
+Rings: `ℤ`, `B = k[ε]/(ε²)` and `T₂(k)` as in the checks. Categories: representables, and finite
+quiver categories through their path algebras (1.6). The balance makes `Tor` computable from a
+resolution of either variable.
 
 ### Dependencies
 
@@ -662,7 +829,7 @@ flatness is invariant under linear equivalence (`TauCeti.Module.BalancedFlat.of_
 passes to retracts, and a direct sum is flat exactly when every summand is
 (`TauCeti.Module.balancedFlat_directSum_iff`). In a short exact sequence
 `0 → M₁ → M₂ → M₃ → 0` of left modules with `M₃` flat, `M₂` is flat exactly when `M₁` is
-(`TauCeti.Module.balancedFlat_iff_of_exact`; 1.2; [Lam-LMR, (4.13), p. 126]). Flat modules have
+(`TauCeti.Module.balancedFlat_iff_of_exact`; 1.3; [Lam-LMR, (4.13), p. 126]). Flat modules have
 no higher `Tor`: `Tor_{n+1}^A(N, M) = 0` for flat `M`
 (`TauCeti.isZero_balancedTor_succ_of_balancedFlat`), by 1.3: compute with `P ⊗_A M` for a
 projective resolution `P` of `N`, and use that `- ⊗_A M` is exact.
@@ -694,8 +861,8 @@ case). Over a left Noetherian ring every finite flat module is projective
 **Checks.**
 
 - `ℚ` is a flat `ℤ`-module (2.1 and Mathlib's `Module.Flat`) and is not projective
-  (`TauCeti.balancedFlat_rat_and_not_projective`); `ℤ ⧸ n` is not flat for `n ≥ 2` (1.4).
-- Over `B = k[ε]/(ε²)`, `k` is not flat, since `Tor_1^B(k, k) ≅ k` (1.4).
+  (`TauCeti.balancedFlat_rat_and_not_projective`); `ℤ ⧸ n` is not flat for `n ≥ 2` (Layer 1 checks).
+- Over `B = k[ε]/(ε²)`, `k` is not flat, since `Tor_1^B(k, k) ≅ k` (Layer 1 checks).
 - Over `T₂(k)`, of the two simple left modules the projective one is flat and the other is not
   (2.4: it is finitely presented and not projective).
 - Bass's module over `ℤ` for the constant sequence `p` is `ℤ[1/p]`: flat, not projective, and
@@ -730,7 +897,7 @@ right module `N` and every `i ≥ n`; `HasFlatDimensionLE M n` is `HasFlatDimens
   `HasFlatDimensionLE M 0 ↔ BalancedFlat A M` (`TauCeti.hasFlatDimensionLE_zero_iff`; 2.1, 2.2);
 - `flatDimension M ≤ projectiveDimension M` (`TauCeti.flatDimension_le_projectiveDimension`; 2.2);
 - dimension shifting (`TauCeti.hasFlatDimensionLE_succ_iff`): for `0 → K → F → M → 0` with `F`
-  flat, `HasFlatDimensionLE M (n + 1) ↔ HasFlatDimensionLE K n` (1.2, 2.2);
+  flat, `HasFlatDimensionLE M (n + 1) ↔ HasFlatDimensionLE K n` (1.3, 2.2);
 - the ideal test (`TauCeti.hasFlatDimensionLE_iff_forall_quotient`): `HasFlatDimensionLE M n`
   exactly when `Tor_{n+1}^A(A ⧸ I, M) = 0` for every finitely generated right ideal `I` (2.1 and
   dimension shifting);
@@ -788,7 +955,7 @@ finite, hence finitely presented, so dimension shifting and 2.4 give
 - A field has weak global dimension `0`, the zero ring `⊥`.
 - `ℤ` has weak and global dimension `1` (`Tor_1^ℤ(ℤ ⧸ 2, ℤ ⧸ 2) ≠ 0`, and every right ideal is
   free).
-- `B = k[ε]/(ε²)` has weak and global dimension `⊤` (1.4).
+- `B = k[ε]/(ε²)` has weak and global dimension `⊤` (Layer 1 checks).
 - Small's ring `R = [[ℤ, ℚ], [0, ℚ]]` is right Noetherian and right hereditary, not left
   hereditary, and `globalDimension Rᵐᵒᵖ = weakGlobalDimension R = 1 < globalDimension R`
   ([Lam-LMR, (5.62b), p. 185]; the facts on `R` are cited there to (2.33), not read). The
@@ -1068,6 +1235,11 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
 - [Bass] H. Bass, *Finitistic dimension and a homological generalization of semi-primary rings*,
   Trans. Amer. Math. Soc. 95 (1960), 466–488. T-nilpotence, p. 466; Theorem P, pp. 467–468;
   Lemma 1.1, p. 468; Theorem 2.1, p. 471; §3, Examples, p. 475.
+- [CE] H. Cartan, S. Eilenberg, *Homological Algebra*, Princeton University Press (1956). Ch. VI,
+  §5, Prop. 5.1, p. 120 (`Ext_Λ(A, Hom_Γ(B, C)) ≅ Hom_Γ(Tor^Λ(A, B), C)` for `Γ`-injective `C`);
+  Prop. 5.3, p. 120 (the dual formula, for a left Noetherian ring and a finitely generated `A`).
+  Ch. VI, Exer. 3 (flat and projective dimension of finite modules over a Noetherian ring), cited
+  through [Au, p. 70]; not read.
 - [Harada] M. Harada, *Perfect categories I*, Osaka J. Math. 10 (1973), 329–341. Introduction,
   pp. 329–330: perfect Grothendieck categories, and Theorem P for the functor category `(C, Ab)`
   of a small additive category `C`. The final section, where the theorem is proved, and parts
@@ -1094,23 +1266,26 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
   pp. 15–18: functor categories, representables, free and finitely presented functors; §6,
   pp. 26–27: the tensor product `F ⊗_C G`, its value on representables (1), the adjunction (2),
   preservation of colimits in both variables, the swap as a definition, the explicit quotient, and
-  cogenerating injectives from `ℚ ⧸ ℤ`; §10, Prop. 10.1 and Cor. 10.2, p. 47: projectives are
-  retracts of free functors, and tensoring with a projective is exact; §11, pp. 50–52:
-  `K`-categories, `K`-linear functors to `K`-modules as additive functors to abelian groups
-  (p. 51), the tensor product over `K` and its independence of `K` (p. 52). Mitchell writes
+  cogenerating injectives from `ℚ ⧸ ℤ`; §6, p. 32: `Tor` and `Ext` of functors, computed from a
+  projective resolution of one variable; §7, pp. 33–38: the ring `[C]` of an additive category
+  (p. 33), triangular matrix rings for a finite totally ordered set (Example 1, p. 33), Thm. 7.1
+  (pp. 33–35: modules over `C` and over `[C]`, an equivalence when `C` has finitely many objects),
+  and the compatibility with `⊗` and `Tor` (p. 37, (1)); §10, Prop. 10.1 and Cor. 10.2, p. 47:
+  projectives are retracts of free functors, and tensoring with a projective is exact; §11,
+  pp. 50–52: `K`-categories, `K`-linear functors to `K`-modules as additive functors to abelian
+  groups (p. 51), the tensor product over `K` and its independence of `K` (p. 52). Mitchell writes
   morphisms on the right and his modules are covariant; the statements are mirrored here.
 - [Sandomierski] F. L. Sandomierski, *On semiperfect and perfect rings*, Proc. Amer. Math. Soc. 21
   (1969), 205–207. Proposition 1 (d) and Lemma 2, p. 205; Theorem 4, p. 206 (stated for right
   modules).
 - [Weibel] C. A. Weibel, *An Introduction to Homological Algebra*, Cambridge Studies in Advanced
-  Mathematics 38, Cambridge University Press (1994). Thm. 2.7.2 (balance of `Tor`); not read.
+  Mathematics 38, Cambridge University Press (1994). Thm. 2.7.2, pp. 58–59 (balance of `Tor`
+  through the bicomplex `P ⊗ Q`); Acyclic Assembly Lemma 2.7.3, p. 59; Exer. 3.1.3, p. 68
+  (`Tor_1^R(R ⧸ I, R ⧸ J) ≅ (I ∩ J) ⧸ IJ` for a right ideal `I` and a left ideal `J`).
 - [Wisbauer] R. Wisbauer, *Foundations of Module and Ring Theory*, Gordon and Breach (1991).
   18.5 (1), p. 152 (a projective module that maps onto every simple module is a generator; the
   argument of the generation step), stated in `σ[M]`; 19.7, p. 161 (projective covers of simple
   modules have local endomorphism rings).
-- H. Cartan, S. Eilenberg, *Homological Algebra*, Princeton University Press (1956). Ch. VI,
-  Exer. 3 (flat and projective dimension of finite modules over a Noetherian ring), cited through
-  [Au, p. 70]; not read.
 - M. Auslander, M. Bridger, *Stable module theory*, Mem. Amer. Math. Soc. 94 (1969). `Tor₁` of the
   transpose; not read.
 - [Ho] M. Hoshino, *On dominant dimension of Noetherian rings*, Osaka J. Math. 26 (1989), 275–280;
