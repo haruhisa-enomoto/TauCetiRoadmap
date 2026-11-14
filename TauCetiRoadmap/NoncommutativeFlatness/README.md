@@ -4,25 +4,32 @@
 commutative rings. Tau Ceti has the tensor product `M ⊗_A N` of a right and a left module over an
 arbitrary ring (`TauCeti.BalancedTensorProduct`), finitely presented functors on a preadditive
 category (`mod C`), the global dimension of left modules, projective covers and semiperfect rings.
-This roadmap develops the homological algebra of flatness over a preadditive category `C`; a ring
-`A` is the one-object case `SingleObj A`. Layer 0 lays the foundations: the abelian category
-`Mod C` of additive functors; the identification of `A`-modules with modules over `SingleObj A`;
-the tensor product `F ⊗_C G` as a coend, linear over a commutative ring `R`, with its adjunctions,
-right exactness, projective factors and swap; duals `Hom_R(-, E)`; and the native ring API of
-`M ⊗_A N`. On these the roadmap builds `Tor` over `C` as a left derived functor, with its long
-exact sequences, its balance and its duality with `Ext`, and compares a category with finitely many
-objects with its category algebra; then flat modules, Lambek's
-character-module criterion and the projectivity of finitely presented flat modules; flat dimension
-and weak global dimension, its left-right symmetry, and Auslander's theorem that a left Noetherian
-ring has equal left global and weak global dimension; projective covers over semiperfect rings and
-the characterization of semiperfect rings by projective covers; and left perfect rings. The summit
-is **Bass's Theorem P**: for a ring `A` with Jacobson radical `J`, the following are equivalent:
-`A ⧸ J` is semisimple and `J` is left T-nilpotent; every left module has a projective cover; every
-flat left module is projective; the principal *right* ideals satisfy the descending chain
-condition; every left module has equal flat and projective dimension. Theorem P extends to perfect
-categories, functor categories `Mod C` in which every object has a projective cover ([Harada]).
-Layers 0 and 1 are category-primary; Layers 2–4 are stated for rings for now and are to be
-converted to that design.
+This roadmap is the home of flat modules over noncommutative rings and of flat functors over
+preadditive categories. It develops the homological algebra of flatness over a preadditive category
+`C`; a ring `A` is the one-object case `SingleObj A`. Layer 0 lays the foundations: the abelian
+category `Mod C` of additive functors; the identification of `A`-modules with modules over
+`SingleObj A`; the tensor product `F ⊗_C G` as a coend, linear over a commutative ring `R`, with its
+adjunctions, right exactness, projective factors and swap; duals `Hom_R(-, E)`; and the native ring
+API of `M ⊗_A N`. On these the roadmap builds `Tor` over `C` as a left derived functor, with its
+long exact sequences, its balance, `Tor` of the Auslander–Bridger transpose and its duality with
+`Ext`, and compares a category with finitely many objects with its category algebra. Layer 2 treats
+flat modules and flat functors: the ideal test, the `Tor` and Lambek tests with a Baer criterion for
+`Mod C`, the Lazard characterizations (equational criterion, factorization, filtered colimits of
+finite sums of representables, purity) and the projectivity of finitely presented flat modules, flat
+= left exact, flat = cohomological on triangulated categories, Crawley-Boevey's representation of
+finitely accessible additive categories, Bass's flat module of a chain, and closure properties. Then
+come flat dimension and weak global dimension, its left-right symmetry, and Auslander's theorem that
+a left Noetherian ring has equal left global and weak global dimension; projective covers over
+semiperfect rings and the characterization of semiperfect rings by projective covers; and left
+perfect rings. The summit is **Bass's Theorem P**: for a ring `A` with Jacobson radical `J`, the
+following are equivalent: `A ⧸ J` is semisimple and `J` is left T-nilpotent; every left module has a
+projective cover; every flat left module is projective; the principal *right* ideals satisfy the
+descending chain condition; every left module has equal flat and projective dimension. For small
+preadditive categories the summit is **Simson's Theorem 5.4** ([Simson, Thm. 5.4, p. 108]): every
+flat left module is projective exactly when every left module has a projective cover, exactly when
+`J(C)` is left T-nilpotent and `C ⧸ J(C)` is semisimple, exactly when every countable inverse system
+in `C` is factorizable; these are the perfect categories ([Harada]). Layers 0–2 are
+category-primary; Layers 3–4 are stated for rings for now and are to be converted to that design.
 
 ## Scope and ownership
 
@@ -37,12 +44,15 @@ This roadmap owns:
   its comparison with the categorical tensor product and with Mathlib's tensor product over a
   commutative ring; and duals with respect to an `R`-module `E` (Layer 0);
 - `Tor` over a preadditive category and over an arbitrary ring as a left derived functor, its long
-  exact sequences, its balance, its duality with `Ext`, the comparison with Mathlib's
+  exact sequences, its balance, the formula `stable Hom(X, N) ≅ Tor_1(Tr X, N)`, its duality with
+  `Ext`, the comparison with Mathlib's
   `CategoryTheory.Tor` over a commutative ring, change of base, `Tor₁` of two cyclic modules, and
   the comparison of a category with finitely many objects with its category algebra (Layer 1);
-- flat modules over an arbitrary ring: the definition, the tensor, ideal, character-module and
-  `Tor` tests, closure properties, flat quotients, Bass's flat module, and projectivity of finitely
-  presented flat modules (Layer 2);
+- flat modules and flat functors over a preadditive category and over an arbitrary ring: the ideal
+  test, the `Tor` and Lambek tests, a Baer criterion for `Mod C`, `Tor` and filtered colimits, the
+  Lazard characterizations and purity, projectivity of finitely presented flat modules, flat = left
+  exact, the triangulated case, Crawley-Boevey's representation theorem, Bass's flat module of a
+  chain, closure properties, and the bridge to Mathlib's ind-objects (Layer 2);
 - flat dimension, weak global dimension, its left-right symmetry and its bounds by the global
   dimensions, and Auslander's theorem for left Noetherian rings (Layer 3);
 - T-nilpotent sets; projective covers of finitely generated modules over semiperfect rings, the
@@ -65,13 +75,16 @@ The boundaries are as follows.
 - Flatness over a commutative ring is Mathlib's `Module.Flat`. Here only its agreement with
   `TauCeti.Module.BalancedFlat` is proved (2.1). Mathlib's `Mathlib/RingTheory/Flat/Basic.lean`
   lists the generalization of `Module.Flat` to noncommutative rings as a TODO; if Mathlib makes
-  it, `BalancedFlat` is replaced by `Module.Flat`.
+  it, `BalancedFlat` is replaced by `Module.Flat`. Tau Ceti's `TauCeti.flatModuleFilteredFree`
+  (Lazard's theorem in one direction, for commutative rings) becomes a corollary of 2.3.
+- Flatness here is flatness as a module. Intrinsic flatness inside the category of flat modules
+  ([CI]) is not developed.
 - [Operator K-theory](../OperatorKTheory/README.md), §8.2, owns the computations of `Ext` and
   `Tor` over `ℤ` (free presentations, cyclic groups, universal coefficients). The comparison of
-  1.5 covers every commutative ring; no other `ℤ`-specific computation is done here.
+  1.6 covers every commutative ring; no other `ℤ`-specific computation is done here.
 - [Derived and module algebra](../DerivedModuleAlgebra/README.md) owns the derived tensor
   product and `Tor` amplitude over commutative rings. This roadmap uses derived categories only
-  through Mathlib's `Abelian.Ext` (1.4).
+  through Mathlib's `Abelian.Ext` (1.5).
 - [Krull-Schmidt categories and Auslander-Reiten theory of Artin
   algebras](../RepresentationTheory/ArtinAlgebras/README.md), §7.2, owns the comparison of left
   and right global dimension through character modules and the formula for semiprimary rings.
@@ -84,9 +97,10 @@ The boundaries are as follows.
   semiperfect ring (4.2).
 - Outside this roadmap: the tensor product of additive categories and functors of several variables
   ([Mitchell, §2]); Morita theory for functor categories, beyond the finite-object comparison of
-  1.6; Lazard's theorem (flat modules are direct limits of free modules) and the conditions of
-  Theorem P on direct limits ([Bass, Theorem P (4), (5)]); Chase's theorem, coherent rings and
-  products of flat modules; pure exact sequences; faithful flatness over noncommutative rings; the
+  1.7; the conditions of Theorem P on direct limits ([Bass, Theorem P (4), (5)]); Chase's theorem,
+  coherent rings, products and kernels of flat modules (pointers in 2.6); flat covers (pointers in
+  2.4); purity beyond the purity test of 2.3 (pure-injective modules, pure global dimension);
+  flat Mittag-Leffler modules; faithful flatness over noncommutative rings; the
   conditions on maximal submodules and socles ([AF, 28.4 (c), (f)]), on finitely generated
   submodules (Björk) and on principal left ideals with the ascending chain condition (Jonah);
   finitistic dimensions ([Bass, Part II]); `Tor` of bimodules and its module structure over a base
@@ -95,9 +109,11 @@ The boundaries are as follows.
 Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 0.3–0.5, 0.7),
 `TauCeti/CategoryTheory/Preadditive/SingleObj.lean` (0.2),
 `TauCeti/LinearAlgebra/TensorProduct/Balanced/` (0.6),
-`TauCeti/CategoryTheory/Preadditive/ModCat/Tor/` (1.1–1.5), `TauCeti/Algebra/Homology/BalancedTor/`
-(ring `Tor`), `TauCeti/CategoryTheory/Preadditive/CategoryAlgebra.lean` (1.6),
-`TauCeti/RingTheory/Flat/Balanced/` (Layer 2), `TauCeti/RingTheory/GlobalDimension/Weak.lean`
+`TauCeti/CategoryTheory/Preadditive/ModCat/Tor/` (1.1–1.6), `TauCeti/Algebra/Homology/BalancedTor/`
+(ring `Tor`), `TauCeti/CategoryTheory/Preadditive/CategoryAlgebra.lean` (1.7),
+`TauCeti/CategoryTheory/Preadditive/ModCat/Flat/` (2.1–2.6),
+`TauCeti/CategoryTheory/Preadditive/ModCat/Baer.lean` (2.2), `TauCeti/RingTheory/Flat/Balanced/`
+(ring items of Layer 2), `TauCeti/RingTheory/GlobalDimension/Weak.lean`
 (Layer 3), `TauCeti/RingTheory/Jacobson/TNilpotent.lean`,
 `TauCeti/Algebra/Module/ProjectiveCover/Semiperfect.lean` and
 `TauCeti/RingTheory/Jacobson/LeftPerfect.lean` (Layer 4). Nothing goes under
@@ -145,10 +161,11 @@ Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 
    never sees functor categories.
 6. `Tor^C_n(F, G)` and `Tor_n^A(M, N)` have the right module first, are derived in the left-module
    variable, and take values in `ModuleCat R` (1.1). Over a commutative ring, ring `Tor` is compared
-   directly with Mathlib's `CategoryTheory.Tor` (1.5). Layers 2 and 3 use
-   `R = ℤ` for now; by the independence of `R` (0.3, 0.6) this does not change the underlying
-   groups. Modules live in `ModuleCat.{v} A` and `ModuleCat.{v} Aᵐᵒᵖ` with `[Small.{v} A]`, as for
-   `TauCeti.globalDimension`; the instance `Small.{v} Aᵐᵒᵖ` is part of 1.1.
+   directly with Mathlib's `CategoryTheory.Tor` (1.6). Flatness (2.1) is defined with `R = ℤ` and
+   does not depend on `R`; Layer 3 uses `R = ℤ` for now. By the independence of `R` (0.3, 0.6) this
+   does not change the underlying groups. Modules live in `ModuleCat.{v} A` and `ModuleCat.{v} Aᵐᵒᵖ`
+   with `[Small.{v} A]`, as for `TauCeti.globalDimension`; the instance `Small.{v} Aᵐᵒᵖ` is part of
+   1.1.
 7. Dimensions take values in `WithBot ℕ∞`, with `⊥` exactly for the zero module, as Mathlib's
    `CategoryTheory.projectiveDimension` and Tau Ceti's `TauCeti.globalDimension`.
    `TauCeti.globalDimension A` is the left global dimension; the right one is
@@ -184,6 +201,9 @@ printed pages. A locator that has not been read in the source says so.
 
 The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
 `71ce0a33087999414b8424bf26c3a1d9fbbce54e`. `Suggested.lean` imports
+`TauCeti.Algebra.Category.ModuleCat.Flat.FilteredFree`,
+`TauCeti.Algebra.Category.ModuleCat.Projective.TensorHom`,
+`TauCeti.Algebra.Module.AuslanderReiten.TensorCokernel`,
 `TauCeti.Algebra.Module.CharacterModule.MulOpposite`,
 `TauCeti.CategoryTheory.FinitelyPresentedFunctor.Basic` and
 `TauCeti.RingTheory.MatlisDuality.Basic`, which need Tau Ceti at that commit or later.
@@ -192,10 +212,11 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
 
 - Functor categories and modules over a category: `CategoryTheory.additiveFunctor`,
   `CategoryTheory.AdditiveFunctor` (`C ⥤+ D`), `ObjectProperty.FullSubcategory`,
-  `ObjectProperty.lift`, `ObjectProperty.ιOfLE`; the closure classes
-  `ObjectProperty.ContainsZero`, `ObjectProperty.IsClosedUnderKernels`,
-  `ObjectProperty.IsClosedUnderCokernels`, `ObjectProperty.IsClosedUnderFiniteProducts` and the
-  abelian instance for full subcategories (`Mathlib/CategoryTheory/Abelian/Subcategory.lean`);
+  `ObjectProperty.lift`, `ObjectProperty.ιOfLE`; the closure classes `ObjectProperty.ContainsZero`,
+  `ObjectProperty.IsClosedUnderKernels`, `ObjectProperty.IsClosedUnderCokernels`,
+  `ObjectProperty.IsClosedUnderFiniteProducts`, `ObjectProperty.IsClosedUnderColimitsOfShape` with
+  `hasColimitsOfShape_of_closedUnderColimits`, and the abelian instance for full subcategories
+  (`Mathlib/CategoryTheory/Abelian/Subcategory.lean`);
   `CategoryTheory.Abelian.functorCategoryAbelian`; `CategoryTheory.preadditiveYoneda`,
   `CategoryTheory.preadditiveCoyoneda`; `CategoryTheory.EnoughProjectives`,
   `CategoryTheory.Projective`, `CategoryTheory.IsCoseparator`.
@@ -229,6 +250,17 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   `ModuleCat.Algebra.instLinear`.
 - Homology: `CategoryTheory.ShortComplex.ShortExact.δ` with `homology_exact₁`, `homology_exact₂`
   and `homology_exact₃`; `HomologicalComplex₂` and `HomologicalComplex₂.total`.
+- Flat functors (Layer 2): `Subobject`, `imageSubobject`, `Limits.Sigma.desc`, `cokernel`,
+  `CategoryTheory.Injective`, `PreservesFilteredColimitsOfSize`, the `AB5` instances
+  (`Mathlib/Algebra/Category/Grp/AB.lean`); `IsFinitelyPresentable` and
+  `ObjectProperty.isFinitelyPresentable` (`Mathlib/CategoryTheory/Presentable/Finite.lean`),
+  `IsFinitelyAccessibleCategory` (`Mathlib/CategoryTheory/Presentable/LocallyPresentable.lean`;
+  not `IsLocallyFinitelyPresentable`); `IsFiltered`, `IsCofiltered`, `CostructuredArrow`,
+  `Functor.Elements`, `Functor.isCofiltered_elements`, `Cocone`, `IsColimit`, `colimit`,
+  `Functor.DenseAt`, `Retract`, `Functor.ofSequence`, `Functor.ofOpSequence`; `IsIndObject` with
+  `isIndObject_iff` and `isIndObject_iff_preservesFiniteLimits`; `PreservesFiniteLimits`,
+  `HasCokernels`, `HasFiniteBiproducts`; `Functor.IsHomological` with the scoped instances of
+  `Pretriangulated.Opposite`; `RepresentablyFlat` (named only to mark the difference).
 - Morita equivalence: `IsMoritaEquivalent` and `MoritaEquivalence`
   (`Mathlib/RingTheory/Morita/Basic.lean`), for rings only.
 - Dimensions: `CategoryTheory.projectiveDimension`, `CategoryTheory.HasProjectiveDimensionLT`,
@@ -236,7 +268,9 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   `CategoryTheory.HasInjectiveDimensionLE`.
 - Commutative counterparts: `TensorProduct` with `LinearMap.rTensor` and `LinearMap.lTensor`;
   `CategoryTheory.Tor` and `CategoryTheory.Tor'` on `ModuleCat R`; `Module.Flat` with
-  `Module.Flat.iff_characterModule_injective` and `Module.Flat.projective_of_finitePresentation`;
+  `Module.Flat.iff_characterModule_injective`, `Module.Flat.iff_forall_isTrivialRelation`,
+  `Module.Flat.exists_factorization_of_finitePresentation` and
+  `Module.Flat.projective_of_finitePresentation`;
   `CharacterModule` with `CharacterModule.homEquiv`.
 - Modules and rings: `Module.Projective`, `Module.Injective`, `Module.Baer` with
   `Module.Baer.injective`, `Module.FinitePresentation`, `Module.finitePresentation_of_finite`,
@@ -283,8 +317,11 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   (`TauCeti.Algebra.Homology.ComplexShape.Signs`).
 - `Tor` over commutative rings: the results on Mathlib's `Tor` and `Tor'` in
   `TauCeti.Algebra.Category.ModuleCat.Monoidal.Tor` and `TauCeti.CategoryTheory.Monoidal.Tor`
-  (1.5).
-- Quivers and Morita theory (1.6): `TauCeti.quiverRepEquivalence`
+  (1.6).
+- Flat modules over commutative rings (2.3): `TauCeti.FiniteFreeModuleCat`,
+  `TauCeti.finiteFreeModuleInclusion`, `TauCeti.FiniteFreeOver` and `TauCeti.flatModuleFilteredFree`
+  (`TauCeti.Algebra.Category.ModuleCat.Flat.FilteredFree`), the last one a refactor consumer.
+- Quivers and Morita theory (1.7): `TauCeti.quiverRepEquivalence`
   (`TauCeti.RepresentationTheory.Quiver.Representation.AsModule`), as the pattern;
   `TauCeti.Quiver.Kronecker.upperTriangularAlgEquiv`
   (`TauCeti.RepresentationTheory.Quiver.Kronecker.UpperTriangular`);
@@ -311,6 +348,14 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   `TauCeti.isProjectiveCover_of_isSimpleModule_quotient_jacobson_smul_top`
   (`...ProjectiveCover.Simple`); `Module.Projective.sup_ne_top_of_isLocalRing_end`
   (`TauCeti.Algebra.Module.Projective.Local`).
+- The transpose and stable `Hom` (1.4): `TauCeti.AuslanderReitenTranspose`
+  (`TauCeti.Algebra.Module.AuslanderReiten.Transpose`),
+  `LinearMap.auslanderReitenTransposeTensorEquivCokernel` with
+  `auslanderReitenTransposeTensorEquivCokernel_map`
+  (`TauCeti.Algebra.Module.AuslanderReiten.TensorCokernel`),
+  `TauCeti.ExactStructure.abelian`, `TauCeti.ExactStructure.projectiveStableFunctor` and
+  `ModuleCat.tensorHomCokernelEquivProjectiveStableHom`
+  (`TauCeti.Algebra.Category.ModuleCat.Projective.TensorHom`).
 - Projective presentations: `TauCeti.FiniteProjectivePresentation` with `ofFinitePresentation`
   (`TauCeti.Algebra.Module.Projective.FinitePresentation`);
   `TauCeti.IsMinimalProjectivePresentation` and
@@ -323,13 +368,21 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
 
 None.
 
+### From open pull requests
+
+TauCetiProject/TauCeti#37151 (Auslander's defect formula, open):
+`Function.Exact.contravariantDefectEquivKer` and `LinearMap.homCokernelMap`, for the ring form of
+1.4. The roadmap does not depend on it; the ring form waits for the merge or goes through the
+categorical form. The defect formula itself
+(`Function.Exact.dualContravariantDefectEquivCovariantDefect`) is not a target here.
+
 ## How to read the build
 
 | Layer | Construction | Principal outputs |
 | --- | --- | --- |
 | [0](#layer-0-modules-over-a-preadditive-category-and-their-tensor-product) | Modules over a preadditive category | `Mod C`, rings as one-object categories, tensor product over `C`, projective factors, swap, ring API, duals |
-| [1](#layer-1-tor) | `Tor` | Left derived functor, long exact sequences, balance, `Tor`–`Ext` duality, comparisons, `Tor₁` of cyclic modules, category algebras |
-| [2](#layer-2-flat-modules) | Flat modules | Tests, closure, flat quotients, Bass's flat module, finitely presented flat modules |
+| [1](#layer-1-tor) | `Tor` | Left derived functor, long exact sequences, balance, `Tor` of the transpose, `Tor`–`Ext` duality, comparisons, `Tor₁` of cyclic modules, category algebras |
+| [2](#layer-2-flat-modules-and-flat-functors) | Flat modules and flat functors | Ideal test, `Tor` and Lambek tests, Baer criterion, Lazard block, purity, flat = left exact, triangulated case, representation theorem, Bass's module, closure |
 | [3](#layer-3-flat-dimension-and-weak-global-dimension) | Dimensions | Flat dimension, weak global dimension, symmetry, Auslander's theorem |
 | [4](#layer-4-semiperfect-and-perfect-rings-and-basss-theorem-p) | Semiperfect and perfect rings | T-nilpotence, covers over semiperfect rings, `IsLeftPerfectRing`, covers over left perfect rings, Theorem P, global dimension |
 
@@ -351,7 +404,9 @@ Throughout, `C : Type u` is preadditive with `Category.{v} C`, modules take valu
   computed objectwise (instances of `ObjectProperty.ContainsZero`,
   `ObjectProperty.IsClosedUnderKernels`, `ObjectProperty.IsClosedUnderCokernels` and
   `ObjectProperty.IsClosedUnderFiniteProducts`). Mathlib's instance for full subcategories then
-  makes `Mod C` and the left modules abelian.
+  makes `Mod C` and the left modules abelian. They are also closed under colimits
+  (`ObjectProperty.IsClosedUnderColimitsOfShape`; colimits commute with finite biproducts), so
+  `Mod C` has the colimits of `AddCommGrpCat` (Layer 2 uses them).
 - **Representables** (`TauCeti.ModCat.yoneda : C ⥤ ModCat.{v} C`, from Mathlib's
   `preadditiveYoneda`; `TauCeti.LeftModCat.coyoneda`). `Hom(-, X)` is projective, since
   `Hom(Hom(-, X), F) ≅ F(X)` by Yoneda. When `C` is `EssentiallySmall.{w}`, every module is a
@@ -555,8 +610,8 @@ evaluated at `E`, as Tau Ceti's `MatlisDual R E` for rings. The adjunction of 0.
 
 Special cases: `R = ℤ` and `E = ℚ ⧸ ℤ`, Mathlib's `CharacterModule` (for `Mod C` this gives a
 cogenerating family of injectives, [Mitchell, §6, p. 27]); Matlis duals `MatlisDual R E` for
-Auslander-Reiten theory. Whether Lambek's criterion holds with a general injective cogenerator `E`
-is to be checked in the literature for Layer 2.
+Auslander-Reiten theory. Lambek's criterion with a general injective cogenerator `E` is 2.2 (6); it
+follows from the adjunction, already over a commutative base ring in [OR, (1.1), p. 93].
 
 *Needs:* 0.3; Mathlib `IsCoseparator`, `ShortComplex.ShortExact`; Tau Ceti `TauCeti.MatlisDual`.
 
@@ -575,7 +630,7 @@ Mathlib and Tau Ceti only.
 Throughout, `C : Type u` is an `R`-linear category with `Category.{v} C` and
 `EssentiallySmall.{w} C`, modules take values in `AddCommGrpCat.{w}`, and `Tor` takes values in
 `ModuleCat.{w} R`. There is one `Tor`, derived in the left-module variable. The version that
-resolves the right module is `Tor` over `Cᵒᵖ`, read through the swap of 0.5. Items 1.1–1.5 end
+resolves the right module is `Tor` over `Cᵒᵖ`, read through the swap of 0.5. Items 1.1–1.6 end
 with their ring statements.
 
 ### 1.1 Definition
@@ -673,7 +728,51 @@ left-module variable (`ShortComplex.ShortExact.balancedTorδ'`, `TauCeti.balance
 `HomologicalComplex₂.quasiIso_totalAugmentation_of_rows`,
 `HomologicalComplex₂.totalComplexShapeSymmetryDownNat`.
 
-### 1.4 `Tor`–`Ext` duality
+### 1.4 `Tor` of the transpose
+
+For a finitely presented module `X` with transpose `Tr X` and any module `N`,
+
+    stable Hom(X, N) ≅ Tor_1(Tr X, N),
+
+where the stable `Hom` is `Hom` modulo the maps that factor through a projective ([Auslander78, I,
+Prop. 3.2]). Route (the owner's): Krause's snake-lemma step ([Krause-Defect]), without dualizing.
+Take `0 → ΩN → P → N → 0` with `P` projective, and a presentation `P₁ → P₀ → X → 0` by finite
+projectives. Put `H(M) = coker(Hom(P₀, M) → Hom(P₁, M))`. The snake lemma identifies `δ^*(X) =
+coker(Hom(X, P) → Hom(X, N))` with `ker(H(ΩN) → H(P))`. Here `δ^*(X)` is the stable `Hom(X, N)`,
+since a map from `X` that factors through a projective factors through `P → N`; and `H(M) ≅ Tr X ⊗
+M` naturally in `M`. So the kernel is `ker(Tr X ⊗ ΩN → Tr X ⊗ P)`, which is `Tor_1(Tr X, N)` by the
+long exact sequence of 1.3 and `Tor_1(Tr X, P) = 0` (1.1).
+
+- **Category** (`TauCeti.ModCat.matrixMap`, `TauCeti.ModCat.transpose`,
+  `TauCeti.ModCat.stableHomEquivTorTranspose`), a target. A finitely presented right module is the
+  cokernel `X` of a map `⊕_j Hom(-, Y_j) → ⊕_i Hom(-, Z_i)` given by a matrix `α_ji : Y_j → Z_i`;
+  its Auslander–Bridger transpose `Tr X` is the cokernel of the transposed matrix
+  `⊕_i Hom(Z_i, -) → ⊕_j Hom(Y_j, -)`, a left module. Then `stable Hom(X, N) ≃ Tor_1(N, Tr X)`
+  for every right module `N`, with Tau Ceti's projective stable category
+  (`TauCeti.ExactStructure.projectiveStableFunctor` of `TauCeti.ExactStructure.abelian`). Here the
+  needed long exact sequence is the one of 1.2, in the right-module variable. Left modules follow
+  over `Cᵒᵖ`.
+- **Rings** (`TauCeti.stableHomEquivBalancedTorTranspose`): for a presentation `f : P₁ → P₀`, `P₀ →
+  X → 0` by finite projective left modules, `stable Hom_A(X, N) ≃ₗ[R] Tor_1^A(Tr X, N)`, with Tau
+  Ceti's `TauCeti.AuslanderReitenTranspose f`. Route: `Function.Exact.contravariantDefectEquivKer`
+  (the snake lemma step) from the open TauCetiProject/TauCeti#37151, and Tau Ceti's
+  `LinearMap.auslanderReitenTransposeTensorEquivCokernel` (`H(M) ≅ Tr X ⊗ M`, natural by
+  `auslanderReitenTransposeTensorEquivCokernel_map`), once #37151 merges; the roadmap does not
+  depend on that PR. The stable `Hom` matches Tau Ceti's
+  `ModuleCat.tensorHomCokernelEquivProjectiveStableHom`.
+
+Auslander's defect formula `D δ^*(X) ≅ δ_*(D Tr X)` itself stays with
+[ArtinAlgebras](../RepresentationTheory/ArtinAlgebras/README.md), §4.2, and #37151; it is a
+supplier, not a target here. Layer 2 uses this item for "finitely presented flat modules are
+projective" (2.3).
+
+*Needs:* 1.1–1.3; Tau Ceti `TauCeti.AuslanderReitenTranspose`,
+`LinearMap.auslanderReitenTransposeTensorEquivCokernel`,
+`TauCeti.ExactStructure.projectiveStableFunctor`, `TauCeti.ExactStructure.abelian`,
+`ModuleCat.tensorHomCokernelEquivProjectiveStableHom`; from
+#37151 (open) `Function.Exact.contravariantDefectEquivKer`.
+
+### 1.5 `Tor`–`Ext` duality
 
 (`TauCeti.ModCat.torExtDualityEquiv`.) For an injective `R`-module `E`,
 
@@ -696,15 +795,15 @@ no comparison of `Ext`s is needed ([CE, VI, Prop. 5.1, p. 120]; [Lambek, p. 241]
 `MatlisDual R E N` (0.6) and the `R`-linear structure of `ModuleCat Aᵐᵒᵖ` from Mathlib's scoped
 `ModuleCat.Algebra.instLinear`.
 
-Consumers: Lambek's criterion in Layer 2 (`R = ℤ`, `E = ℚ ⧸ ℤ`, `n = 1`), the character-module
-formula for flat dimension in Layer 3, and Auslander-Reiten formulas with Matlis duals (`E` an
-injective hull of the residue field of a commutative base, as in ArtinAlgebras).
+Consumers: Lambek's criterion in Layer 2 (`n = 1`, `E` an injective cogenerator), the
+character-module formula for flat dimension in Layer 3, and Auslander-Reiten formulas with Matlis
+duals (`E` an injective hull of the residue field of a commutative base, as in ArtinAlgebras).
 
 *Needs:* 0.7, 1.1, 1.3; Mathlib `Abelian.Ext`, `HasExt`, `hasExt_of_enoughProjectives`,
 `ProjectiveResolution.extEquivCohomologyClass`, the `Module R (Ext X Y n)` instance; Tau Ceti
 `TauCeti.MatlisDual`.
 
-### 1.5 Comparisons and first computations
+### 1.6 Comparisons and first computations
 
 - **Commutative rings** (`TauCeti.balancedTorIsoTor`). For `[CommRing R]`, `BalancedTor R R n` is
   naturally isomorphic to Mathlib's `CategoryTheory.Tor (ModuleCat R) n`, after restricting
@@ -732,7 +831,7 @@ injective hull of the residue field of a commutative base, as in ArtinAlgebras).
 *Needs:* 0.3, 0.6, 1.1–1.3; Mathlib `CategoryTheory.Tor`, `CategoryTheory.Tor'`,
 `ModuleCat.restrictScalars`.
 
-### 1.6 Categories with finitely many objects
+### 1.7 Categories with finitely many objects
 
 For a preadditive `C` with finitely many objects (`[Fintype C] [DecidableEq C]`), the **category
 algebra** (`TauCeti.CategoryAlgebra C`) is `⊕_{x,y} Hom(x, y)`, the families `a x y : x ⟶ y` with
@@ -778,103 +877,343 @@ representables of `C`.
   `⋯ → B → B → k` by multiplication by `ε`, which becomes zero after tensoring with `k`.
 - For `T = T₂(k)` with radical `J = k e₁₂`, `Tor_1^T(T ⧸ J, T ⧸ J) ≅ J ⧸ J² = J` is
   one-dimensional (cyclic formula), and `Tor_n^T(T ⧸ J, -) = 0` for `n ≥ 2`, since
-  `J = e₁₂T ≅ e₂₂T` is projective. By 1.6 the same groups are computed over the quiver category
+  `J = e₁₂T ≅ e₂₂T` is projective. By 1.7 the same groups are computed over the quiver category
   of `1 → 2`, with the representables as projectives.
 
 ### Examples
 
 Rings: `ℤ`, `B = k[ε]/(ε²)` and `T₂(k)` as in the checks. Categories: representables, and finite
-quiver categories through their path algebras (1.6). The balance makes `Tor` computable from a
+quiver categories through their path algebras (1.7). The balance makes `Tor` computable from a
 resolution of either variable.
 
 ### Dependencies
 
 Layer 0.
 
-## Layer 2: flat modules
+## Layer 2: flat modules and flat functors
 
-*Under review: to be converted to the category-primary design of Layer 0; currently stated for
-rings.*
+Throughout, `C : Type u` is preadditive with `Category.{v} C` and `EssentiallySmall.{v} C`. Flatness
+is stated for modules in the universe `v` of the morphisms, where the representables live (0.1). A
+category that is only `EssentiallySmall.{w}` passes to Mathlib's `SmallModel`, and flatness is
+invariant under the equivalence. The sources state flatness for right modules ([OR], [St], [CB],
+[Mitchell]) or for left modules ([Simson]). Here the definition is for left modules; each statement
+for one side gives the other through the swap (0.5). Items 2.1–2.6 end with their ring statements.
 
-### 2.1 Definition and tests
+### 2.1 Definition
 
-(`TauCeti.Module.BalancedFlat A M`), a class for a left module `M`: for every finite right
-`A`-module `P` in the universe of `A` and every finitely generated submodule `N ≤ P`, the map
-`N ⊗_A M → P ⊗_A M` (over `R = ℤ`) is injective. This is the shape of Mathlib's `Module.Flat`. A
-right module `M` is flat when `BalancedFlat Aᵐᵒᵖ M`.
+(`TauCeti.ModCat.yonedaSpan β`, `TauCeti.LeftModCat.Flat G`, `TauCeti.ModCat.Flat F`.) For finitely
+many morphisms `β_j : Y_j → X`, `yonedaSpan β ⊆ Hom(-, X)` is the image of
+`⊕_j Hom(-, Y_j) → Hom(-, X)`; these are the finitely generated subfunctors of `Hom(-, X)`. A left
+`C`-module `G` is **flat** if for every object `X` and every finitely generated subfunctor
+`I ⊆ Hom(-, X)` the map `I ⊗_C G → Hom(-, X) ⊗_C G ≅ G(X)` is injective (a monomorphism in
+`ModuleCat ℤ`; Yoneda, 0.3). This is the ideal test of [OR, Thm. 3.2 (3), p. 96]; for rings it is
+the test on finitely generated right ideals ([Lam-LMR, (4.12), p. 125]). The definition is
+universe-free: it quantifies over objects and finite families of morphisms of `C`, not over modules.
+A right module `F` is flat when it is flat as a left `Cᵒᵖ`-module (`ModCat C` is `LeftModCat Cᵒᵖ`);
+by the swap, this says that `F ⊗_C -` passes the ideal test.
 
-**Tests** (`TauCeti.Module.balancedFlat_tfae`). For `[Small.{v} A]` and `M : Type v`, the
-following are equivalent:
+- **Independence of `R`** (`TauCeti.LeftModCat.flat_iff_mono_tensor`): for an `R`-linear `C`, the
+  ideal test with the tensor product over `R` is equivalent, by the independence of `R` (0.3).
+- **Ambient and intrinsic flatness.** `Flat` is flatness as a module. An object of the full
+  subcategory `Flat(C)` of flat modules may also be called flat *inside* that category, when every
+  epimorphism onto it there is pure; this is a different notion ([CI]). The docstring of `Flat`
+  says so. The intrinsic notion is not developed here.
 
-1. `BalancedFlat A M`;
-2. `i ⊗ M` is injective for every injective map `i` of right modules, in every universe;
-3. for every finitely generated right ideal `I`, the map `I ⊗_A M → A ⊗_A M` is injective;
-   through `lid` this is the map `I ⊗_A M → M` ([Lam-LMR, (4.12), p. 125]);
-4. `Module.Injective Aᵐᵒᵖ M⁺` (Lambek: [Lambek, Theorem, p. 239], [Lam-LMR, (4.9), p. 125]);
-5. `Tor_1^A(N, M) = 0` for every right module `N`;
-6. `Tor_1^A(A ⧸ I, M) = 0` for every finitely generated right ideal `I`.
+**Rings** (`TauCeti.Module.BalancedFlat A M`), a native class for a left module `M` (Convention 5):
+`I ⊗_A M → A ⊗_A M` is injective for every finitely generated right ideal `I`, over `R = ℤ`. A
+right module `M` is flat when `BalancedFlat Aᵐᵒᵖ M`. Mathlib lists the generalization of
+`Module.Flat` to noncommutative rings as a TODO (`Mathlib/RingTheory/Flat/Basic.lean`); if it is
+made, `BalancedFlat` is replaced by `Module.Flat`. Bridges: flatness over `SingleObj A`
+(`TauCeti.Module.balancedFlat_iff_flat_singleObj`, through 0.2 and 0.6), and for a commutative ring
+Mathlib's `Module.Flat` (`TauCeti.Module.balancedFlat_iff_flat`, through 0.6).
 
-Route: (1) ⇒ (3) and (2) ⇒ (1) are immediate. (3) ⇒ (4): an element of `I ⊗_A M` comes from
-`I' ⊗_A M` for a finitely generated `I' ≤ I`, so (3) holds for all right ideals; then the duals
-of 0.6 and Mathlib's `Module.Baer.injective` over `Aᵐᵒᵖ`. (4) ⇒ (2) by the duals of 0.6. (2) ⇔ (5)
-and (3) ⇔ (6) by 1.2, applied to `0 → K → F → N → 0` with `F` free and to `0 → I → A → A ⧸ I → 0`.
+*Needs:* 0.1–0.3, 0.5, 0.6; Mathlib `Subobject`, `imageSubobject`, `Limits.Sigma.desc`.
 
-**Commutative rings** (`TauCeti.Module.balancedFlat_iff_flat`). For `[CommRing R]`,
-`BalancedFlat R M ↔ Module.Flat R M`, through 0.6.
+### 2.2 Tests
 
-### 2.2 Closure properties and `Tor`
+(`TauCeti.LeftModCat.flat_tfae`.) For a left module `G`, the following are equivalent:
 
-Projective modules are flat (`TauCeti.Module.BalancedFlat.of_projective`, an instance, from 0.4);
-flatness is invariant under linear equivalence (`TauCeti.Module.BalancedFlat.of_linearEquiv`),
-passes to retracts, and a direct sum is flat exactly when every summand is
-(`TauCeti.Module.balancedFlat_directSum_iff`). In a short exact sequence
-`0 → M₁ → M₂ → M₃ → 0` of left modules with `M₃` flat, `M₂` is flat exactly when `M₁` is
-(`TauCeti.Module.balancedFlat_iff_of_exact`; 1.3; [Lam-LMR, (4.13), p. 126]). Flat modules have
-no higher `Tor`: `Tor_{n+1}^A(N, M) = 0` for flat `M`
-(`TauCeti.isZero_balancedTor_succ_of_balancedFlat`), by 1.3: compute with `P ⊗_A M` for a
-projective resolution `P` of `N`, and use that `- ⊗_A M` is exact.
+1. `G` is flat (the ideal test);
+2. `I ⊗_C G → G(X)` is injective for every subfunctor `I ⊆ Hom(-, X)` ([OR, Thm. 3.2 (3)]);
+3. `- ⊗_C G` preserves monomorphisms, so it is exact on `Mod C` ([OR, Thm. 3.2 (1), p. 96];
+   [Mitchell, §10, p. 48]). This holds for right modules in every universe; in Lean it is stated in
+   the universe `v`, since `⊗_C` takes both modules in one universe (0.3);
+4. `Tor_1(-, G) = 0`; then `Tor_n(-, G) = 0` for all `n ≥ 1`
+   (`TauCeti.LeftModCat.Flat.isZero_tor_succ`; dimension shifting by 1.2 and 1.3);
+5. `Tor_1(Hom(-, X) ⧸ I, G) = 0` for every finitely generated `I ⊆ Hom(-, X)`;
+6. **Lambek**: the dual `G^E = Hom_R(G(-), E)` of 0.7 is injective in `Mod C`, for an injective
+   cogenerator `E` of `R`-modules (`TauCeti.LeftModCat.flat_iff_injective_dual`; [Lambek, Theorem,
+   p. 239] for rings and `E = ℚ ⧸ ℤ`; [St, Thm. 3 (d), p. 357] for functors). For a general `E` it
+   follows from the adjunction of 0.7 ([OR, (1.1), p. 93]) and 0.7's one-map criterion.
 
-### 2.3 Flat quotients and Bass's flat module
+Route: the textbook one, Lambek and Baer, organized as in [Lam-LMR, (4.12)]. (2) ⇒ (1) and
+(3) ⇒ (2) are immediate. (1) ⇒ (2): an element of `I ⊗_C G` comes from `I' ⊗_C G` for a finitely
+generated `I' ⊆ I`. (2) ⇒ (6): by 0.7, (2) says that every map from a subfunctor of a representable
+to `G^E` extends to the representable; then the Baer criterion below. (6) ⇒ (3) by 0.7. (3) ⇔ (4)
+and (4) ⇒ (5) ⇒ (1) by the long exact sequences of 1.2 and the vanishing of `Tor` at projective
+right modules (1.3), applied to `0 → K → P → F → 0` and to `0 → I → Hom(-, X) → Hom(-, X) ⧸ I → 0`.
+The [OR] route through the equational criterion and filtered colimits is not followed for this
+item. Each test holds for right modules through the swap
+(`TauCeti.ModCat.Flat.mono_tensor_obj_map` for (3)).
 
-**Flat quotients.** For a short exact sequence `0 → K → F → M → 0` of left modules with `F` flat,
-`M` is flat exactly when `N ⊗ K → N ⊗ F` is injective for every right module `N` ([Lam-FC,
-(24.23), p. 367], right-handed). When `M` is flat, `K ⊓ I • F = I • K` for every two-sided ideal
-`I` (`TauCeti.Submodule.inf_smul_eq_smul_of_balancedFlat`): the case `N = A ⧸ I`.
+Two targets of this item:
 
-**Bass's flat module.** For a sequence `a : ℕ → A`, let `F = ℕ →₀ A` with basis `eᵢ`, and
-`G ≤ F` the submodule spanned by the `eᵢ - aᵢ • eᵢ₊₁` (`TauCeti.bassRelations A a`). Then
-`F ⧸ G` is flat (`TauCeti.balancedFlat_bassRelations`), and if `F ⧸ G` is projective, the chain of
-principal right ideals `a₀A ⊇ a₀a₁A ⊇ a₀a₁a₂A ⊇ ⋯` is eventually constant
-(`TauCeti.exists_span_prod_eq_of_projective_bassRelations`; [Bass, Lemma 1.1, p. 468]; [Lam-FC,
-(24.24), pp. 367–368], right-handed). Route: `G` is free on the `eᵢ - aᵢ • eᵢ₊₁`, and the test
-above is checked on coordinates; a splitting of `G → F` gives the stabilization.
+- **Baer's criterion for `Mod C`** (`TauCeti.ModCat.Baer`, `TauCeti.ModCat.baer_iff_injective`): a
+  right module `E` is injective exactly when every map from a subfunctor of a representable
+  `Hom(-, X)` to `E` extends to `Hom(-, X)`. Route: Zorn's lemma on partial extensions, as
+  Mathlib's `Module.Baer.injective`; the representables generate, since an element of `F(X)` is a
+  map `Hom(-, X) → F`. Not in Mathlib (only `Module.Baer`) or Tau Ceti.
+- **`Tor` commutes with filtered colimits** in the left-module variable
+  (`TauCeti.ModCat.preservesFilteredColimits_tor_obj`). Route: compute `Tor` from a projective
+  resolution `P` of the right module (1.3); each `P_p ⊗_C -` preserves colimits (0.3), and filtered
+  colimits are exact in `ModuleCat R` (Mathlib's `AB5` instances). [OR, Lemma 3.1, p. 96] uses
+  this; 2.3 and 2.6 need it.
 
-### 2.4 Finitely presented flat modules
+**Rings** (`TauCeti.Module.balancedFlat_tfae`). For `[Small.{v} A]` and `M : Type v`, the following
+are equivalent: `BalancedFlat A M`; `I ⊗_A M → M` is injective for every right ideal `I`; `i ⊗ M` is
+injective for every injective map `i` of right modules in the universe `v`; `Tor_1^A(N, M) = 0` for
+every right module `N`; `Tor_1^A(A ⧸ I, M) = 0` for every finitely generated right ideal `I`;
+`Module.Injective Aᵐᵒᵖ M⁺` ([Lambek, Theorem, p. 239]; [Lam-LMR, (4.9), p. 125]). Route: the same,
+with Mathlib's `Module.Baer.injective` over `Aᵐᵒᵖ` and the duals of 0.6, or through
+`balancedFlat_iff_flat_singleObj`. Also: flat modules have no higher `Tor`
+(`TauCeti.isZero_balancedTor_succ_of_balancedFlat`), and ring `Tor` commutes with filtered colimits
+(`TauCeti.preservesFilteredColimits_balancedTor_obj`).
 
-(`TauCeti.Module.BalancedFlat.projective_of_finitePresentation`). For `[Small.{v} A]`,
-`[Module.FinitePresentation A M]` and `[BalancedFlat A M]`, `M` is projective. Route: 2.1 (4)
-and Tau Ceti's `CharacterModule.projective_of_injective` ([Lam-LMR, (4.30), p. 133], for finitely
-related modules; Mathlib's `Module.Flat.projective_of_finitePresentation` is the commutative
-case). Over a left Noetherian ring every finite flat module is projective
-(`Module.finitePresentation_of_finite`).
+*Needs:* 0.3, 0.4, 0.7, 1.1–1.3; Mathlib `Subobject`, `Injective`, `IsCoseparator`,
+`PreservesFilteredColimitsOfSize`, `AB5`, `Module.Baer.injective`.
+
+### 2.3 The Lazard block
+
+These characterizations use finite data ([OR, Thm. 3.2 (4)–(6)]; [Lazard, Ch. I]; [St]; [CB, §1.3]).
+Over a preadditive `C` they use finite sums of representables `Hom(Z_1, -) ⊕ ⋯ ⊕ Hom(Z_m, -)`
+(`TauCeti.LeftModCat.isFiniteFree`), not single representables: for `C = SingleObj ℤ` the elements
+`e_1, e_2` of the flat module `ℤ²` have no common source `e_1 = a z`, `e_2 = b z`. Under finite
+biproducts the single-representable forms are corollaries; no passage to `Mat_ C` is needed. For a
+left module `G`, each of the following is equivalent to flatness:
+
+- **equational criterion** (`TauCeti.LeftModCat.IsTrivialRelation`,
+  `TauCeti.LeftModCat.flat_iff_forall_isTrivialRelation`): every relation
+  `∑_j G(β_j)(y_j) = 0` in `G(X)` is trivial, that is, there are finitely many `z_i ∈ G(Z_i)` and
+  maps `α_ij : Z_i → Y_j` with `y_j = ∑_i G(α_ij)(z_i)` and `∑_j α_ij ≫ β_j = 0` for all `i`
+  ([OR, Thm. 3.2 (4), pp. 96–97]; for rings [Lam-LMR, (4.24), p. 130], which credits Chase;
+  Mathlib's commutative `Module.Flat.iff_forall_isTrivialRelation`);
+- **factorization** (`TauCeti.LeftModCat.flat_iff_forall_exists_factorization`): every map from a
+  finitely presented module (Mathlib's `IsFinitelyPresentable`) to `G` factors through a finite sum
+  of representables ([Lazard, Lemme 1.1 and Thm. 1.2, p. 84]; [St, Lemma 8 (c), p. 354]; [CB, §1.3
+  (2), p. 1646]);
+- **filtered category of elements** (`TauCeti.LeftModCat.FiniteFreeOver G`,
+  `TauCeti.LeftModCat.flat_iff_isFiltered_finiteFreeOver`): the maps to `G` from finite sums of
+  representables, a `CostructuredArrow` category with the shape of Tau Ceti's
+  `TauCeti.FiniteFreeOver`, form a filtered category ([OR, Thm. 3.2 (6), p. 97]; [CB, §1.3 (3)]).
+  It is the opposite of the covariant category of elements of `G`, which is cofiltered ([OR,
+  Remark, p. 99]);
+- **Lazard–Govorov** (`TauCeti.LeftModCat.flat_iff_exists_isColimit`): `G` is a filtered colimit of
+  finite sums of representables ([OR, Thm. 3.2 (5), p. 97]; [Mitchell, Thm. 10.1b, p. 48]; [CB,
+  §1.3 (4)]; [Lazard, Thm. 1.2]; for rings [Govorov], a direct limit of free modules; [St, Thm. 3
+  (b)]: a direct limit of projectives);
+- **purity** (`TauCeti.LeftModCat.IsPureEpi`, `TauCeti.LeftModCat.flat_iff_forall_isPureEpi`): every
+  epimorphism onto `G` is pure, that is, maps from finitely presented modules lift along it ([St,
+  §2 and Thm. 3, pp. 353–357]; [Lazard, Cor. 1.3, p. 85]).
+
+Route: the chain of [OR, Thm. 3.2]. The ideal test gives the equational criterion, through the
+ideal generated by the `β_j` and `(Hom(-, X) ⧸ I) ⊗_C G ≅ G(X) ⧸ IG` ([OR, Lemma 1.2, p. 94]). The
+equational criterion gives the factorization, by dualizing a finite presentation ([Lazard, Lemme
+1.1]; [Lam-LMR, (4.32), p. 133]). The factorization makes the category of elements filtered, and
+`G` is the colimit over it (the pattern of Tau Ceti's `flatModuleFilteredFree`). A filtered colimit
+of finite sums of representables is flat, since `Tor_1` commutes with filtered colimits and vanishes
+on projectives (2.2). Purity is the factorization read as lifting. [CB]'s proof of the
+factorization instead uses the transpose and the stable Hom,
+`stable Hom(X, Y) ≅ Tor_1(Tr X, Y)` ([Auslander78, I, Prop. 3.2]); it is not followed here.
+
+Consequences:
+
+- **finitely presented flat modules are projective**
+  (`TauCeti.LeftModCat.Flat.projective_of_isFinitelyPresentable`; [St, Lemma 7 (ii), p. 354];
+  [Lazard, Cor. 1.4, p. 85]; [Mitchell, p. 49]). Route: by 1.4, `stable End(G) ≅ Tor_1(Tr G, G)`,
+  which is `0` since `G` is flat (2.2); so the identity of `G` factors through a projective.
+  Remark: the factorization above also gives it, since the identity factors through a finite sum
+  of representables. This replaces the ring-only route through character modules;
+- **flat and pure-projective modules are projective** (`TauCeti.LeftModCat.IsPureProjective`,
+  `TauCeti.LeftModCat.Flat.projective_of_isPureProjective`): an epimorphism from a projective onto
+  `G` is pure, so it splits;
+- **flat does not imply pure-projective**: `ℚ` is a flat, not projective, `ℤ`-module (checks), so it
+  is not pure-projective. Conversely `ℤ ⧸ 2` is finitely presented, hence pure-projective, and not
+  flat;
+- **additive categories** (`TauCeti.LeftModCat.flat_iff_isFiltered_costructuredArrow_coyoneda`):
+  with finite biproducts, single representables suffice in each item ([CB, §1.3]; [OR, Cor. 3.3,
+  p. 99]).
+
+**Rings** (`TauCeti.Module.balancedFlat_iff_isFiltered_finiteFreeOver`,
+`TauCeti.Module.BalancedFlat.denseAt`,
+`TauCeti.Module.BalancedFlat.exists_factorization_of_finitePresentation`,
+`TauCeti.Module.BalancedFlat.projective_of_finitePresentation`). `M` is flat exactly when Tau Ceti's
+`FiniteFreeOver A M` is filtered; then `M` is the filtered colimit of the finite free modules over
+it; every map from a finitely presented module to `M` factors through a finite free module; and a
+finitely presented flat module is projective, by 1.4 as above ([Lazard, Thm. 1.2, Cor. 1.4];
+[Lam-LMR, (4.30), (4.32)–(4.34), pp. 133–134]; Mathlib's commutative
+`Module.Flat.exists_factorization_of_finitePresentation` and
+`Module.Flat.projective_of_finitePresentation`). Over a left Noetherian ring every finite flat
+module is projective (`Module.finitePresentation_of_finite`).
+
+**Refactor consumer.** Tau Ceti's `TauCeti.flatModuleFilteredFree`
+(`TauCeti.Algebra.Category.ModuleCat.Flat.FilteredFree`), one direction of Lazard's theorem for
+commutative rings, becomes a corollary of `BalancedFlat.denseAt` and `balancedFlat_iff_flat`. It is
+reproved this way, with no compatibility shims.
+
+**Bridge to Mathlib's set-valued notions** (optional; `TauCeti.ModCat.flat_iff_isIndObject`,
+`TauCeti.LeftModCat.flat_iff_isCofiltered_elements`). Over an additive `C`, a right module is flat
+exactly when its underlying presheaf of sets is an ind-object (Mathlib's `IsIndObject`, with the
+recognition theorem `isIndObject_iff`; [Krause-Smashing, §2.3, p. 115]: `Flat C = Ind C`), and a
+left module `G` is flat exactly when `(G ⋙ forget).Elements` is cofiltered (Mathlib's type-valued
+flatness, `Functor.isCofiltered_elements`). Mathlib's `isIndObject_iff_preservesFiniteLimits` is
+then the set-valued form of 2.4. Mathlib's `RepresentablyFlat u` is a different notion: for an
+additive `u : C ⥤ D` between additive categories it corresponds to flatness of the left
+`C`-modules `D(d, u(-))` (the objects of `StructuredArrow d u` are maps `d → u(c)`); the right
+modules `D(u(-), d)` belong to `RepresentablyCoflat`.
+
+*Needs:* 1.4, 2.1, 2.2; Mathlib `IsFinitelyPresentable`, `CostructuredArrow`, `IsFiltered`,
+`IsCofiltered`, `Functor.Elements`, `Cocone`, `IsColimit`, `IsIndObject`, `Functor.DenseAt`,
+`Retract`; Tau Ceti `TauCeti.FiniteFreeOver`, `TauCeti.finiteFreeModuleInclusion`,
+`TauCeti.flatModuleFilteredFree`.
+
+### 2.4 Left exact functors, triangulated categories and the representation theorem
+
+- **Flat = left exact** (`TauCeti.ModCat.flat_iff_preservesFiniteLimits`). For an additive `C`
+  with cokernels, a right module `F` is flat exactly when it is left exact: it turns cokernels in
+  `C` into kernels, that is, `F : Cᵒᵖ ⥤ Ab` preserves finite limits. So
+  `Flat(Cᵒᵖ, Ab) = Lex(Cᵒᵖ, Ab)` ([Fisher, Thms. 1.3–1.4, pp. 279–280], for abelian `C`; [OR,
+  Cor. 3.4, p. 99]; [CB, §2.2, p. 1649]; [Simson, Thm. 2.1 (b), pp. 94–95]). For left modules:
+  over `C` with kernels, a flat left module is a left exact covariant functor.
+- **Weak cokernels** (`TauCeti.IsWeakCokernel`,
+  `TauCeti.ModCat.flat_iff_exact_of_isWeakCokernel`). If the additive `C` has weak cokernels, a
+  right module `F` is flat exactly when `F(Z) → F(Y) → F(X)` is exact whenever `Y → Z` is a weak
+  cokernel of `X → Y` ([CB, §1.2, Lemma 2, and §1.3, pp. 1644–1646], where weak cokernels are
+  called pseudo-cokernels). Route: the filtered category
+  of elements (2.3). The previous item follows: a cokernel is a weak cokernel, and a weak cokernel
+  and the cokernel factor through each other.
+- **Triangulated categories** (`TauCeti.ModCat.flat_iff_isHomological`). For a skeletally small
+  triangulated `C`, a right module is flat exactly when it is cohomological, that is, homological
+  on `Cᵒᵖ` (Mathlib's `Functor.IsHomological`, with the scoped pretriangulated structure of
+  `Pretriangulated.Opposite`) ([Krause-Smashing, Lemma 2.7, p. 115]; independently [Beligiannis,
+  Lemma 8.10, Prop. 8.11 and Rem. 8.12, pp. 180–181]). Krause's proof extends `F` to the abelian
+  category of finitely presented functors and computes `Ext` from triangles. Both sources show
+  that this is also equivalent to fp-injectivity; that part stays in prose.
+- **Crawley-Boevey's representation theorem** (`TauCeti.FinitelyPresented`,
+  `TauCeti.restrictedYonedaEquivFlat`). A finitely accessible additive category `𝒜` is equivalent,
+  by the restricted Yoneda functor `X ↦ Hom(-, X)` on `fp(𝒜)`, to the flat right modules over
+  `fp(𝒜)` ([CB, §1.4, Theorem, p. 1647]). "Finitely accessible" is Mathlib's
+  `IsFinitelyAccessibleCategory`: filtered colimits and a small set of finitely presented objects
+  that generate by filtered colimits, with no cocompleteness. [CB]'s "locally finitely presented"
+  means this. Mathlib's `IsLocallyFinitelyPresentable` adds all colimits and would narrow the
+  theorem ([CPT, pp. 1214 and 1218] distinguish the two). Conversely (`TauCeti.ModCat.flat`, an
+  instance `IsFinitelyAccessibleCategory (ModCat.flat C).FullSubcategory`,
+  `TauCeti.ModCat.isFinitelyPresentable_flat_iff`): for a small additive `C`, the flat right modules
+  form a finitely accessible category, whose finitely presented objects are the retracts of
+  representables (Mathlib's `Retract`) ([CB, §1.4 (1)]). When idempotents split in `C`, `C` is
+  recovered as these finitely presented objects (prose only). The representation does not make
+  `Flat(Cᵒᵖ, Ab)` abelian or Grothendieck.
+
+Pointers, not targets: the representation theorem turns Theorem P (Layer 4) for `fp(𝒜)` into a
+criterion for pure-semisimplicity of `𝒜` ([CB, §3.2, p. 1655]; [JL, Thm. B.12]). Flat covers are
+outside this roadmap ([BEE, Thm. 3] for rings; [CPT, Cor. 3.3, p. 1218] for `Mod C`; [Rump];
+[Krause-FlatCovers]).
+
+*Needs:* 2.3; Mathlib `PreservesFiniteLimits`, `HasCokernels`, `HasFiniteBiproducts`,
+`Functor.IsHomological`, `Pretriangulated.Opposite`, `IsFinitelyAccessibleCategory`,
+`ObjectProperty.isFinitelyPresentable`, `Retract`.
+
+### 2.5 Bass's flat module
+
+For a chain `c_0 ← c_1 ← c_2 ← ⋯` in `C`, with `f_i : c_{i+1} → c_i`:
+
+- **Definition** (`TauCeti.LeftModCat.bassDiagram`, `TauCeti.LeftModCat.bassModule`):
+  `B = colim(Hom(c_0, -) → Hom(c_1, -) → ⋯)`, with maps `Hom(f_i, -)` (Mathlib's
+  `Functor.ofSequence` and `colimit`).
+- **Flat** (an instance): a filtered colimit of representables (2.3).
+- **Telescope presentation** (`TauCeti.LeftModCat.bassTelescope`, `TauCeti.LeftModCat.bassπ`,
+  `TauCeti.LeftModCat.bassTelescope_shortExact`): `0 → ⊕_i Hom(c_i, -) → ⊕_i Hom(c_i, -) → B → 0`,
+  with `e_i ↦ e_i - Hom(f_i, -) e_{i+1}`. So `B` has projective dimension at most one.
+- **Projective implies factorizable** (`TauCeti.IsFactorizable`,
+  `TauCeti.LeftModCat.isFactorizable_of_projective_bassModule`). If `B` is projective, the inverse
+  system `Functor.ofOpSequence f` is factorizable in Simson's sense ([Simson, Def. 3.1, p. 99]):
+  for every `i` there is `j ≥ i` such that the map `c_j → c_i` factors through every later map
+  `c_k → c_i`, `k ≥ j`. In particular, with `p_n = f_{n-1} ≫ ⋯ ≫ f_0 : c_n → c_0`, some `p_n`
+  factors through every later `p_m`. The quantifiers matter: the reverse factorization is automatic,
+  and one equation `p_n = g ≫ p_{n+1}` does not express stabilization. Route: a splitting of the
+  telescope, read on finitely many coordinates; the tails of the chain have the same `B`, which
+  gives every `i`.
+
+Credits: this is the representable-module form of Bass's telescope ([Bass, Lemmas 1.1–1.3,
+pp. 468–470]; the splitting argument is Lemma 1.3), and [Harada, Remark 1, pp. 339–340] adapts
+Bass's construction to the ring with enough idempotents of a category. The categorical statement is
+an adaptation of these, not a new result. [Simson] reaches factorizable systems from "flat implies
+projective" through Mittag-Leffler objects instead (Thm. 5.4 (5)).
+
+**Rings** (`TauCeti.bassRelations`, `TauCeti.balancedFlat_bassRelations`,
+`TauCeti.exists_span_prod_eq_of_projective_bassRelations`). For `a : ℕ → A`, Bass's module
+`(ℕ →₀ A) ⧸ ⟨eᵢ - aᵢ • eᵢ₊₁⟩` is `B` at `SingleObj A` with every `f_i = a_i`: `Hom(f_i, -)` is right
+multiplication by `a_i` on `A` (Convention 4). It is flat, and if it is projective, the chain
+`a₀A ⊇ a₀a₁A ⊇ ⋯` of principal right ideals is eventually constant ([Bass, Lemmas 1.1–1.3];
+[Lam-FC, (24.24), pp. 367–368], right-handed). Layer 4 uses it for Theorem P (4.5).
+
+*Needs:* 2.3; Mathlib `Functor.ofSequence`, `Functor.ofOpSequence`, `colimit`, `Limits.Sigma.desc`,
+`ShortComplex.ShortExact`.
+
+### 2.6 Closure properties
+
+(`TauCeti.LeftModCat.Flat.of_projective`, an instance; `TauCeti.LeftModCat.Flat.of_retract`,
+`TauCeti.LeftModCat.flat_sigma_iff`, `TauCeti.LeftModCat.flat_iff_of_shortExact`,
+`TauCeti.LeftModCat.Flat.of_isColimit`, `TauCeti.LeftModCat.flat_iff_mono_tensor_of_shortExact`.)
+
+- projective modules are flat (0.4);
+- retracts of flat modules are flat (Mathlib's `Retract`);
+- a direct sum is flat exactly when every summand is;
+- in a short exact sequence `0 → G_1 → G_2 → G_3 → 0` with `G_3` flat, `G_2` is flat exactly when
+  `G_1` is ([Mitchell, Cor. 10.4b, p. 49]; the long exact sequence of 1.3);
+- filtered colimits of flat modules are flat (2.2: `Tor` commutes with filtered colimits;
+  [Mitchell, p. 48]; [CB, §1.3]);
+- **flat quotients**: for `0 → K → F → G → 0` with `F` flat, `G` is flat exactly when
+  `N ⊗_C K → N ⊗_C F` is a monomorphism for every right module `N` ([Lam-FC, (24.23), p. 367], for
+  rings, right-handed).
+
+**Rings** (`TauCeti.Module.BalancedFlat.of_projective`,
+`TauCeti.Module.BalancedFlat.of_linearEquiv`, `TauCeti.Module.balancedFlat_directSum_iff`,
+`TauCeti.Module.balancedFlat_iff_of_exact` ([Lam-LMR, (4.13), p. 126]),
+`TauCeti.Submodule.inf_smul_eq_smul_of_balancedFlat`): the same, and the quotient test: if `F` and
+`F ⧸ K` are flat, then `K ⊓ I • F = I • K` for every two-sided ideal `I` ([Lam-LMR, (4.14), p. 126];
+the case `N = A ⧸ I`). Layer 4 uses it (4.5).
+
+Pointers, not targets: products of flat right modules are flat exactly when `C` has weak cokernels
+([CB, Thm. 2.1, p. 1648]; [OR, Thm. 4.1, p. 101]; Chase for rings, [Lam-LMR, (4.47), p. 139]); the
+flat right modules are closed under kernels exactly when the weak global dimension is at most two
+([CB, Thm. 2.3, p. 1651]). Coherence and products belong to Layer 3 or later.
+
+*Needs:* 0.4, 2.2, 2.3; Mathlib `Retract`, `IsFiltered`.
 
 **Checks.**
 
 - `ℚ` is a flat `ℤ`-module (2.1 and Mathlib's `Module.Flat`) and is not projective
-  (`TauCeti.balancedFlat_rat_and_not_projective`); `ℤ ⧸ n` is not flat for `n ≥ 2` (Layer 1 checks).
+  (`TauCeti.balancedFlat_rat_and_not_projective`): a split embedding into a free abelian group
+  would give a nonzero map `ℚ → ℤ`. So `ℚ` is not pure-projective (2.3).
+- `ℤ ⧸ n` is not flat for `n ≥ 2` (`TauCeti.not_balancedFlat_zmod`; `Tor_1^ℤ(ℤ ⧸ n, ℤ ⧸ n) ≠ 0`,
+  Layer 1 checks).
 - Over `B = k[ε]/(ε²)`, `k` is not flat, since `Tor_1^B(k, k) ≅ k` (Layer 1 checks).
 - Over `T₂(k)`, of the two simple left modules the projective one is flat and the other is not
-  (2.4: it is finitely presented and not projective).
+  (2.3: it is finitely presented and not projective). Through 1.7 the same holds for the quiver
+  category of `1 → 2`, whose category algebra is `T₂(k)`.
 - Bass's module over `ℤ` for the constant sequence `p` is `ℤ[1/p]`: flat, not projective, and
   `pℤ ⊋ p²ℤ ⊋ ⋯`.
-
-*Needs:* Layers 0 and 1; Mathlib `Module.Baer.injective`, `Module.FinitePresentation`,
-`Module.finitePresentation_of_finite`, `Module.Flat`; Tau Ceti
-`CharacterModule.projective_of_injective`, `CharacterModule.injective_of_projective`.
+- Representables `Hom(X, -)` and `Hom(-, X)` are flat (projective, 2.6).
+- A categorical Bass module: in the `k`-linear category of the linear quiver `⋯ → 3 → 2 → 1`, take
+  the chain `c_i = i + 1` with `f_i` the arrow `i + 2 → i + 1`. Then `p_n : n + 1 → 1` is the
+  nonzero path, and `Hom(n + 1, m + 1) = 0` for `m > n`, so `p_n` does not factor through `p_m`.
+  The chain is not factorizable, and `B` is flat and not projective (2.5).
 
 ### Examples
 
-`ℚ` and `ℤ[1/p]` over `ℤ`; the simple modules of `T₂(k)` and of `k[ε]/(ε²)`.
+Rings: `ℚ`, `ℤ[1/p]` and `ℤ ⧸ n` over `ℤ`; the simple modules of `T₂(k)` and of `k[ε]/(ε²)`.
+Categories: representables; Bass modules of chains in quiver categories; left exact functors on
+abelian categories; cohomological functors on triangulated categories.
 
 ### Dependencies
 
@@ -882,7 +1221,7 @@ Layers 0 and 1.
 
 ## Layer 3: flat dimension and weak global dimension
 
-*Under review: to be converted to the category-primary design of Layer 0; currently stated for
+*Under review: to be converted to the category-primary design of Layers 0–2; currently stated for
 rings.*
 
 ### 3.1 Flat dimension
@@ -894,16 +1233,16 @@ right module `N` and every `i ≥ n`; `HasFlatDimensionLE M n` is `HasFlatDimens
 `i > d`, the shape of Mathlib's `projectiveDimension`. API:
 
 - `flatDimension M = ⊥` exactly when `M` is zero (`TauCeti.flatDimension_eq_bot_iff`);
-  `HasFlatDimensionLE M 0 ↔ BalancedFlat A M` (`TauCeti.hasFlatDimensionLE_zero_iff`; 2.1, 2.2);
-- `flatDimension M ≤ projectiveDimension M` (`TauCeti.flatDimension_le_projectiveDimension`; 2.2);
+  `HasFlatDimensionLE M 0 ↔ BalancedFlat A M` (`TauCeti.hasFlatDimensionLE_zero_iff`; 2.2);
+- `flatDimension M ≤ projectiveDimension M` (`TauCeti.flatDimension_le_projectiveDimension`; 2.6);
 - dimension shifting (`TauCeti.hasFlatDimensionLE_succ_iff`): for `0 → K → F → M → 0` with `F`
   flat, `HasFlatDimensionLE M (n + 1) ↔ HasFlatDimensionLE K n` (1.3, 2.2);
 - the ideal test (`TauCeti.hasFlatDimensionLE_iff_forall_quotient`): `HasFlatDimensionLE M n`
-  exactly when `Tor_{n+1}^A(A ⧸ I, M) = 0` for every finitely generated right ideal `I` (2.1 and
+  exactly when `Tor_{n+1}^A(A ⧸ I, M) = 0` for every finitely generated right ideal `I` (2.2 and
   dimension shifting);
 - character modules (`TauCeti.flatDimension_eq_injectiveDimension_characterModule`):
   `flatDimension M = injectiveDimension (M⁺)` in `ModuleCat Aᵐᵒᵖ`
-  ([Lam-LMR, (5.57), p. 184]). Route: induction by dimension shifting on both sides, with 2.1 (4),
+  ([Lam-LMR, (5.57), p. 184]). Route: induction by dimension shifting on both sides, with 2.2 (6),
   `CharacterModule.exact_opDual` and `CharacterModule.injective_of_projective`; the same induction
   as Tau Ceti's `hasInjectiveDimensionLE_characterModule_iff`, without a finiteness hypothesis.
 
@@ -936,7 +1275,7 @@ right module `N` and every `i ≥ n`; `HasFlatDimensionLE M n` is `HasFlatDimens
 (`TauCeti.globalDimension_eq_weakGlobalDimension`). For `[IsNoetherianRing A]` and
 `[Small.{v} A]`, `globalDimension.{v} A = weakGlobalDimension.{v} A` ([Au, Thm. 4, p. 70];
 [Lam-LMR, (5.59), p. 184]). Route: over a left Noetherian ring the syzygies of a finite module are
-finite, hence finitely presented, so dimension shifting and 2.4 give
+finite, hence finitely presented, so dimension shifting and 2.3 give
 `flatDimension M = projectiveDimension M` for finite `M`
 (`TauCeti.flatDimension_eq_projectiveDimension_of_finite`); then
 `TauCeti.globalDimension_eq_iSup_finite`.
@@ -975,8 +1314,11 @@ Layers 1 and 2.
 
 ## Layer 4: semiperfect and perfect rings, and Bass's Theorem P
 
-*Under review: to be converted to the category-primary design of Layer 0; currently stated for
-rings.*
+*Under review: to be converted to the category-primary design of Layers 0–2; currently stated for
+rings. The categorical summit is Simson's Theorem 5.4 for small preadditive categories (Summary);
+Layer 2 supplies the categorical Bass module (2.5) for it. A flat module with a projective cover
+is projective by the argument of [Simson, Thm. 5.4, (9′) ⇒ (1′), pp. 109–110], which uses
+[Mares, Thm. 2.4, proof part (i), p. 349].*
 
 ### 4.1 T-nilpotence
 
@@ -1150,8 +1492,8 @@ and (5) here; [AF, 28.4, pp. 315–317], left-handed as here; [Lam-FC, (24.18), 
   `J • P = Module.jacobson A P ≠ P` (4.2); so `J` is left T-nilpotent by 4.1.
 - (1) ⇒ (3): take a cover `P → M` with kernel `K`; then `K ≤ Module.jacobson A P = J • P`
   (`TauCeti.IsProjectiveCover.ker_le_jacobson`, 4.2). Flatness of `M` gives
-  `K = K ⊓ J • P = J • K` (2.3), so `K = 0` by 4.1.
-- (3) ⇒ (4): Bass's flat module (2.3).
+  `K = K ⊓ J • P = J • K` (2.6), so `K = 0` by 4.1.
+- (3) ⇒ (4): Bass's flat module (2.5).
 - (4) ⇒ (1): if `a₀ ⋯ aₙ A = a₀ ⋯ aₙ₊₁ A` with `aₙ₊₁ ∈ J`, then
   `a₀ ⋯ aₙ (1 - aₙ₊₁ r) = 0` for some `r`, and `1 - aₙ₊₁ r` is a unit; so `J` is left
   T-nilpotent. The ring `A ⧸ J` inherits the chain condition and has zero radical, so it is
@@ -1215,8 +1557,8 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
   `LinearMap.auslanderReitenTransposeTensorEquivCokernel`
   (`Tr M ⊗_A N` as the cokernel of `Hom_A(P₀, N) → Hom_A(P₁, N)`) and
   `ModuleCat.tensorHomCokernelEquivProjectiveStableHom` (the stable Hom as the cokernel of
-  `Hom_A(M, A) ⊗_A N → Hom_A(M, N)`): with Layer 1, for finitely presented `M`,
-  `Tor_1^A(Tr M, N)` is the stable `Hom_A(M, N)` (Auslander–Bridger; not read).
+  `Hom_A(M, A) ⊗_A N → Hom_A(M, N)`): 1.4 identifies `Tor_1^A(Tr M, N)` with the stable
+  `Hom_A(M, N)` for finitely presented `M` ([Auslander78, I, Prop. 3.2]).
 - ArtinAlgebras, Layer 4: the Auslander-Reiten translate is built from finite minimal projective
   presentations (`TauCeti.FiniteProjectivePresentation.exists_isMinimal`); 4.2 provides them for
   finitely presented modules over any semiperfect ring.
@@ -1229,36 +1571,85 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
 - [AF] F. W. Anderson, K. R. Fuller, *Rings and Categories of Modules*, 2nd ed., Graduate Texts in
   Mathematics 13, Springer (1992). §28: left and right T-nilpotence, p. 314; Lemma 28.3,
   pp. 314–315; Theorem 28.4 (Bass), pp. 315–317; Corollary 28.7, p. 318.
+- [Auslander78] M. Auslander, *Functors and morphisms determined by objects*, in *Representation
+  Theory of Algebras* (Philadelphia, 1976), Lecture Notes in Pure and Applied Mathematics 37,
+  Dekker (1978), 1–244. I, Prop. 3.2 (`stable Hom(X, Y) ≅ Tor_1(Tr X, Y)` for finitely presented
+  `X`), read in a retyped version (its pp. 12–14), not in the printed pages.
 - [Au] M. Auslander, *On the dimension of modules and algebras III. Global dimension*, Nagoya Math.
   J. 9 (1955), 67–77. Thm. 1, p. 68; weak dimensions, Thm. 4 and Cor. 5, p. 70; Cor. 8, p. 72;
   Cor. 9, p. 73.
 - [Bass] H. Bass, *Finitistic dimension and a homological generalization of semi-primary rings*,
   Trans. Amer. Math. Soc. 95 (1960), 466–488. T-nilpotence, p. 466; Theorem P, pp. 467–468;
-  Lemma 1.1, p. 468; Theorem 2.1, p. 471; §3, Examples, p. 475.
+  Lemmas 1.1–1.3, pp. 468–470 (the telescope module and its splitting; the splitting argument is
+  Lemma 1.3); Theorem 2.1, p. 471; §3, Examples, p. 475.
+- [BEE] L. Bican, R. El Bashir, E. Enochs, *All modules have flat covers*, Bull. London Math. Soc.
+  33 (2001), 385–390. Theorem 3. Pointer only.
+- [Beligiannis] A. Beligiannis, *On the Freyd categories of an additive category*, Homology Homotopy
+  Appl. 2 (2000), 147–185. §8.2: Lemma 8.10, Prop. 8.11 and Rem. 8.12, pp. 180–181 (flat and
+  fp-injective modules over weak abelian categories).
+- [CB] W. Crawley-Boevey, *Locally finitely presented additive categories*, Comm. Algebra 22 (1994),
+  1641–1674. §1.2, Lemmas 1–2, pp. 1644–1645 (the category of elements; pseudo-cokernels); §1.3,
+  Theorem, pp. 1645–1646 (flat functors; the proof of (1) ⇒ (2) uses
+  `stable Hom(X, Y) ≅ Tor_1(Tr X, Y)`, with the stable `Hom` underlined on p. 1646 and lost in text
+  extraction); §1.4, Theorem and Corollary, pp. 1646–1648 (representation theorem); §2.1, Theorem,
+  p. 1648; §2.2, pp. 1649–1651 (flat = left exact); §2.3, Theorem, p. 1651; §3.1, pp. 1653–1654;
+  §3.2, Theorem, p. 1655. His "locally finitely presented" means finitely accessible additive.
 - [CE] H. Cartan, S. Eilenberg, *Homological Algebra*, Princeton University Press (1956). Ch. VI,
   §5, Prop. 5.1, p. 120 (`Ext_Λ(A, Hom_Γ(B, C)) ≅ Hom_Γ(Tor^Λ(A, B), C)` for `Γ`-injective `C`);
   Prop. 5.3, p. 120 (the dual formula, for a left Noetherian ring and a finitely generated `A`).
   Ch. VI, Exer. 3 (flat and projective dimension of finite modules over a Noetherian ring), cited
   through [Au, p. 70]; not read.
+- [CI] M. Cortés-Izurdiaga, *Flatness in finitely accessible additive categories*,
+  arXiv:2505.07742v1: the definitions before Proposition `p:CharacterizationFlats` (flat modules
+  versus flat objects inside the category of flat modules). No published numbering.
+- [CPT] S. Crivei, M. Prest, B. Torrecillas, *Covers in finitely accessible categories*, Proc. Amer.
+  Math. Soc. 138 (2010), 1213–1221. pp. 1214 and 1218 (finitely accessible versus locally finitely
+  presented); Cor. 3.3, p. 1218 (flat covers in `Mod C`).
+- [Fisher] J. L. Fisher, *The tensor product of functors, satellites, and derived functors*,
+  J. Algebra 8 (1968), 277–294. Thms. 1.3–1.4, pp. 279–280 (left exact functors on a small abelian
+  category as filtered colimits of representables); Thm. 2.4 and Cor. 2.9, pp. 284–285.
+- [Govorov] V. E. Govorov, *On flat modules*, Sibirsk. Mat. Zh. 6 (1965), 300–304 (Russian): a flat
+  module is a direct limit of free modules. Read in the original.
 - [Harada] M. Harada, *Perfect categories I*, Osaka J. Math. 10 (1973), 329–341. Introduction,
   pp. 329–330: perfect Grothendieck categories, and Theorem P for the functor category `(C, Ab)`
-  of a small additive category `C`. The final section, where the theorem is proved, and parts
-  II–IV were not read.
+  of a small additive category `C`; Lemma 6 and Theorems 3–4, p. 337; Theorem 5 and Remark 1,
+  pp. 339–340 (Bass's module over the ring with enough idempotents of a category; p. 339 checked on
+  the page image, the rest through a reading of the text extraction). *Perfect categories II*,
+  ibid., 343–355: Theorem 2′, p. 346, stated without proof. Parts III–IV have no flatness.
+- [JL] C. U. Jensen, H. Lenzing, *Model Theoretic Algebra*, Gordon and Breach (1989). Appendix B,
+  Theorems B.12 and B.14, read in an electronic text whose page numbers were not checked.
 - [Krause] H. Krause, *Krull-Schmidt categories and projective covers*, Expo. Math. 33 (2015),
   535–549; arXiv:1410.2822. Lemma 3.6 and Proposition 4.1, read in the arXiv TeX source; the
   journal page range and numbering were not checked.
+- [Krause-Defect] H. Krause, *A short proof for Auslander's defect formula*, Linear Algebra Appl.
+  365 (2003), 267–270. The snake-lemma step, as cited and formalized in
+  TauCetiProject/TauCeti#37151; not read here.
+- [Krause-FlatCovers] H. Krause, *Morphisms determined by objects and flat covers*, Forum Math. 28
+  (2016), 425–435. Theorems 1.1 and 2.2, read in arXiv:1403.6039v2 (numbering of v2). Pointer
+  only.
+- [Krause-Smashing] H. Krause, *Smashing subcategories and the telescope conjecture — an algebraic
+  approach*, Invent. Math. 139 (2000), 99–133. §2.3, p. 115: `Flat C = Ind C`, and Lemma 2.7 (for
+  a skeletally small triangulated `C`: flat, cohomological and fp-injective agree), with Lemma
+  1.6.
 - [Lam-FC] T. Y. Lam, *A First Course in Noncommutative Rings*, 2nd ed., Graduate Texts in
   Mathematics 131, Springer (2001). (23.13)–(23.16), pp. 351–352; (23.19), p. 353; (23.20),
   p. 354; (23.22), p. 356; (24.7), p. 360; (24.12), p. 361; (24.16), p. 364; (24.18)–(24.20),
   p. 365; (24.22), p. 366; (24.23)–(24.24), pp. 367–368; (24.25), pp. 369–370. (4.14) is cited in
   the proof of (24.25) and was not read.
 - [Lam-LMR] T. Y. Lam, *Lectures on Modules and Rings*, Graduate Texts in Mathematics 189,
-  Springer (1999). (4.9) and (4.12), p. 125; (4.13), p. 126; (4.30), p. 133; (5.53)–(5.57),
+  Springer (1999). (4.9) and (4.12), p. 125; (4.13)–(4.14), p. 126; (4.23)–(4.24), pp. 129–130;
+  (4.30), p. 133; (4.32)–(4.34), pp. 133–134; (4.47), p. 139; (5.53)–(5.57),
   pp. 183–184; (5.58)–(5.59), p. 184; (5.62b) and (5.63), p. 185; (5.69)–(5.70), p. 187; (5.71),
   p. 188. (2.33), cited in (5.62b), was not read.
 - [Lambek] J. Lambek, *A module is flat if and only if its character module is injective*, Canad.
   Math. Bull. 7 (1964), 237–243. Theorem, p. 239; Proposition 1 and `Ext(N, M*) ≅ Tor(N, M)*`,
   p. 241.
+- [Lazard] D. Lazard, *Autour de la platitude*, Bull. Soc. Math. France 97 (1969), 81–128. Ch. I
+  (noncommutative rings, p. 83): Lemme 1.1 and Thm. 1.2, p. 84; Cor. 1.3–1.4, p. 85; Thm. 3.2,
+  p. 89. The 1964 announcement (C. R. Acad. Sci. Paris 258, 6313–6316) was not obtained.
+- [Mares] E. A. Mares, *Semi-perfect modules*, Math. Z. 82 (1963), 347–360 (volume 82; Simson's
+  bibliography has 83). Theorem 2.4, proof part (i), p. 349 (an endomorphism of a projective with
+  small image has invertible `1 - s`); added-in-proof note, p. 360. For Layer 4.
 - [ML] S. Mac Lane, *Categories for the Working Mathematician*, 2nd ed., Graduate Texts in
   Mathematics 5, Springer (1998). IX.6, p. 226: coends; the tensor product over a ring as a coend,
   with modules as additive functors on the one-object category; the tensor product of functors.
@@ -1271,13 +1662,31 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
   (p. 33), triangular matrix rings for a finite totally ordered set (Example 1, p. 33), Thm. 7.1
   (pp. 33–35: modules over `C` and over `[C]`, an equivalence when `C` has finitely many objects),
   and the compatibility with `⊗` and `Tor` (p. 37, (1)); §10, Prop. 10.1 and Cor. 10.2, p. 47:
-  projectives are retracts of free functors, and tensoring with a projective is exact; §11,
+  projectives are retracts of free functors, and tensoring with a projective is exact; §10,
+  pp. 48–49: flat functors, Thm. 10.1b and Cor. 10.2b, p. 48 (Lazard–Govorov), Cor. 10.4b,
+  p. 49, and finitely presented flat functors are projective, p. 49; §11,
   pp. 50–52: `K`-categories, `K`-linear functors to `K`-modules as additive functors to abelian
   groups (p. 51), the tensor product over `K` and its independence of `K` (p. 52). Mitchell writes
   morphisms on the right and his modules are covariant; the statements are mirrored here.
+- [OR] U. Oberst, H. Röhrl, *Flat and coherent functors*, J. Algebra 14 (1970), 91–105. (1.1),
+  p. 93 (the adjunction over a commutative base ring); Lemma 1.2, p. 94; Lemma 2.4, p. 95;
+  Lemma 3.1 and Thm. 3.2 (1)–(6), pp. 96–98, with proof; Cor. 3.3–3.5 and Remark, p. 99;
+  Thm. 4.1, p. 101.
+- [Rump] W. Rump, *Flat covers in abelian and in non-abelian categories*, Adv. Math. 225 (2010),
+  1589–1615. Theorem 2 and Corollary 2, pp. 1603–1604, read in a transcription. Pointer only.
 - [Sandomierski] F. L. Sandomierski, *On semiperfect and perfect rings*, Proc. Amer. Math. Soc. 21
   (1969), 205–207. Proposition 1 (d) and Lemma 2, p. 205; Theorem 4, p. 206 (stated for right
   modules).
+- [Simson] D. Simson, *On pure global dimension of locally finitely presented Grothendieck
+  categories*, Fund. Math. 96 (1977), 91–116. §1, pp. 92–93: "additive" means preadditive (finite
+  sums are added only in Cor. 1.3 (b), p. 94), the radical `J(C)`, and semisimple categories;
+  Thm. 2.1, pp. 94–95; Def. 3.1, pp. 98–99 (factorizable inverse systems); Thm. 5.4, p. 108
+  (statement checked on the page image), with the proofs of (3′) ⇒ (4), (7) ⇒ (8) and
+  (9′) ⇒ (1′), pp. 108–110; Thm. 5.6, p. 110. The steps through Thm. 3.16 and (5) ⇒ (4) were not
+  fully read. The earlier paper *Functor categories in which every flat object is projective*,
+  Bull. Acad. Polon. Sci. 22 (1974), 375–380, was not obtained.
+- [St] B. Stenström, *Purity in functor categories*, J. Algebra 8 (1968), 352–361. §2 and
+  Lemmas 7–8, pp. 353–354; Thm. 3, pp. 357–359.
 - [Weibel] C. A. Weibel, *An Introduction to Homological Algebra*, Cambridge Studies in Advanced
   Mathematics 38, Cambridge University Press (1994). Thm. 2.7.2, pp. 58–59 (balance of `Tor`
   through the bicomplex `P ⊗ Q`); Acyclic Assembly Lemma 2.7.3, p. 59; Exer. 3.1.3, p. 68
