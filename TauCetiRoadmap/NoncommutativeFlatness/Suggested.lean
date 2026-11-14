@@ -25,8 +25,8 @@ neither a layer nor the roadmap. `sorry` is allowed in this human-owned roadmap 
 are goals, not proofs.
 
 Layers as in `README.md`: 0 modules over a preadditive category and their tensor product; 1 `Tor`;
-2 flat modules and flat functors; 3 flat dimension and weak global dimension; 4 semiperfect
-and perfect rings and Bass's Theorem P.
+2 flat modules and flat functors; 3 flat dimension, global and weak global dimension, and
+Auslander's theorem; 4 semiperfect and perfect rings and Bass's Theorem P.
 
 Layers 0 and 1 are category-primary (README, "Conventions"). `C : Type u` is preadditive with
 `Category.{v} C`. `ModCat C` (`Mod C`) is the full subcategory of additive functors
@@ -43,9 +43,15 @@ Layer 2 is category-primary too. A left `C`-module `G` is flat (`LeftModCat.Flat
 `I ⊗_C G → G(X)` is injective for every finitely generated subfunctor `I ⊆ Hom(-, X)`; right modules
 are flat as left `Cᵒᵖ`-modules. Ring flatness is the native class `Module.BalancedFlat`.
 
-Layers 3–4 are under review: they are to be converted to the category-primary design and are
-currently stated for rings. A right `A`-module is a left `Aᵐᵒᵖ`-module and a right ideal is a
-`Submodule Aᵐᵒᵖ A`. `Tor` takes values in `ModuleCat R`; Layer 3 uses `R = ℤ`.
+Layer 3 is category-primary as well. Flat dimension is defined by the vanishing of `Tor` on the
+finitely presented cyclic right modules `Hom(-, X) ⧸ I`; the global dimension is defined for any
+abelian category (`Abelian.globalDimension`), with Tau Ceti's ring `TauCeti.globalDimension` the
+case `ModuleCat A`; the weak global dimension is `LeftModCat.weakGlobalDimension C`; Auslander's
+theorem assumes that every representable `Hom(X, -)` is a Noetherian object. Layer 3 uses `R = ℤ`.
+
+Layer 4 is under review: it is to be converted to the category-primary design and is currently
+stated for rings. A right `A`-module is a left `Aᵐᵒᵖ`-module and a right ideal is a
+`Submodule Aᵐᵒᵖ A`. `Tor` takes values in `ModuleCat R`.
 Declarations that Tau Ceti already has are referred to by their full `TauCeti.` names.
 
 Not stated here, and specified in prose in `README.md`: the transfer lemmas of 0.2, the `ULift`ed
@@ -1784,59 +1790,354 @@ end BalancedFlatClosure
 theorem not_balancedFlat_zmod (n : ℕ) (hn : 2 ≤ n) : ¬ Module.BalancedFlat ℤ (ZMod n) :=
   sorry
 
-/-! ## Layer 3: flat dimension and weak global dimension -/
+/-! ## Layer 3: flat dimension, global and weak global dimension, and Auslander's theorem
 
-section Dimension
+Dimensions are category-primary. The flat dimension of a left `C`-module `G` is defined by the
+vanishing of `Tor_i(Hom(-, X) ⧸ I, G)` for the finitely presented cyclic right modules, the shape
+of Mathlib's `projectiveDimension`; flat dimension `≤ 0` is Layer 2's ideal test. The global
+dimension is defined for any abelian category, and Tau Ceti's ring `TauCeti.globalDimension` is the
+case `ModuleCat A`. The weak global dimension of `C` is the supremum of the flat dimensions of the
+left modules; it is left-right symmetric. Auslander's theorem says that it equals the global
+dimension of the left modules when every representable `Hom(X, -)` is a Noetherian object. Rings
+keep native definitions with bridges to `SingleObj A`. `Tor` is taken with `R = ℤ`: dimensions do
+not depend on `R` (1.6). -/
 
-variable {A : Type u} [Ring A] [Small.{v} A]
+/-! ### 3.1 Flat dimension -/
 
-/-- **3.1** `M` has flat dimension `< n`: `Tor_i^A(N, M) = 0` for every right module `N` and every
-`i ≥ n`. The shape of Mathlib's `HasProjectiveDimensionLT`. -/
-class HasFlatDimensionLT (M : ModuleCat.{v} A) (n : ℕ) : Prop where
-  isZero (i : ℕ) (hi : n ≤ i) (N : ModuleCat.{v} Aᵐᵒᵖ) :
-    IsZero (((BalancedTor.{v} ℤ A i).obj N).obj M)
+section FlatDimension
 
-/-- **3.1** `M` has flat dimension `≤ n`. -/
-abbrev HasFlatDimensionLE (M : ModuleCat.{v} A) (n : ℕ) : Prop :=
-  HasFlatDimensionLT M (n + 1)
+open ModCat
+
+variable {C : Type u} [Category.{v} C] [Preadditive C] [EssentiallySmall.{v} C]
+
+/-- **3.1** `G` has flat dimension `< n`: `Tor_i(Hom(-, X) ⧸ I, G) = 0` for every `i ≥ n`, every
+object `X` and every finitely generated subfunctor `I ⊆ Hom(-, X)`. Universe-free: it quantifies
+over objects and finite families of morphisms of `C`. The shape of Mathlib's
+`HasProjectiveDimensionLT`; flat dimension `< 1` is flatness (2.2 (5)). -/
+class LeftModCat.HasFlatDimensionLT (G : LeftModCat.{v} C) (n : ℕ) : Prop where
+  isZero_tor ⦃i : ℕ⦄ (hi : n ≤ i) ⦃X : C⦄ ⦃m : ℕ⦄ ⦃Y : Fin m → C⦄ (β : ∀ j, Y j ⟶ X) :
+    IsZero (((tor ℤ i).obj (cokernel (ModCat.yonedaSpan β).arrow)).obj G)
+
+/-- **3.1** `G` has flat dimension `≤ n`. -/
+abbrev LeftModCat.HasFlatDimensionLE (G : LeftModCat.{v} C) (n : ℕ) : Prop :=
+  G.HasFlatDimensionLT (n + 1)
+
+theorem LeftModCat.HasFlatDimensionLT.of_le {G : LeftModCat.{v} C} {n m : ℕ}
+    (h : G.HasFlatDimensionLT n) (hnm : n ≤ m) : G.HasFlatDimensionLT m :=
+  ⟨fun _ hi _ _ _ β ↦ h.isZero_tor (hnm.trans hi) β⟩
 
 /-- **3.1** The flat dimension, in `WithBot ℕ∞`, `⊥` exactly for the zero module. The shape of
 Mathlib's `projectiveDimension`. -/
+noncomputable def LeftModCat.flatDimension (G : LeftModCat.{v} C) : WithBot ℕ∞ :=
+  sInf {d : WithBot ℕ∞ | ∀ i : ℕ, d < i → G.HasFlatDimensionLT i}
+
+/-- **3.1** Right modules: flat dimension as left `Cᵒᵖ`-modules (`ModCat C` is `LeftModCat Cᵒᵖ`). -/
+abbrev ModCat.HasFlatDimensionLT (F : ModCat.{v} C) (n : ℕ) : Prop :=
+  LeftModCat.HasFlatDimensionLT (C := Cᵒᵖ) F n
+
+/-- **3.1** A right module has flat dimension `≤ n`. -/
+abbrev ModCat.HasFlatDimensionLE (F : ModCat.{v} C) (n : ℕ) : Prop :=
+  ModCat.HasFlatDimensionLT F (n + 1)
+
+/-- **3.1** The flat dimension of a right module. -/
+noncomputable abbrev ModCat.flatDimension (F : ModCat.{v} C) : WithBot ℕ∞ :=
+  LeftModCat.flatDimension (C := Cᵒᵖ) F
+
+theorem LeftModCat.flatDimension_le_iff (G : LeftModCat.{v} C) (n : ℕ) :
+    G.flatDimension ≤ n ↔ G.HasFlatDimensionLE n :=
+  sorry
+
+theorem LeftModCat.flatDimension_eq_bot_iff (G : LeftModCat.{v} C) :
+    G.flatDimension = ⊥ ↔ IsZero G :=
+  sorry
+
+/-- **3.1** Flat dimension `≤ 0` is flatness: the definition at `n = 0` is 2.2 (5). -/
+theorem LeftModCat.hasFlatDimensionLE_zero_iff (G : LeftModCat.{v} C) :
+    G.HasFlatDimensionLE 0 ↔ G.Flat :=
+  sorry
+
+/-- **3.1, the classical definition**: for `n : ℕ`, the following are equivalent: (1) flat
+dimension `≤ n`; (2) `Tor_i(-, G) = 0` for all `i > n`; (3) `Tor_{n+1}(-, G) = 0`; (4) `G` has a
+flat resolution of length `≤ n`; (5) the `n`-th syzygy of every projective resolution is flat;
+(6) the `n`-th syzygy of some projective resolution is flat. The `n`-th syzygy of a projective
+resolution `P` is `P.complex.opcycles n = coker (P_{n+1} → P_n)`; for `n = 0` it is `G`. Route:
+dimension shifting in either variable (1.2, 1.3); (1) ⇒ (5) is 2.2 (5) applied to the `n`-th
+syzygy `K`, since `Tor_1(-, K) ≅ Tor_{n+1}(-, G)`. (2) holds for right modules in every universe;
+in Lean it is stated in the universe `v`. -/
+theorem LeftModCat.hasFlatDimensionLE_tfae (G : LeftModCat.{v} C) (n : ℕ) :
+    List.TFAE
+      [G.HasFlatDimensionLE n,
+        ∀ (F : ModCat.{v} C) (i : ℕ), n < i → IsZero (((tor ℤ i).obj F).obj G),
+        ∀ F : ModCat.{v} C, IsZero (((tor ℤ (n + 1)).obj F).obj G),
+        ∃ (K : ChainComplex (LeftModCat.{v} C) ℕ) (π : K ⟶ (ChainComplex.single₀ _).obj G),
+          QuasiIso π ∧ (∀ i, LeftModCat.Flat (K.X i)) ∧ ∀ i, n < i → IsZero (K.X i),
+        ∀ P : ProjectiveResolution G, LeftModCat.Flat (P.complex.opcycles n),
+        ∃ P : ProjectiveResolution G, LeftModCat.Flat (P.complex.opcycles n)] :=
+  sorry
+
+/-- **3.1** Flat dimension is at most projective dimension (2.6: projective modules are flat). -/
+theorem LeftModCat.flatDimension_le_projectiveDimension (G : LeftModCat.{v} C) :
+    G.flatDimension ≤ projectiveDimension G :=
+  sorry
+
+/-- **3.1, dimension shifting** along `0 → K → F → M → 0` with `F` flat. -/
+theorem LeftModCat.hasFlatDimensionLE_succ_iff {S : ShortComplex (LeftModCat.{v} C)}
+    (hS : S.ShortExact) [S.X₂.Flat] (n : ℕ) :
+    S.X₃.HasFlatDimensionLE (n + 1) ↔ S.X₁.HasFlatDimensionLE n :=
+  sorry
+
+/-- **3.1** `Tor` is computed by flat resolutions: for a flat resolution `K → G`,
+`Tor_n(F, G) ≅ H_n(F ⊗_C K)`. Route: the balance (1.3) computes both sides from a projective
+resolution of `F`, and `- ⊗_C K_q` is exact (2.2). -/
+noncomputable def ModCat.torObjIsoHomologyOfFlat (F : ModCat.{v} C) {G : LeftModCat.{v} C}
+    (K : ChainComplex (LeftModCat.{v} C) ℕ) (π : K ⟶ (ChainComplex.single₀ _).obj G)
+    [QuasiIso π] (hK : ∀ i, LeftModCat.Flat (K.X i)) (n : ℕ) :
+    ((tor ℤ n).obj F).obj G ≅
+      (HomologicalComplex.homologyFunctor _ _ n).obj
+        ((((tensor ℤ).obj F).mapHomologicalComplex _).obj K) :=
+  sorry
+
+/-- **3.1, duality**: for an injective cogenerator `E` of `R`-modules, the flat dimension of `G` is
+the injective dimension of its dual `G^E` (Layer 1's `Tor`–`Ext` duality; [Lam-LMR, (5.57)] for
+rings and `E = ℚ ⧸ ℤ`). -/
+theorem LeftModCat.flatDimension_eq_injectiveDimension_dual (R : Type*) [CommRing R]
+    [Linear R C] (E : ModuleCat.{v} R) [Injective E] (hE : IsCoseparator E)
+    (G : LeftModCat.{v} C) :
+    G.flatDimension = injectiveDimension ((LeftModCat.dual R E).obj (op G)) :=
+  sorry
+
+end FlatDimension
+
+section RingFlatDimension
+
+variable {A : Type u} [Ring A] [Small.{v} A]
+
+/-- **3.1, rings** `M` has flat dimension `< n`: `Tor_i^A(A ⧸ I, M) = 0` for every `i ≥ n` and
+every finitely generated right ideal `I`. Native (Convention 5); the shape of Mathlib's
+`HasProjectiveDimensionLT`. -/
+class HasFlatDimensionLT (M : ModuleCat.{v} A) (n : ℕ) : Prop where
+  isZero ⦃i : ℕ⦄ (hi : n ≤ i) ⦃I : Submodule Aᵐᵒᵖ A⦄ (hI : I.FG) :
+    IsZero (((BalancedTor.{v} ℤ A i).obj (ModuleCat.of Aᵐᵒᵖ (Shrink.{v} (A ⧸ I)))).obj M)
+
+/-- **3.1, rings** `M` has flat dimension `≤ n`. -/
+abbrev HasFlatDimensionLE (M : ModuleCat.{v} A) (n : ℕ) : Prop :=
+  HasFlatDimensionLT M (n + 1)
+
+/-- **3.1, rings** The flat dimension, in `WithBot ℕ∞`, `⊥` exactly for the zero module. -/
 noncomputable def flatDimension (M : ModuleCat.{v} A) : WithBot ℕ∞ :=
   sInf {d : WithBot ℕ∞ | ∀ i : ℕ, d < i → HasFlatDimensionLT M i}
 
 theorem flatDimension_eq_bot_iff (M : ModuleCat.{v} A) : flatDimension M = ⊥ ↔ IsZero M :=
   sorry
 
-/-- **3.1** Flat dimension `≤ 0` is flatness. -/
+/-- **3.1, rings** Flat dimension `≤ 0` is flatness. -/
 theorem hasFlatDimensionLE_zero_iff (M : ModuleCat.{v} A) :
     HasFlatDimensionLE M 0 ↔ Module.BalancedFlat A M :=
+  sorry
+
+/-- **3.1, rings: the classical definition**: flat dimension `≤ n`; `Tor_i^A(-, M) = 0` for
+`i > n`; `Tor_{n+1}^A(-, M) = 0`; the `n`-th syzygy of every, or of some, projective resolution
+is flat. -/
+theorem hasFlatDimensionLE_tfae (M : ModuleCat.{v} A) (n : ℕ) :
+    List.TFAE
+      [HasFlatDimensionLE M n,
+        ∀ (N : ModuleCat.{v} Aᵐᵒᵖ) (i : ℕ), n < i →
+          IsZero (((BalancedTor.{v} ℤ A i).obj N).obj M),
+        ∀ N : ModuleCat.{v} Aᵐᵒᵖ, IsZero (((BalancedTor.{v} ℤ A (n + 1)).obj N).obj M),
+        ∀ P : ProjectiveResolution M, Module.BalancedFlat A (P.complex.opcycles n),
+        ∃ P : ProjectiveResolution M, Module.BalancedFlat A (P.complex.opcycles n)] :=
   sorry
 
 theorem flatDimension_le_projectiveDimension (M : ModuleCat.{v} A) :
     flatDimension M ≤ projectiveDimension M :=
   sorry
 
-/-- **3.1, dimension shifting** along `0 → K → F → M → 0` with `F` flat. -/
+/-- **3.1, rings: dimension shifting** along `0 → K → F → M → 0` with `F` flat. -/
 theorem hasFlatDimensionLE_succ_iff {S : ShortComplex (ModuleCat.{v} A)} (hS : S.ShortExact)
     [Module.BalancedFlat A S.X₂] (n : ℕ) :
     HasFlatDimensionLE S.X₃ (n + 1) ↔ HasFlatDimensionLE S.X₁ n :=
   sorry
 
-/-- **3.1, the ideal test** for flat dimension. -/
-theorem hasFlatDimensionLE_iff_forall_quotient (M : ModuleCat.{v} A) (n : ℕ) :
-    HasFlatDimensionLE M n ↔ ∀ I : Submodule Aᵐᵒᵖ A, I.FG →
-      IsZero (((BalancedTor.{v} ℤ A (n + 1)).obj (ModuleCat.of Aᵐᵒᵖ (Shrink.{v} (A ⧸ I)))).obj
-        M) :=
-  sorry
-
-/-- **3.1** The flat dimension of `M` is the injective dimension of its character module. -/
+/-- **3.1, rings: character modules** The flat dimension of `M` is the injective dimension of its
+character module ([Lam-LMR, (5.57)]): the case `R = ℤ`, `E = ℚ ⧸ ℤ` of the categorical
+duality. -/
 theorem flatDimension_eq_injectiveDimension_characterModule (M : ModuleCat.{v} A) :
     flatDimension M = injectiveDimension (ModuleCat.of Aᵐᵒᵖ (CharacterModule M)) :=
   sorry
 
+/-- **3.1, rings** Ring flat dimension is flat dimension over `SingleObj A` (0.2). -/
+theorem hasFlatDimensionLT_iff_singleObj {A : Type u} [Ring A] (M : ModuleCat.{u} A) (n : ℕ) :
+    HasFlatDimensionLT M n ↔
+      LeftModCat.HasFlatDimensionLT ((moduleCatEquivLeftModCat.{u} A).functor.obj M) n :=
+  sorry
+
+end RingFlatDimension
+
+/-! ### 3.2 Global dimension of an abelian category -/
+
+section GlobalDimension
+
+variable (𝒜 : Type u) [Category.{v} 𝒜] [Abelian 𝒜]
+
+/-- **3.2** The global dimension of an abelian category: the supremum of the projective dimensions
+of its objects ([Mitchell, §9, p. 42]). Tau Ceti's ring `TauCeti.globalDimension` is the case
+`ModuleCat A`, and becomes this special case. -/
+noncomputable def Abelian.globalDimension : WithBot ℕ∞ :=
+  ⨆ X : 𝒜, projectiveDimension X
+
+variable {𝒜} in
+theorem Abelian.projectiveDimension_le_globalDimension (X : 𝒜) :
+    projectiveDimension X ≤ Abelian.globalDimension 𝒜 :=
+  le_iSup (fun X : 𝒜 ↦ projectiveDimension X) X
+
+theorem Abelian.globalDimension_le_iff (n : ℕ) :
+    Abelian.globalDimension 𝒜 ≤ n ↔ ∀ X : 𝒜, HasProjectiveDimensionLE X n := by
+  simp [Abelian.globalDimension, projectiveDimension_le_iff]
+
+theorem Abelian.globalDimension_eq_bot_iff :
+    Abelian.globalDimension 𝒜 = ⊥ ↔ ∀ X : 𝒜, IsZero X := by
+  simp [Abelian.globalDimension, projectiveDimension_eq_bot_iff]
+
+/-- **3.2** The global dimension is also the supremum of the injective dimensions: both say that
+`Ext^i` vanishes for `i` above the bound. -/
+theorem Abelian.globalDimension_eq_iSup_injectiveDimension :
+    Abelian.globalDimension 𝒜 = ⨆ X : 𝒜, injectiveDimension X :=
+  sorry
+
+/-- **3.2** `gldim 𝒜ᵒᵖ = gldim 𝒜` ([Mitchell, §9, p. 42]). -/
+theorem Abelian.globalDimension_opposite :
+    Abelian.globalDimension 𝒜ᵒᵖ = Abelian.globalDimension 𝒜 :=
+  sorry
+
+/-- **3.2** Equivalent abelian categories have the same global dimension. -/
+theorem Abelian.globalDimension_eq_of_equivalence {ℬ : Type*} [Category ℬ] [Abelian ℬ]
+    (e : 𝒜 ≌ ℬ) : Abelian.globalDimension 𝒜 = Abelian.globalDimension ℬ :=
+  sorry
+
+/-- **3.2, rings**: Tau Ceti's `TauCeti.globalDimension A` is the global dimension of
+`ModuleCat A`. After the refactor of main this is the definition. -/
+theorem globalDimension_eq_abelianGlobalDimension (A : Type u) [Ring A] :
+    TauCeti.globalDimension.{v} A = Abelian.globalDimension (ModuleCat.{v} A) := by
+  rw [TauCeti.globalDimension_def]; rfl
+
+end GlobalDimension
+
+section ModCatGlobalDimension
+
+variable (C : Type u) [Category.{v} C] [Preadditive C]
+
+/-- **3.2, Auslander's lemma for `Mod C`**: the global dimension of the right modules is at most
+`n` exactly when every cyclic module `Hom(-, X) ⧸ I` has projective dimension at most `n`
+([Au, Thm. 1, p. 68] for rings). Route: an injective dimension bound (3.2) checked by the Baer
+criterion of 2.2 on a cosyzygy. Main's `TauCeti.globalDimension_le_tfae` follows. -/
+theorem ModCat.globalDimension_le_iff_cyclic [EssentiallySmall.{v} C] (n : ℕ) :
+    Abelian.globalDimension (ModCat.{v} C) ≤ n ↔
+      ∀ (X : C) (I : Subobject ((ModCat.yoneda C).obj X)),
+        HasProjectiveDimensionLE (cokernel I.arrow) n :=
+  sorry
+
+/-- **3.2, Auslander's lemma for left modules**, with the cyclic modules `Hom(X, -) ⧸ I`. -/
+theorem LeftModCat.globalDimension_le_iff_cyclic [EssentiallySmall.{v} C] (n : ℕ) :
+    Abelian.globalDimension (LeftModCat.{v} C) ≤ n ↔
+      ∀ (X : C) (I : Subobject ((LeftModCat.coyoneda C).obj (op X))),
+        HasProjectiveDimensionLE (cokernel I.arrow) n :=
+  sorry
+
+/-- **3.2, sides**: the left global dimension of `C` is the right global dimension of `Cᵒᵖ`,
+through the equivalence of 0.5. -/
+theorem LeftModCat.globalDimension_eq_globalDimension_modCat_op :
+    Abelian.globalDimension (LeftModCat.{w} C) = Abelian.globalDimension (ModCat.{w} Cᵒᵖ) :=
+  sorry
+
+/-- **3.2, universe independence**: both global dimensions are computed by the cyclic modules
+of a small model, as Tau Ceti's `TauCeti.globalDimension_eq_globalDimension`. -/
+theorem ModCat.globalDimension_eq_globalDimension [EssentiallySmall.{w} C]
+    [EssentiallySmall.{t} C] :
+    Abelian.globalDimension (ModCat.{w} C) = Abelian.globalDimension (ModCat.{t} C) :=
+  sorry
+
+/-- **3.2, rings**: the left global dimension of `A` is that of the left modules over
+`SingleObj A` (0.2). -/
+theorem globalDimension_eq_globalDimension_singleObj (A : Type u) [Ring A] :
+    TauCeti.globalDimension.{u} A = Abelian.globalDimension (LeftModCat.{u} (SingleObj A)) :=
+  sorry
+
+end ModCatGlobalDimension
+
+/-! ### 3.3 Weak global dimension -/
+
+section WeakGlobalDimension
+
+open ModCat
+
+variable (C : Type u) [Category.{v} C] [Preadditive C] [EssentiallySmall.{v} C]
+
+/-- **3.3** The weak global dimension of `C`: the supremum of the flat dimensions of the left
+modules. It is left-right symmetric (`LeftModCat.weakGlobalDimension_op`). -/
+noncomputable def LeftModCat.weakGlobalDimension : WithBot ℕ∞ :=
+  ⨆ G : LeftModCat.{v} C, G.flatDimension
+
+theorem LeftModCat.weakGlobalDimension_le_iff (n : ℕ) :
+    LeftModCat.weakGlobalDimension C ≤ n ↔
+      ∀ (F : ModCat.{v} C) (G : LeftModCat.{v} C), IsZero (((tor ℤ (n + 1)).obj F).obj G) :=
+  sorry
+
+/-- **3.3, symmetry** ([Au, p. 70]; [Lam-LMR, (5.63)] for rings): from the balance (1.3). -/
+theorem LeftModCat.weakGlobalDimension_op :
+    LeftModCat.weakGlobalDimension Cᵒᵖ = LeftModCat.weakGlobalDimension C :=
+  sorry
+
+/-- **3.3** The weak global dimension is also the supremum over the right modules (by the
+definition over `Cᵒᵖ` and symmetry). -/
+theorem LeftModCat.weakGlobalDimension_eq_iSup_modCat :
+    LeftModCat.weakGlobalDimension C = ⨆ F : ModCat.{v} C, ModCat.flatDimension F :=
+  sorry
+
+/-- **3.3, universe-free tests**: `wgldim C ≤ n`; every cyclic right module `Hom(-, X) ⧸ I` with
+`I` finitely generated has flat dimension `≤ n`; every finitely presented right module has flat
+dimension `≤ n` ([Lam-LMR, (5.69)] for rings). By the definition of flat dimension, the second
+item tests only `Tor` between finitely presented cyclic modules on both sides. -/
+theorem LeftModCat.weakGlobalDimension_le_tfae (n : ℕ) :
+    List.TFAE
+      [LeftModCat.weakGlobalDimension C ≤ n,
+        ∀ ⦃X : C⦄ ⦃m : ℕ⦄ ⦃Y : Fin m → C⦄ (β : ∀ j, Y j ⟶ X),
+          ModCat.HasFlatDimensionLE (cokernel (ModCat.yonedaSpan β).arrow) n,
+        ∀ F : ModCat.{v} C, IsFinitelyPresentable.{v} F → ModCat.HasFlatDimensionLE F n] :=
+  sorry
+
+/-- **3.3, bounds** by the left global dimension ([Lam-LMR, (5.58)] for rings). -/
+theorem LeftModCat.weakGlobalDimension_le_globalDimension :
+    LeftModCat.weakGlobalDimension C ≤ Abelian.globalDimension (LeftModCat.{v} C) :=
+  sorry
+
+/-- **3.3, bounds** by the right global dimension. -/
+theorem LeftModCat.weakGlobalDimension_le_globalDimension_modCat :
+    LeftModCat.weakGlobalDimension C ≤ Abelian.globalDimension (ModCat.{v} C) :=
+  sorry
+
+/-- **3.3, from projective dimension**: if every finitely presented right module has projective
+dimension `≤ n`, then `wgldim C ≤ n`. Consumer: ArtinAlgebras §7.5. -/
+theorem LeftModCat.weakGlobalDimension_le_of_forall_isFinitelyPresentable (n : ℕ)
+    (h : ∀ F : ModCat.{v} C, IsFinitelyPresentable.{v} F → HasProjectiveDimensionLE F n) :
+    LeftModCat.weakGlobalDimension C ≤ n :=
+  sorry
+
+theorem LeftModCat.weakGlobalDimension_eq_bot_iff :
+    LeftModCat.weakGlobalDimension C = ⊥ ↔ ∀ X : C, IsZero X :=
+  sorry
+
+theorem LeftModCat.weakGlobalDimension_le_zero_iff :
+    LeftModCat.weakGlobalDimension C ≤ 0 ↔ ∀ G : LeftModCat.{v} C, G.Flat :=
+  sorry
+
+end WeakGlobalDimension
+
+section RingWeakGlobalDimension
+
+variable {A : Type u} [Ring A] [Small.{v} A]
+
 variable (A) in
-/-- **3.2** The weak global dimension. -/
+/-- **3.3, rings** The weak global dimension, native. -/
 noncomputable def weakGlobalDimension : WithBot ℕ∞ :=
   ⨆ M : ModuleCat.{v} A, flatDimension M
 
@@ -1847,25 +2148,25 @@ theorem weakGlobalDimension_le_iff (n : ℕ) :
   sorry
 
 variable (A) in
-/-- **3.2, symmetry**: the weak global dimension is left-right symmetric. -/
+/-- **3.3, rings: symmetry** ([Au, p. 70]; [Lam-LMR, (5.63)]). -/
 theorem weakGlobalDimension_mulOpposite :
     weakGlobalDimension.{v} Aᵐᵒᵖ = weakGlobalDimension.{v} A :=
   sorry
 
 variable (A) in
-/-- **3.2, bounds** by the left global dimension. -/
+/-- **3.3, rings: bounds** by the left global dimension ([Lam-LMR, (5.58)]). -/
 theorem weakGlobalDimension_le_globalDimension :
     weakGlobalDimension.{v} A ≤ TauCeti.globalDimension.{v} A :=
   sorry
 
 variable (A) in
-/-- **3.2, bounds** by the right global dimension. -/
+/-- **3.3, rings: bounds** by the right global dimension. -/
 theorem weakGlobalDimension_le_globalDimension_mulOpposite :
     weakGlobalDimension.{v} A ≤ TauCeti.globalDimension.{v} Aᵐᵒᵖ :=
   sorry
 
-/-- **3.2, tests** for the weak global dimension: finitely presented right modules, and cyclic
-right modules with finitely generated relations. -/
+/-- **3.3, rings: tests**: finitely presented right modules, and cyclic right modules with
+finitely generated relations ([Lam-LMR, (5.69)]). -/
 theorem weakGlobalDimension_le_tfae (n : ℕ) :
     List.TFAE
       [weakGlobalDimension.{v} A ≤ n,
@@ -1874,7 +2175,7 @@ theorem weakGlobalDimension_le_tfae (n : ℕ) :
           flatDimension (ModuleCat.of Aᵐᵒᵖ (Shrink.{v} (A ⧸ I))) ≤ n] :=
   sorry
 
-/-- **3.2, from projective dimension**. -/
+/-- **3.3, rings: from projective dimension**. -/
 theorem weakGlobalDimension_le_of_forall_finitePresentation (n : ℕ)
     (h : ∀ N : ModuleCat.{v} Aᵐᵒᵖ, Module.FinitePresentation Aᵐᵒᵖ N →
       HasProjectiveDimensionLE N n) :
@@ -1890,28 +2191,131 @@ theorem weakGlobalDimension_eq_zero_of_isSemisimpleRing [IsSemisimpleRing A] [No
     weakGlobalDimension.{v} A = 0 :=
   sorry
 
-/-- **3.3** Over a left Noetherian ring, a finite module has equal flat and projective
+/-- **3.3, rings**: the ring weak global dimension is that of `SingleObj A`. -/
+theorem weakGlobalDimension_eq_weakGlobalDimension_singleObj (A : Type u) [Ring A] :
+    weakGlobalDimension.{u} A = LeftModCat.weakGlobalDimension (SingleObj A) :=
+  sorry
+
+end RingWeakGlobalDimension
+
+/-! ### 3.4 Auslander's theorem -/
+
+section Auslander
+
+variable {C : Type u} [Category.{v} C] [Preadditive C] [EssentiallySmall.{v} C]
+
+/-- **3.4, the `FP_∞` lemma**: a module with a projective resolution by finitely presented
+projectives has equal flat and projective dimension. No Noetherian hypothesis. Route: if the flat
+dimension is `n`, the `n`-th syzygy `coker (P_{n+1} → P_n)` is finitely presented and flat (3.1),
+hence projective (2.3). -/
+theorem LeftModCat.flatDimension_eq_projectiveDimension_of_projectiveResolution
+    (G : LeftModCat.{v} C) (P : ProjectiveResolution G)
+    (hP : ∀ i, IsFinitelyPresentable.{v} (P.complex.X i)) :
+    G.flatDimension = projectiveDimension G :=
+  sorry
+
+variable (C)
+
+/-- **3.4, Auslander's theorem** ([Au, Thm. 4, p. 70]; [Lam-LMR, (5.59)] for rings): if every
+representable `Hom(X, -)` is a Noetherian object (`C` is left Noetherian), the global dimension of
+the left modules equals the weak global dimension. Route: the cyclic modules of 3.2 have
+resolutions by finitely presented projectives, then the `FP_∞` lemma. An adaptation of the ring
+theorem. -/
+theorem LeftModCat.globalDimension_eq_weakGlobalDimension
+    [∀ X : C, IsNoetherianObject ((LeftModCat.coyoneda C).obj (op X))] :
+    Abelian.globalDimension (LeftModCat.{v} C) = LeftModCat.weakGlobalDimension C :=
+  sorry
+
+/-- **3.4** The right-module form: if every `Hom(-, X)` is a Noetherian object, the global
+dimension of `Mod C` equals the weak global dimension (over `Cᵒᵖ` and 3.3's symmetry). -/
+theorem ModCat.globalDimension_eq_weakGlobalDimension
+    [∀ X : C, IsNoetherianObject ((ModCat.yoneda C).obj X)] :
+    Abelian.globalDimension (ModCat.{v} C) = LeftModCat.weakGlobalDimension C :=
+  sorry
+
+/-- **3.4, left bound**: for a left Noetherian `C`, a bound on the projective dimension of the
+finitely presented right modules bounds the left global dimension (3.3 and the theorem). No
+right Noetherian hypothesis. -/
+theorem LeftModCat.globalDimension_le_of_forall_isFinitelyPresentable
+    [∀ X : C, IsNoetherianObject ((LeftModCat.coyoneda C).obj (op X))] (n : ℕ)
+    (h : ∀ F : ModCat.{v} C, IsFinitelyPresentable.{v} F → HasProjectiveDimensionLE F n) :
+    Abelian.globalDimension (LeftModCat.{v} C) ≤ n :=
+  sorry
+
+/-- **3.4, symmetry**: for a left and right Noetherian `C`, the left and right global dimensions
+agree ([Au, Cor. 5, p. 70] for rings). -/
+theorem ModCat.globalDimension_eq_globalDimension_leftModCat
+    [∀ X : C, IsNoetherianObject ((LeftModCat.coyoneda C).obj (op X))]
+    [∀ X : C, IsNoetherianObject ((ModCat.yoneda C).obj X)] :
+    Abelian.globalDimension (ModCat.{v} C) = Abelian.globalDimension (LeftModCat.{v} C) :=
+  sorry
+
+end Auslander
+
+section RingAuslander
+
+variable {A : Type u} [Ring A] [Small.{v} A]
+
+/-- **3.4, rings: the `FP_∞` lemma** for a projective resolution by finite projectives. -/
+theorem flatDimension_eq_projectiveDimension_of_projectiveResolution (M : ModuleCat.{v} A)
+    (P : ProjectiveResolution M) (hP : ∀ i, Module.Finite A (P.complex.X i)) :
+    flatDimension M = projectiveDimension M :=
+  sorry
+
+/-- **3.4, rings** Over a left Noetherian ring, a finite module has equal flat and projective
 dimension. -/
 theorem flatDimension_eq_projectiveDimension_of_finite [IsNoetherianRing A] (M : ModuleCat.{v} A)
     [Module.Finite A M] : flatDimension M = projectiveDimension M :=
   sorry
 
 variable (A) in
-/-- **3.3, Auslander's theorem**: a left Noetherian ring has equal left global and weak global
-dimension. -/
+/-- **3.4, rings: Auslander's theorem**: a left Noetherian ring has equal left global and weak
+global dimension. -/
 theorem globalDimension_eq_weakGlobalDimension [IsNoetherianRing A] :
     TauCeti.globalDimension.{v} A = weakGlobalDimension.{v} A :=
   sorry
 
-/-- **3.3, left bound**: over a left Noetherian ring, a bound on the projective dimension of the
-finitely presented right modules bounds the left global dimension. -/
+/-- **3.4, rings: left bound**: over a left Noetherian ring, a bound on the projective dimension
+of the finitely presented right modules bounds the left global dimension. Consumer:
+ArtinAlgebras §7.5. -/
 theorem globalDimension_le_of_forall_finitePresentation_mulOpposite [IsNoetherianRing A] (n : ℕ)
     (h : ∀ N : ModuleCat.{v} Aᵐᵒᵖ, Module.FinitePresentation Aᵐᵒᵖ N →
       HasProjectiveDimensionLE N n) :
     TauCeti.globalDimension.{v} A ≤ n :=
   sorry
 
-end Dimension
+end RingAuslander
+
+/-! ### 3.5 Kernels of flat modules and countably presented flat modules -/
+
+section Extras
+
+variable {C : Type u} [Category.{v} C] [Preadditive C] [EssentiallySmall.{v} C]
+
+variable (C) in
+/-- **3.5** The flat right modules are closed under kernels exactly when the weak global dimension
+is at most two ([CB, Thm. 2.3, p. 1651]). Route: dimension shifting along
+`0 → ker f → F → F' → coker f → 0`. -/
+theorem ModCat.forall_flat_kernel_iff :
+    (∀ ⦃F F' : ModCat.{v} C⦄ (f : F ⟶ F'), ModCat.Flat F → ModCat.Flat F' →
+      ModCat.Flat (kernel f)) ↔ LeftModCat.weakGlobalDimension C ≤ 2 :=
+  sorry
+
+/-- **3.5** The colimit of a sequence of projective modules has projective dimension at most one:
+the telescope `0 → ⊕ D_i → ⊕ D_i → colim D → 0`, as for Bass's module (2.5). -/
+theorem LeftModCat.hasProjectiveDimensionLE_one_colimit (D : ℕ ⥤ LeftModCat.{v} C)
+    [∀ i, Projective (D.obj i)] : HasProjectiveDimensionLE (colimit D) 1 :=
+  sorry
+
+/-- **3.5, Jensen**: a countably presented (`ℵ₁`-presentable) flat module has projective dimension
+at most one. Route: Lazard (2.3) writes it as the colimit of a sequence of finite sums of
+representables; then the telescope. -/
+theorem LeftModCat.Flat.hasProjectiveDimensionLE_one (G : LeftModCat.{v} C) [G.Flat]
+    [Fact (Cardinal.aleph.{v} 1).IsRegular] [IsCardinalPresentable G (Cardinal.aleph.{v} 1)] :
+    HasProjectiveDimensionLE G 1 :=
+  sorry
+
+end Extras
 
 /-! ## Layer 4: semiperfect and perfect rings, and Bass's Theorem P -/
 
@@ -2142,5 +2546,37 @@ theorem not_isLeftTNilpotent_span_X (k : Type u) [Field k] :
       ((Ideal.span {PowerSeries.X} : Ideal (PowerSeries k)) : Set (PowerSeries k)) :=
   sorry
 
+/-- **Layer 3 check** A field has weak global dimension `0`. -/
+theorem weakGlobalDimension_field (k : Type u) [Field k] : weakGlobalDimension.{u} k = 0 :=
+  sorry
+
+/-- **Layer 3 check** The zero ring has weak global dimension `⊥`. -/
+theorem weakGlobalDimension_punit : weakGlobalDimension.{u} PUnit.{u + 1} = ⊥ :=
+  sorry
+
+/-- **Layer 3 check** `ℤ` has weak and global dimension `1`: `Tor_1^ℤ(ℤ ⧸ 2, ℤ ⧸ 2) ≠ 0`, and
+ideals are free. -/
+theorem weakGlobalDimension_int :
+    weakGlobalDimension.{0} ℤ = 1 ∧ TauCeti.globalDimension.{0} ℤ = 1 :=
+  sorry
+
+/-- **Layer 3 check** The dual numbers `k[ε] ⧸ (ε²)` have weak and global dimension `⊤`:
+`Tor_n(k, k) ≅ k` for every `n` (Layer 1 checks). -/
+theorem weakGlobalDimension_dualNumber (k : Type u) [Field k] :
+    weakGlobalDimension.{u} (DualNumber k) = ⊤ ∧ TauCeti.globalDimension.{u} (DualNumber k) = ⊤ :=
+  sorry
+
+/-- **Layer 3 check** The upper triangular algebra `T₂(k)` has weak and global dimension `1`. -/
+theorem weakGlobalDimension_upperTriangular (k : Type u) [Field k] :
+    weakGlobalDimension.{u} (Matrix.blockTriangularSubalgebra k k (id : Fin 2 → Fin 2)) = 1 ∧
+      TauCeti.globalDimension.{u} (Matrix.blockTriangularSubalgebra k k (id : Fin 2 → Fin 2)) =
+        1 :=
+  sorry
+
+/-- **Layer 3 check** The `k`-linear category of the quiver `0 → 1` (Mathlib's `Free k (Fin 2)`)
+has global dimension `1`: its category algebra is `T₂(k)` (1.7). -/
+theorem globalDimension_free_fin_two (k : Type) [Field k] :
+    Abelian.globalDimension (LeftModCat.{0} (CategoryTheory.Free k (Fin 2))) = 1 :=
+  sorry
 
 end TauCetiRoadmap.NoncommutativeFlatness

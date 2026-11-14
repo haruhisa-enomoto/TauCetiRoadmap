@@ -17,9 +17,10 @@ flat modules and flat functors: the ideal test, the `Tor` and Lambek tests with 
 `Mod C`, the Lazard characterizations (equational criterion, factorization, filtered colimits of
 finite sums of representables, purity) and the projectivity of finitely presented flat modules, flat
 = left exact, flat = cohomological on triangulated categories, Crawley-Boevey's representation of
-finitely accessible additive categories, Bass's flat module of a chain, and closure properties. Then
-come flat dimension and weak global dimension, its left-right symmetry, and Auslander's theorem that
-a left Noetherian ring has equal left global and weak global dimension; projective covers over
+finitely accessible additive categories, Bass's flat module of a chain, and closure properties.
+Layer 3 treats flat dimension, the global dimension of an abelian category, the weak global
+dimension with its left-right symmetry, and Auslander's theorem that a left Noetherian category (or
+ring) has equal left global and weak global dimension. Then come projective covers over
 semiperfect rings and the characterization of semiperfect rings by projective covers; and left
 perfect rings. The summit is **Bass's Theorem P**: for a ring `A` with Jacobson radical `J`, the
 following are equivalent: `A ⧸ J` is semisimple and `J` is left T-nilpotent; every left module has a
@@ -28,8 +29,8 @@ descending chain condition; every left module has equal flat and projective dime
 preadditive categories the summit is **Simson's Theorem 5.4** ([Simson, Thm. 5.4, p. 108]): every
 flat left module is projective exactly when every left module has a projective cover, exactly when
 `J(C)` is left T-nilpotent and `C ⧸ J(C)` is semisimple, exactly when every countable inverse system
-in `C` is factorizable; these are the perfect categories ([Harada]). Layers 0–2 are
-category-primary; Layers 3–4 are stated for rings for now and are to be converted to that design.
+in `C` is factorizable; these are the perfect categories ([Harada]). Layers 0–3 are
+category-primary; Layer 4 is stated for rings for now and is to be converted to that design.
 
 ## Scope and ownership
 
@@ -53,8 +54,10 @@ This roadmap owns:
   Lazard characterizations and purity, projectivity of finitely presented flat modules, flat = left
   exact, the triangulated case, Crawley-Boevey's representation theorem, Bass's flat module of a
   chain, closure properties, and the bridge to Mathlib's ind-objects (Layer 2);
-- flat dimension, weak global dimension, its left-right symmetry and its bounds by the global
-  dimensions, and Auslander's theorem for left Noetherian rings (Layer 3);
+- flat dimension; the global dimension of an abelian category, Auslander's lemma on cyclic
+  modules and universe independence; the weak global dimension, its left-right symmetry and its
+  bounds by the global dimensions; the `FP_∞` lemma and Auslander's theorem for left Noetherian
+  categories and rings; kernels of flat modules and countably presented flat modules (Layer 3);
 - T-nilpotent sets; projective covers of finitely generated modules over semiperfect rings, the
   characterization of semiperfect rings by projective covers, and finite minimal projective
   presentations over semiperfect rings; left perfect rings, projective covers over them, Bass's
@@ -86,10 +89,13 @@ The boundaries are as follows.
   product and `Tor` amplitude over commutative rings. This roadmap uses derived categories only
   through Mathlib's `Abelian.Ext` (1.5).
 - [Krull-Schmidt categories and Auslander-Reiten theory of Artin
-  algebras](../RepresentationTheory/ArtinAlgebras/README.md), §7.2, owns the comparison of left
-  and right global dimension through character modules and the formula for semiprimary rings.
-  Layers 3 and 4 give the routes through weak global dimension and perfect rings and do not
-  restate those theorems.
+  algebras](../RepresentationTheory/ArtinAlgebras/README.md), §7.2, owns the statements comparing
+  left and right global dimension and the formula for semiprimary rings. Their proofs on main
+  (`TauCeti/RingTheory/GlobalDimension/MulOpposite.lean`, through character modules) are replaced
+  by the weak-dimension route of 3.4 once Layers 0–3 exist; the statements are kept (refactor
+  consumer, 3.4). Layer 4 gives the route through perfect rings and does not restate them.
+- Tau Ceti's ring `TauCeti.globalDimension` becomes the case `ModuleCat A` of the global dimension
+  of an abelian category (3.2): a refactor of main, with no compatibility shims.
 - Semiperfect rings are Tau Ceti's `TauCeti.IsSemiperfectRing`, with its idempotent
   characterization. This roadmap owns their projective covers and their characterization by
   projective covers (4.2). Minimal projective presentations are Tau Ceti's
@@ -98,9 +104,9 @@ The boundaries are as follows.
 - Outside this roadmap: the tensor product of additive categories and functors of several variables
   ([Mitchell, §2]); Morita theory for functor categories, beyond the finite-object comparison of
   1.7; the conditions of Theorem P on direct limits ([Bass, Theorem P (4), (5)]); Chase's theorem,
-  coherent rings, products and kernels of flat modules (pointers in 2.6); flat covers (pointers in
-  2.4); purity beyond the purity test of 2.3 (pure-injective modules, pure global dimension);
-  flat Mittag-Leffler modules; faithful flatness over noncommutative rings; the
+  coherent rings and products of flat modules (pointers in 2.6; kernels are in 3.5); flat covers
+  (pointers in 2.4); purity beyond the purity test of 2.3 (pure-injective modules, pure global
+  dimension); flat Mittag-Leffler modules; faithful flatness over noncommutative rings; the
   conditions on maximal submodules and socles ([AF, 28.4 (c), (f)]), on finitely generated
   submodules (Björk) and on principal left ideals with the ascending chain condition (Jonah);
   finitistic dimensions ([Bass, Part II]); `Tor` of bimodules and its module structure over a base
@@ -113,8 +119,10 @@ Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 
 (ring `Tor`), `TauCeti/CategoryTheory/Preadditive/CategoryAlgebra.lean` (1.7),
 `TauCeti/CategoryTheory/Preadditive/ModCat/Flat/` (2.1–2.6),
 `TauCeti/CategoryTheory/Preadditive/ModCat/Baer.lean` (2.2), `TauCeti/RingTheory/Flat/Balanced/`
-(ring items of Layer 2), `TauCeti/RingTheory/GlobalDimension/Weak.lean`
-(Layer 3), `TauCeti/RingTheory/Jacobson/TNilpotent.lean`,
+(ring items of Layer 2), `TauCeti/CategoryTheory/Abelian/GlobalDimension.lean` (3.2),
+`TauCeti/CategoryTheory/Preadditive/ModCat/Dimension/` (3.1, 3.3–3.5),
+`TauCeti/RingTheory/GlobalDimension/Weak.lean` (ring items of Layer 3),
+`TauCeti/RingTheory/Jacobson/TNilpotent.lean`,
 `TauCeti/Algebra/Module/ProjectiveCover/Semiperfect.lean` and
 `TauCeti/RingTheory/Jacobson/LeftPerfect.lean` (Layer 4). Nothing goes under
 `TauCeti/RingTheory/Perfect/`, which is the characteristic-`p` notion.
@@ -162,12 +170,14 @@ Suggested homes in Tau Ceti: `TauCeti/CategoryTheory/Preadditive/ModCat/` (0.1, 
 6. `Tor^C_n(F, G)` and `Tor_n^A(M, N)` have the right module first, are derived in the left-module
    variable, and take values in `ModuleCat R` (1.1). Over a commutative ring, ring `Tor` is compared
    directly with Mathlib's `CategoryTheory.Tor` (1.6). Flatness (2.1) is defined with `R = ℤ` and
-   does not depend on `R`; Layer 3 uses `R = ℤ` for now. By the independence of `R` (0.3, 0.6) this
+   does not depend on `R`; Layer 3 uses `R = ℤ` as well. By the independence of `R` (0.3, 0.6) this
    does not change the underlying groups. Modules live in `ModuleCat.{v} A` and `ModuleCat.{v} Aᵐᵒᵖ`
    with `[Small.{v} A]`, as for `TauCeti.globalDimension`; the instance `Small.{v} Aᵐᵒᵖ` is part of
    1.1.
 7. Dimensions take values in `WithBot ℕ∞`, with `⊥` exactly for the zero module, as Mathlib's
-   `CategoryTheory.projectiveDimension` and Tau Ceti's `TauCeti.globalDimension`.
+   `CategoryTheory.projectiveDimension` and Tau Ceti's `TauCeti.globalDimension`. The global
+   dimension of an abelian category is `TauCeti.Abelian.globalDimension` (3.2); for `C` the right
+   global dimension is that of `ModCat C`, the left one that of `LeftModCat C`.
    `TauCeti.globalDimension A` is the left global dimension; the right one is
    `TauCeti.globalDimension Aᵐᵒᵖ`.
 8. `J = Ring.jacobson A`. A subset `S` of `A` is **left T-nilpotent** if for every sequence
@@ -264,8 +274,15 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
 - Morita equivalence: `IsMoritaEquivalent` and `MoritaEquivalence`
   (`Mathlib/RingTheory/Morita/Basic.lean`), for rings only.
 - Dimensions: `CategoryTheory.projectiveDimension`, `CategoryTheory.HasProjectiveDimensionLT`,
-  `CategoryTheory.HasProjectiveDimensionLE`, `CategoryTheory.injectiveDimension`,
-  `CategoryTheory.HasInjectiveDimensionLE`.
+  `CategoryTheory.HasProjectiveDimensionLE`, `projectiveDimension_le_iff`,
+  `projectiveDimension_eq_bot_iff`, `CategoryTheory.injectiveDimension`,
+  `CategoryTheory.HasInjectiveDimensionLE`; `HomologicalComplex.opcycles`, `QuasiIso`,
+  `ChainComplex.single₀`; `CategoryTheory.IsNoetherianObject`
+  (`Mathlib/CategoryTheory/Subobject/NoetherianObject.lean`); `IsCardinalPresentable` with
+  `Cardinal.isRegular_aleph_one`. Mathlib has no global dimension, flat dimension or weak global
+  dimension, and no finitely generated objects of a category.
+- Checks of Layer 3: `DualNumber`, `Matrix.blockTriangularSubalgebra`, and `CategoryTheory.Free`
+  (the `R`-linear category on a category, `Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean`).
 - Commutative counterparts: `TensorProduct` with `LinearMap.rTensor` and `LinearMap.lTensor`;
   `CategoryTheory.Tor` and `CategoryTheory.Tor'` on `ModuleCat R`; `Module.Flat` with
   `Module.Flat.iff_characterModule_injective`, `Module.Flat.iff_forall_isTrivialRelation`,
@@ -301,12 +318,18 @@ The baseline is Mathlib `e8ba86fa9744dd8d90f48c1752bc735f61a4ca81` and Tau Ceti
   `CharacterModule.opDual`, `CharacterModule.exact_opDual`,
   `CharacterModule.injective_of_projective` and `CharacterModule.projective_of_injective`
   (`TauCeti.Algebra.Module.CharacterModule.MulOpposite`).
-- Global dimension: `TauCeti.globalDimension`,
+- Global dimension: `TauCeti.globalDimension` with `TauCeti.globalDimension_def`,
   `TauCeti.globalDimension_le_iff_hasProjectiveDimensionLE`, `TauCeti.globalDimension_le_tfae`,
-  `TauCeti.globalDimension_eq_iSup_finite`, `TauCeti.globalDimension_eq_bot_iff` and
-  `TauCeti.globalDimension_eq_zero_of_isSemisimpleRing` (`TauCeti.RingTheory.GlobalDimension`);
-  `TauCeti.globalDimension_mulOpposite` and `TauCeti.hasInjectiveDimensionLE_characterModule_iff`
-  (`TauCeti.RingTheory.GlobalDimension.MulOpposite`).
+  `TauCeti.globalDimension_eq_iSup_cyclic`, `TauCeti.globalDimension_eq_iSup_finite`,
+  `TauCeti.globalDimension_eq_globalDimension`, `TauCeti.globalDimension_eq_bot_iff`,
+  `TauCeti.globalDimension_eq_zero_of_isSemisimpleRing` and
+  `TauCeti.globalDimension_eq_one_of_isPrincipalIdealRing` (`TauCeti.RingTheory.GlobalDimension`);
+  the refactor consumers `TauCeti.globalDimension_le_globalDimension_mulOpposite`,
+  `TauCeti.globalDimension_mulOpposite`, `TauCeti.globalDimension_mulOpposite_of_moduleFinite` and
+  `TauCeti.hasInjectiveDimensionLE_characterModule_iff`
+  (`TauCeti.RingTheory.GlobalDimension.MulOpposite`);
+  `CategoryTheory.Equivalence.projectiveDimension_functor_obj`
+  (`TauCeti.Algebra.Homology.Ext.Equivalence`).
 - Left derived functors: `CategoryTheory.NatTrans.leftDerived_add`,
   `CategoryTheory.Functor.isZero_leftDerived_succ` and
   `CategoryTheory.ShortComplex.ShortExact.leftDerivedOneIsoKernel`
@@ -376,6 +399,10 @@ TauCetiProject/TauCeti#37151 (Auslander's defect formula, open):
 categorical form. The defect formula itself
 (`Function.Exact.dualContravariantDefectEquivCovariantDefect`) is not a target here.
 
+TauCetiProject/TauCeti#40807 (ArtinAlgebras §7.5, open): a consumer, not a supplier. It uses the
+statements of `TauCeti.RingTheory.GlobalDimension.MulOpposite`, whose proofs 3.4 replaces; the left
+bound of 3.4 strengthens what it needs.
+
 ## How to read the build
 
 | Layer | Construction | Principal outputs |
@@ -383,7 +410,7 @@ categorical form. The defect formula itself
 | [0](#layer-0-modules-over-a-preadditive-category-and-their-tensor-product) | Modules over a preadditive category | `Mod C`, rings as one-object categories, tensor product over `C`, projective factors, swap, ring API, duals |
 | [1](#layer-1-tor) | `Tor` | Left derived functor, long exact sequences, balance, `Tor` of the transpose, `Tor`–`Ext` duality, comparisons, `Tor₁` of cyclic modules, category algebras |
 | [2](#layer-2-flat-modules-and-flat-functors) | Flat modules and flat functors | Ideal test, `Tor` and Lambek tests, Baer criterion, Lazard block, purity, flat = left exact, triangulated case, representation theorem, Bass's module, closure |
-| [3](#layer-3-flat-dimension-and-weak-global-dimension) | Dimensions | Flat dimension, weak global dimension, symmetry, Auslander's theorem |
+| [3](#layer-3-flat-dimension-global-and-weak-global-dimension) | Dimensions | Flat dimension, global dimension of an abelian category, Auslander's lemma, weak global dimension, symmetry, `FP_∞` lemma, Auslander's theorem, kernels and countably presented flat modules |
 | [4](#layer-4-semiperfect-and-perfect-rings-and-basss-theorem-p) | Semiperfect and perfect rings | T-nilpotence, covers over semiperfect rings, `IsLeftPerfectRing`, covers over left perfect rings, Theorem P, global dimension |
 
 Each layer needs the previous ones; 4.1 and 4.2 need only Mathlib and Tau Ceti. A name in
@@ -782,13 +809,13 @@ natural in `F` and `G`, where `G^E` is the dual of 0.7 and `Ext` is Mathlib's de
 `Abelian.Ext` (the `Ext` that Tau Ceti uses throughout). Mathlib's `Abelian.Ext` is an `R`-module
 for an `R`-linear abelian category (`Mathlib/Algebra/Homology/DerivedCategory/Ext/Linear.lean`), so
 the statement is `R`-linear. Route: compute `Tor` from a projective resolution `P` of `F` (by the
-balance); then `Hom_R(H_n(P ⊗_C G), E) ≅ H^n(Hom_R(P ⊗_C G, E))`, since `Hom_R(-, E)` is exact;
-the adjunction of 0.7 termwise gives `Hom_R(P ⊗_C G, E) ≅ Hom(P, G^E)`; and Mathlib's
+balance); then `Hom_R(H_n(P ⊗_C G), E) ≅ H^n(Hom_R(P ⊗_C G, E))`, since `Hom_R(-, E)` is exact; the
+adjunction of 0.7 termwise gives `Hom_R(P ⊗_C G, E) ≅ Hom(P, G^E)`; and Mathlib's
 `ProjectiveResolution.extEquivCohomologyClass`
-(`Mathlib/CategoryTheory/Abelian/Projective/Ext.lean`) identifies `Ext^n(F, G^E)` with the degree-`n` cohomology classes from `P`. No classical `Ext` and
-no comparison of `Ext`s is needed ([CE, VI, Prop. 5.1, p. 120]; [Lambek, p. 241] for `R = ℤ`,
-`E = ℚ ⧸ ℤ`). This item includes the instance `HasExt.{w} (Mod C)` (Mathlib's
-`hasExt_of_enoughProjectives`, as for `ModuleCat`).
+(`Mathlib/CategoryTheory/Abelian/Projective/Ext.lean`) identifies `Ext^n(F, G^E)` with the
+degree-`n` cohomology classes from `P`. No classical `Ext` and no comparison of `Ext`s is needed
+([CE, VI, Prop. 5.1, p. 120]; [Lambek, p. 241] for `R = ℤ`, `E = ℚ ⧸ ℤ`). This item includes the
+instance `HasExt.{w} (Mod C)` (Mathlib's `hasExt_of_enoughProjectives`, as for `ModuleCat`).
 
 **Rings** (`TauCeti.balancedTorExtDualityEquiv`):
 `Hom_R(Tor_n^A(M, N), E) ≃ₗ[R] Ext^n_{Aᵐᵒᵖ}(M, Hom_R(N, E))`, with `Hom_R(N, E)` Tau Ceti's
@@ -1186,7 +1213,7 @@ the case `N = A ⧸ I`). Layer 4 uses it (4.5).
 Pointers, not targets: products of flat right modules are flat exactly when `C` has weak cokernels
 ([CB, Thm. 2.1, p. 1648]; [OR, Thm. 4.1, p. 101]; Chase for rings, [Lam-LMR, (4.47), p. 139]); the
 flat right modules are closed under kernels exactly when the weak global dimension is at most two
-([CB, Thm. 2.3, p. 1651]). Coherence and products belong to Layer 3 or later.
+([CB, Thm. 2.3, p. 1651]; a target of 3.5). Coherence and products are not developed.
 
 *Needs:* 0.4, 2.2, 2.3; Mathlib `Retract`, `IsFiltered`.
 
@@ -1219,94 +1246,309 @@ abelian categories; cohomological functors on triangulated categories.
 
 Layers 0 and 1.
 
-## Layer 3: flat dimension and weak global dimension
+## Layer 3: flat dimension, global and weak global dimension
 
-*Under review: to be converted to the category-primary design of Layers 0–2; currently stated for
-rings.*
+Throughout, `C : Type u` is preadditive with `Category.{v} C` and `EssentiallySmall.{v} C`, and
+modules live in the universe `v`, as in Layer 2. `Tor` is taken with `R = ℤ`; by 1.6 the dimensions
+do not depend on `R`. Items 3.1–3.4 end with their ring statements. The categorical statements are
+adaptations of the ring theorems cited with them, unless a categorical source is named.
 
 ### 3.1 Flat dimension
 
-(`TauCeti.HasFlatDimensionLT`, `TauCeti.HasFlatDimensionLE`, `TauCeti.flatDimension`). For
-`M : ModuleCat.{v} A` and `n : ℕ`, `HasFlatDimensionLT M n` says `Tor_i^A(N, M) = 0` for every
-right module `N` and every `i ≥ n`; `HasFlatDimensionLE M n` is `HasFlatDimensionLT M (n + 1)`;
-`flatDimension M : WithBot ℕ∞` is the infimum of the `d` with `HasFlatDimensionLT M i` for all
-`i > d`, the shape of Mathlib's `projectiveDimension`. API:
+(`TauCeti.LeftModCat.HasFlatDimensionLT G n`, `TauCeti.LeftModCat.HasFlatDimensionLE`,
+`TauCeti.LeftModCat.flatDimension`; right modules `TauCeti.ModCat.HasFlatDimensionLT`,
+`TauCeti.ModCat.flatDimension`.) A left module `G` has **flat dimension `< n`** if
+`Tor_i(Hom(-, X) ⧸ I, G) = 0` for every `i ≥ n`, every object `X` and every finitely generated
+subfunctor `I = yonedaSpan β ⊆ Hom(-, X)` (2.1). `HasFlatDimensionLE G n` is
+`HasFlatDimensionLT G (n + 1)`, and `flatDimension G : WithBot ℕ∞` is the infimum of the `d` with
+`HasFlatDimensionLT G i` for all `i > d`. This is the shape of Mathlib's `projectiveDimension`,
+which is also defined by vanishing (of `Ext`) and not by resolutions. The definition is
+universe-free: it quantifies over objects and finite families of morphisms of `C`. At `n = 0`,
+`HasFlatDimensionLE G 0` is 2.2 (5), so flat dimension `≤ 0` is Layer 2's flatness; at `i = 0`,
+`Tor_0(Hom(-, X), G) = G(X)`, so `flatDimension G = ⊥` exactly when `G = 0`. A right module has the
+flat dimension of a left `Cᵒᵖ`-module.
 
-- `flatDimension M = ⊥` exactly when `M` is zero (`TauCeti.flatDimension_eq_bot_iff`);
-  `HasFlatDimensionLE M 0 ↔ BalancedFlat A M` (`TauCeti.hasFlatDimensionLE_zero_iff`; 2.2);
-- `flatDimension M ≤ projectiveDimension M` (`TauCeti.flatDimension_le_projectiveDimension`; 2.6);
-- dimension shifting (`TauCeti.hasFlatDimensionLE_succ_iff`): for `0 → K → F → M → 0` with `F`
-  flat, `HasFlatDimensionLE M (n + 1) ↔ HasFlatDimensionLE K n` (1.3, 2.2);
-- the ideal test (`TauCeti.hasFlatDimensionLE_iff_forall_quotient`): `HasFlatDimensionLE M n`
-  exactly when `Tor_{n+1}^A(A ⧸ I, M) = 0` for every finitely generated right ideal `I` (2.2 and
-  dimension shifting);
-- character modules (`TauCeti.flatDimension_eq_injectiveDimension_characterModule`):
-  `flatDimension M = injectiveDimension (M⁺)` in `ModuleCat Aᵐᵒᵖ`
-  ([Lam-LMR, (5.57), p. 184]). Route: induction by dimension shifting on both sides, with 2.2 (6),
-  `CharacterModule.exact_opDual` and `CharacterModule.injective_of_projective`; the same induction
-  as Tau Ceti's `hasInjectiveDimensionLE_characterModule_iff`, without a finiteness hypothesis.
+**The classical definition** (`TauCeti.LeftModCat.hasFlatDimensionLE_tfae`). For `n : ℕ` the
+following are equivalent:
 
-### 3.2 Weak global dimension
+1. `HasFlatDimensionLE G n`;
+2. `Tor_i(F, G) = 0` for every right module `F` and every `i > n`;
+3. `Tor_{n+1}(F, G) = 0` for every right module `F`;
+4. `G` has a flat resolution `0 → K_n → ⋯ → K_0 → G → 0` of length `≤ n`;
+5. the `n`-th syzygy of every projective resolution `P` of `G` is flat;
+6. the `n`-th syzygy of some projective resolution of `G` is flat.
 
-(`TauCeti.weakGlobalDimension A := ⨆ M : ModuleCat.{v} A, flatDimension M`). API:
+The `n`-th syzygy is `P.complex.opcycles n = coker(P_{n+1} → P_n)`, which is `G` for `n = 0`.
+Item 4 is the textbook definition. Route: dimension shifting in either variable (1.2, 1.3), with
+the vanishing of higher `Tor` at projective modules. (3) ⇒ (2) shifts in `F`; (2) ⇒ (1) is
+immediate; (1) ⇒ (5) is 2.2 (5) applied to the `n`-th syzygy `K`, since
+`Tor_1(-, K) ≅ Tor_{n+1}(-, G)`; (5) ⇒ (6) ⇒ (4) truncate a projective resolution at its syzygy;
+(4) ⇒ (3) computes `Tor` from the flat resolution (below). Item 2 holds for right modules in every
+universe; Lean states it in the universe `v`.
 
-- `weakGlobalDimension A ≤ n` exactly when `Tor_{n+1}^A` vanishes on all pairs
-  (`TauCeti.weakGlobalDimension_le_iff`);
-- **symmetry** (`TauCeti.weakGlobalDimension_mulOpposite`):
-  `weakGlobalDimension Aᵐᵒᵖ = weakGlobalDimension A`, by 1.3 ([Au, p. 70]; [Lam-LMR, (5.63),
-  p. 185]);
-- **bounds** (`TauCeti.weakGlobalDimension_le_globalDimension`,
-  `TauCeti.weakGlobalDimension_le_globalDimension_mulOpposite`):
-  `weakGlobalDimension A ≤ globalDimension A` and `weakGlobalDimension A ≤ globalDimension Aᵐᵒᵖ`
-  (3.1 and symmetry; [Lam-LMR, (5.58), p. 184]);
-- **tests** (`TauCeti.weakGlobalDimension_le_tfae`): for `n : ℕ`, the following are equivalent:
-  `weakGlobalDimension A ≤ n`; every finitely presented right module has flat dimension at most
-  `n`; for every finitely generated right ideal `I`, the right module `A ⧸ I` has flat dimension at
-  most `n` ([Lam-LMR, (5.69), p. 187], for cyclic modules);
-- **from projective dimension** (`TauCeti.weakGlobalDimension_le_of_forall_finitePresentation`):
-  if every finitely presented right module has projective dimension at most `n`, then
-  `weakGlobalDimension A ≤ n`;
-- `weakGlobalDimension A = ⊥` exactly when `A` is the zero ring
-  (`TauCeti.weakGlobalDimension_eq_bot_iff`); a nonzero semisimple ring has weak global dimension
-  `0` (`TauCeti.weakGlobalDimension_eq_zero_of_isSemisimpleRing`).
+API:
 
-### 3.3 Auslander's theorem
+- `flatDimension G ≤ n ↔ HasFlatDimensionLE G n` (`TauCeti.LeftModCat.flatDimension_le_iff`);
+  `flatDimension G = ⊥ ↔ G = 0` (`TauCeti.LeftModCat.flatDimension_eq_bot_iff`); flat dimension
+  `≤ 0` is flatness (`TauCeti.LeftModCat.hasFlatDimensionLE_zero_iff`);
+- `flatDimension G ≤ projectiveDimension G`
+  (`TauCeti.LeftModCat.flatDimension_le_projectiveDimension`; projective modules are flat, 2.6);
+- dimension shifting (`TauCeti.LeftModCat.hasFlatDimensionLE_succ_iff`): for `0 → K → F → M → 0`
+  with `F` flat, `HasFlatDimensionLE M (n + 1) ↔ HasFlatDimensionLE K n`;
+- `Tor` from flat resolutions (`TauCeti.ModCat.torObjIsoHomologyOfFlat`): for a flat resolution
+  `K → G`, `Tor_n(F, G) ≅ H_n(F ⊗_C K)`. Route: both sides from a projective resolution of `F`
+  (1.3), with `- ⊗_C K_q` exact (2.2);
+- **duality** (`TauCeti.LeftModCat.flatDimension_eq_injectiveDimension_dual`): for an injective
+  cogenerator `E` of `R`-modules, `flatDimension G = injectiveDimension (G^E)` in `Mod C`. Route:
+  the `Tor`–`Ext` duality of 1.5 in every degree, and `E` detects zero (0.7). This is the
+  general-`E` form of [Lam-LMR, (5.57), p. 184] (`E = ℚ ⧸ ℤ`, rings).
 
-(`TauCeti.globalDimension_eq_weakGlobalDimension`). For `[IsNoetherianRing A]` and
-`[Small.{v} A]`, `globalDimension.{v} A = weakGlobalDimension.{v} A` ([Au, Thm. 4, p. 70];
-[Lam-LMR, (5.59), p. 184]). Route: over a left Noetherian ring the syzygies of a finite module are
-finite, hence finitely presented, so dimension shifting and 2.3 give
-`flatDimension M = projectiveDimension M` for finite `M`
-(`TauCeti.flatDimension_eq_projectiveDimension_of_finite`); then
-`TauCeti.globalDimension_eq_iSup_finite`.
+**Rings** (`TauCeti.HasFlatDimensionLT`, `TauCeti.HasFlatDimensionLE`, `TauCeti.flatDimension`),
+native for `M : ModuleCat.{v} A` with `[Small.{v} A]`: `Tor_i^A(A ⧸ I, M) = 0` for every `i ≥ n` and
+every finitely generated right ideal `I`. API as above: `TauCeti.flatDimension_eq_bot_iff`,
+`TauCeti.hasFlatDimensionLE_zero_iff`, `TauCeti.hasFlatDimensionLE_tfae`,
+`TauCeti.flatDimension_le_projectiveDimension`, `TauCeti.hasFlatDimensionLE_succ_iff`, and
+`TauCeti.flatDimension_eq_injectiveDimension_characterModule`: `flatDimension M` is the injective
+dimension of the character module `M⁺` in `ModuleCat Aᵐᵒᵖ` ([Lam-LMR, (5.57)]), the case `R = ℤ`,
+`E = ℚ ⧸ ℤ` of the duality. Bridge (`TauCeti.hasFlatDimensionLT_iff_singleObj`): through 0.2, ring
+flat dimension is flat dimension over `SingleObj A`.
+
+*Needs:* 1.1–1.3, 1.5, 2.1, 2.2, 2.6; Mathlib `HomologicalComplex.opcycles`, `QuasiIso`,
+`ChainComplex.single₀`, `ProjectiveResolution`, `injectiveDimension`.
+
+### 3.2 Global dimension of an abelian category
+
+(`TauCeti.Abelian.globalDimension 𝒜 := ⨆ X : 𝒜, projectiveDimension X`.) For an abelian category
+`𝒜`, the global dimension is the supremum of Mathlib's `projectiveDimension` over the objects
+([Mitchell, §9, p. 42], where the right and left global dimensions of a small additive `C` are those
+of its two module categories). It needs no tensor product, so it is defined for every abelian
+category. `Mod C` gives the right global dimension `Abelian.globalDimension (ModCat C)`, the left
+modules the left global dimension `Abelian.globalDimension (LeftModCat C)`, and `ModuleCat A` the
+ring case. API:
+
+- `projectiveDimension X ≤ globalDimension 𝒜`
+  (`TauCeti.Abelian.projectiveDimension_le_globalDimension`), `globalDimension 𝒜 ≤ n` exactly when
+  every object has projective dimension `≤ n` (`TauCeti.Abelian.globalDimension_le_iff`), and
+  `globalDimension 𝒜 = ⊥` exactly when every object is zero
+  (`TauCeti.Abelian.globalDimension_eq_bot_iff`); all three have proofs in `Suggested.lean`;
+- injective dimension (`TauCeti.Abelian.globalDimension_eq_iSup_injectiveDimension`): the same
+  supremum over `injectiveDimension`, since both say that `Ext^i` vanishes above the bound; and
+  `globalDimension 𝒜ᵒᵖ = globalDimension 𝒜` (`TauCeti.Abelian.globalDimension_opposite`; [Mitchell,
+  §9, p. 42]);
+- invariance under equivalence (`TauCeti.Abelian.globalDimension_eq_of_equivalence`), from Tau
+  Ceti's `CategoryTheory.Equivalence.projectiveDimension_functor_obj`.
+
+**Auslander's lemma for `Mod C`** (`TauCeti.ModCat.globalDimension_le_iff_cyclic`,
+`TauCeti.LeftModCat.globalDimension_le_iff_cyclic`). `Abelian.globalDimension (ModCat C) ≤ n`
+exactly when every cyclic module `Hom(-, X) ⧸ I`, for any subfunctor `I ⊆ Hom(-, X)`, has
+projective dimension `≤ n`; for left modules, the cyclic modules `Hom(X, -) ⧸ I` ([Au, Thm. 1,
+p. 68] for rings). Route: global dimension `≤ n` means injective dimension `≤ n` for every module;
+for a module `E` take an injective coresolution to the `n`-th cosyzygy `E'`; `E'` is injective
+exactly when it passes the Baer test of 2.2, that is, `Ext^1(Hom(-, X) ⧸ I, E') = 0`, which is
+`Ext^{n+1}(Hom(-, X) ⧸ I, E) = 0`. The refinements over finite and over cyclic modules of Tau Ceti's
+`TauCeti.globalDimension_le_tfae`, `globalDimension_eq_iSup_cyclic` and
+`globalDimension_eq_iSup_finite` become corollaries for `C = SingleObj A`.
+
+- **Sides** (`TauCeti.LeftModCat.globalDimension_eq_globalDimension_modCat_op`): the left global
+  dimension of `C` is the right global dimension of `Cᵒᵖ`, through the equivalence of 0.5.
+- **Universe independence** (`TauCeti.ModCat.globalDimension_eq_globalDimension`): for `C`
+  essentially small in two universes, both global dimensions are computed on the cyclic modules
+  of a small model, which live in one universe; this is the categorical form of Tau Ceti's
+  `TauCeti.globalDimension_eq_globalDimension`.
+
+**Rings, refactor of main.** Tau Ceti's `TauCeti.globalDimension A`
+(`⨆ M : ModuleCat.{v} A, projectiveDimension M`) is `Abelian.globalDimension (ModuleCat.{v} A)`
+(`TauCeti.globalDimension_eq_abelianGlobalDimension`, proved in `Suggested.lean` through
+`TauCeti.globalDimension_def`). When 3.2 lands, the ring definition becomes this special case, and
+its API is restated as corollaries, with no compatibility shims; `TauCeti.globalDimension_le_tfae`
+is re-proved through Auslander's lemma. Bridge
+(`TauCeti.globalDimension_eq_globalDimension_singleObj`): `TauCeti.globalDimension A` is the left
+global dimension of `SingleObj A` (0.2).
+
+*Needs:* 0.1, 0.2, 0.5, 2.2 (Baer); Mathlib `projectiveDimension`, `projectiveDimension_le_iff`,
+`projectiveDimension_eq_bot_iff`, `injectiveDimension`, `Subobject`; Tau Ceti
+`TauCeti.globalDimension`, `TauCeti.globalDimension_def`,
+`CategoryTheory.Equivalence.projectiveDimension_functor_obj`.
+
+### 3.3 Weak global dimension
+
+(`TauCeti.LeftModCat.weakGlobalDimension C := ⨆ G : LeftModCat C, flatDimension G`.) It is defined
+for small preadditive `C` and for rings; it needs the tensor product, so it is not defined for an
+arbitrary abelian category. API:
+
+- `weakGlobalDimension C ≤ n` exactly when `Tor_{n+1}` vanishes on all pairs
+  (`TauCeti.LeftModCat.weakGlobalDimension_le_iff`);
+- **symmetry** (`TauCeti.LeftModCat.weakGlobalDimension_op`,
+  `TauCeti.LeftModCat.weakGlobalDimension_eq_iSup_modCat`):
+  `weakGlobalDimension Cᵒᵖ = weakGlobalDimension C`, so it is also the supremum of the flat
+  dimensions of the right modules. Route: the balance (1.3) and the previous item ([Au, p. 70];
+  [Lam-LMR, (5.63), p. 185]);
+- **universe-free tests** (`TauCeti.LeftModCat.weakGlobalDimension_le_tfae`): for `n : ℕ` the
+  following are equivalent: `weakGlobalDimension C ≤ n`; every cyclic right module
+  `Hom(-, X) ⧸ I` with `I` finitely generated has flat dimension `≤ n`; every finitely presented
+  right module has flat dimension `≤ n` ([Lam-LMR, (5.69), p. 187], for cyclic modules over a
+  ring). By the definition of flat dimension, the second item tests `Tor` only between finitely
+  presented cyclic modules on both sides. Route: the first item gives the third by symmetry, and
+  the third gives the second; by 3.1 the second says `Tor_{n+1}(Hom(-, X) ⧸ I, G) = 0` for every
+  left module `G`, which is `HasFlatDimensionLE G n`;
+- **bounds** (`TauCeti.LeftModCat.weakGlobalDimension_le_globalDimension`,
+  `TauCeti.LeftModCat.weakGlobalDimension_le_globalDimension_modCat`): the weak global dimension
+  is at most both global dimensions (3.1 and symmetry; [Lam-LMR, (5.58), p. 184]);
+- **from projective dimension**
+  (`TauCeti.LeftModCat.weakGlobalDimension_le_of_forall_isFinitelyPresentable`): if every finitely
+  presented right module has projective dimension `≤ n`, then `weakGlobalDimension C ≤ n` (the tests
+  and 3.1). Consumer: ArtinAlgebras §7.5, through TauCetiProject/TauCeti#40807;
+- **degenerate cases** (`TauCeti.LeftModCat.weakGlobalDimension_eq_bot_iff`,
+  `TauCeti.LeftModCat.weakGlobalDimension_le_zero_iff`): `⊥` exactly when every object of `C` is
+  zero (so every module is zero); `≤ 0` exactly when every module is flat. A semisimple `C`, one of
+  global dimension `0` ([Mitchell, §9, p. 42]), has weak global dimension `0` when it has a nonzero
+  object.
+
+**Rings** (`TauCeti.weakGlobalDimension A := ⨆ M : ModuleCat.{v} A, flatDimension M`), native:
+`TauCeti.weakGlobalDimension_le_iff`, `TauCeti.weakGlobalDimension_mulOpposite`,
+`TauCeti.weakGlobalDimension_le_globalDimension`,
+`TauCeti.weakGlobalDimension_le_globalDimension_mulOpposite`, `TauCeti.weakGlobalDimension_le_tfae`
+(finitely presented and cyclic right modules),
+`TauCeti.weakGlobalDimension_le_of_forall_finitePresentation`,
+`TauCeti.weakGlobalDimension_eq_bot_iff` (the zero ring) and
+`TauCeti.weakGlobalDimension_eq_zero_of_isSemisimpleRing`. Equality with the categorical one
+(`TauCeti.weakGlobalDimension_eq_weakGlobalDimension_singleObj`), through 0.2.
+
+*Needs:* 1.3, 2.2, 3.1, 3.2; Mathlib `IsFinitelyPresentable`.
+
+### 3.4 Auslander's theorem
+
+Hypothesis: `C` is **left Noetherian**, that is, every representable `Hom(X, -)` is a Noetherian
+object of the left modules (Mathlib's `IsNoetherianObject`: ascending chain condition on
+subobjects). For `C = SingleObj A`, `Hom(∗, -)` is the regular left module, so this is
+`IsNoetherianRing A`.
+
+- **The `FP_∞` lemma**
+  (`TauCeti.LeftModCat.flatDimension_eq_projectiveDimension_of_projectiveResolution`), a separate
+  public target, with no Noetherian hypothesis. A module with a projective resolution by finitely
+  presented projectives has equal flat and projective dimension. Route: if the flat dimension is
+  `n`, the `n`-th syzygy `coker(P_{n+1} → P_n)` is flat (3.1) and finitely presented, hence
+  projective by "finitely presented flat modules are projective" (2.3, through 1.4); so the
+  projective dimension is at most `n`. Ring form
+  (`TauCeti.flatDimension_eq_projectiveDimension_of_projectiveResolution`): a resolution by finite
+  projectives. Over a left Noetherian ring every finite module has one
+  (`TauCeti.flatDimension_eq_projectiveDimension_of_finite`, with
+  `Module.finitePresentation_of_finite`).
+- **Auslander's theorem** (`TauCeti.LeftModCat.globalDimension_eq_weakGlobalDimension`). If `C`
+  is left Noetherian, then `Abelian.globalDimension (LeftModCat C) = weakGlobalDimension C`
+  ([Au, Thm. 4, p. 70]; [Lam-LMR, (5.59), p. 184], for rings). Route: by 3.2 the global dimension
+  is the supremum over the cyclic modules `Hom(X, -) ⧸ I`. Over a left Noetherian `C`, finite sums
+  of representables are Noetherian objects, so their subobjects are finitely generated and the
+  cyclic modules have resolutions by finitely presented projectives. The `FP_∞` lemma then gives
+  projective dimension = flat dimension `≤ weakGlobalDimension C`; the other inequality is 3.3.
+  The right-module form (`TauCeti.ModCat.globalDimension_eq_weakGlobalDimension`, every
+  `Hom(-, X)` Noetherian) follows over `Cᵒᵖ` with 3.3's symmetry.
+
+The categorical form is an adaptation of Auslander's ring theorem. [Mitchell, §9, pp. 42–45] defines
+the global dimensions of a small additive category and compares them with its matrix ring, but its
+pages 41–56 contain no weak dimension and no Noetherian comparison; the later pages were not read,
+and no categorical source was found.
 
 **Corollaries.**
 
-- **Left bound** (`TauCeti.globalDimension_le_of_forall_finitePresentation_mulOpposite`). If `A` is
-  left Noetherian and every finitely presented right module has projective dimension at most `n`,
-  then `globalDimension A ≤ n` (3.2 and the theorem). No right Noetherian hypothesis is used.
-- For a left and right Noetherian ring, symmetry (3.2) gives
-  `globalDimension Aᵐᵒᵖ = globalDimension A` ([Au, Cor. 5, p. 70]). This is Tau Ceti's
-  `TauCeti.globalDimension_mulOpposite`; it may be re-proved this way, but is not stated again.
+- **Left bound** (`TauCeti.LeftModCat.globalDimension_le_of_forall_isFinitelyPresentable`): if `C`
+  is left Noetherian and every finitely presented right module has projective dimension `≤ n`,
+  then `Abelian.globalDimension (LeftModCat C) ≤ n` (3.3 and the theorem). No right Noetherian
+  hypothesis. Ring form
+  (`TauCeti.globalDimension_le_of_forall_finitePresentation_mulOpposite`): this strengthens the
+  statement of the open TauCetiProject/TauCeti#40807 (ArtinAlgebras §7.5), which can use it once
+  Layers 0–3 exist.
+- **Symmetry** (`TauCeti.ModCat.globalDimension_eq_globalDimension_leftModCat`): if every
+  `Hom(X, -)` and every `Hom(-, X)` is a Noetherian object, the left and right global dimensions
+  agree ([Au, Cor. 5, p. 70]). For rings this is Tau Ceti's `TauCeti.globalDimension_mulOpposite`.
 
-**Checks.**
+**Rings** (`TauCeti.globalDimension_eq_weakGlobalDimension`): for `[IsNoetherianRing A]` and
+`[Small.{v} A]`, `globalDimension.{v} A = weakGlobalDimension.{v} A`.
 
-- A field has weak global dimension `0`, the zero ring `⊥`.
-- `ℤ` has weak and global dimension `1` (`Tor_1^ℤ(ℤ ⧸ 2, ℤ ⧸ 2) ≠ 0`, and every right ideal is
-  free).
-- `B = k[ε]/(ε²)` has weak and global dimension `⊤` (Layer 1 checks).
+**Downstream refactor of main's `TauCeti/RingTheory/GlobalDimension/MulOpposite.lean`.**
+`TauCeti.globalDimension_le_globalDimension_mulOpposite`, `TauCeti.globalDimension_mulOpposite` and
+`TauCeti.globalDimension_mulOpposite_of_moduleFinite` keep their statements (no users on main; the
+open #40807 uses them). Their proofs are replaced by the weak-dimension route: Auslander's theorem
+with the bounds and the symmetry of 3.3. `TauCeti.hasInjectiveDimensionLE_characterModule_iff` is
+kept and re-proved as the case `R = ℤ`, `E = ℚ ⧸ ℤ` of the duality of 3.1 with the `FP_∞` lemma.
+`TauCeti/Algebra/Module/CharacterModule/MulOpposite.lean` stays (the Lambek test of 2.2 for
+`ℚ ⧸ ℤ`). Main's proofs stay until Layers 0–3 exist.
+
+*Needs:* 2.3, 3.1–3.3; Mathlib `IsNoetherianObject`, `IsFinitelyPresentable`,
+`Module.finitePresentation_of_finite`; Tau Ceti `TauCeti.globalDimension_mulOpposite` and the
+other declarations of `TauCeti.RingTheory.GlobalDimension.MulOpposite` (refactor consumers).
+
+### 3.5 Kernels of flat modules and countably presented flat modules
+
+- **Kernels** (`TauCeti.ModCat.forall_flat_kernel_iff`). The flat right modules are closed under
+  kernels exactly when `weakGlobalDimension C ≤ 2` ([CB, Thm. 2.3, p. 1651], for small additive
+  `C`, where both are also equivalent to a factorization property of `C`). Route: dimension
+  shifting along `0 → ker f → F → F' → coker f → 0` and, conversely, along a projective
+  presentation `0 → K → P_1 → P_0 → M → 0`.
+- **Sequential colimits of projectives**
+  (`TauCeti.LeftModCat.hasProjectiveDimensionLE_one_colimit`): the colimit of a sequence
+  `D_0 → D_1 → ⋯` of projective modules has projective dimension `≤ 1`, by the telescope
+  `0 → ⊕ D_i → ⊕ D_i → colim D → 0` of 2.5.
+- **Countably presented flat modules** (`TauCeti.LeftModCat.Flat.hasProjectiveDimensionLE_one`): a
+  flat module that is countably presented (Mathlib's `IsCardinalPresentable` at `ℵ₁`) has
+  projective dimension `≤ 1` (Jensen, as cited in [Mitchell, p. 49] and [Lazard, Thm. 3.2,
+  p. 89]). Route: the Lazard block (2.3) writes it as a filtered colimit of finite sums of
+  representables; a countable presentation gives a cofinal sequence, then the previous item; Bass's
+  module (2.5) is the example. [Mitchell, pp. 49–50] warns that Lazard's displayed extraction of a
+  countable subsystem is slightly wrong (a correction was communicated to Mitchell): the
+  formalization builds the sequence with care and checks that its colimit is the whole module.
+- **Pointer, not a target**: an `ℵ_n`-presented flat module has projective dimension `≤ n + 1`
+  ([Simson, Thm. 2.12 (c), p. 98], for functor categories; Osofsky for rings, as cited in
+  [Mitchell, pp. 49–50], with examples showing the bound is sharp).
+
+Ring forms of 3.5 come through 0.2 and are not stated separately. Equality of flat and projective
+dimension over a perfect `C` is a condition of Theorem P and stays in Layer 4 (4.5).
+
+*Needs:* 2.3, 2.5, 3.1, 3.3; Mathlib `IsCardinalPresentable`, `Cardinal.isRegular_aleph_one`,
+`colimit`, `kernel`.
+
+**Checks.** In Lean (last section of `Suggested.lean`):
+
+- a field has weak global dimension `0` (`TauCeti.weakGlobalDimension_field`) and the zero ring
+  `⊥` (`TauCeti.weakGlobalDimension_punit`);
+- `ℤ` has weak and global dimension `1` (`TauCeti.weakGlobalDimension_int`):
+  `Tor_1^ℤ(ℤ ⧸ 2, ℤ ⧸ 2) ≠ 0`, and Tau Ceti's
+  `TauCeti.globalDimension_eq_one_of_isPrincipalIdealRing`;
+- `B = k[ε]/(ε²)` (Mathlib's `DualNumber k`) has weak and global dimension `⊤`
+  (`TauCeti.weakGlobalDimension_dualNumber`; Layer 1 checks);
+- `T₂(k)` (Mathlib's `Matrix.blockTriangularSubalgebra k k id` on `Fin 2`) has weak and global
+  dimension `1` (`TauCeti.weakGlobalDimension_upperTriangular`): the simple module `T ⧸ J` is not
+  flat (2.6 checks) and `J` is projective (Layer 1 checks);
+- the `k`-linear category of the quiver `0 → 1` (Mathlib's `CategoryTheory.Free k (Fin 2)`) has
+  global dimension `1` (`TauCeti.globalDimension_free_fin_two`), through its category algebra
+  `T₂(k)` (1.7; [Mitchell, §9, p. 45, (6)]: equality for finitely many objects).
+
+In prose, with locators:
+
 - Small's ring `R = [[ℤ, ℚ], [0, ℚ]]` is right Noetherian and right hereditary, not left
-  hereditary, and `globalDimension Rᵐᵒᵖ = weakGlobalDimension R = 1 < globalDimension R`
-  ([Lam-LMR, (5.62b), p. 185]; the facts on `R` are cited there to (2.33), not read). The
+  hereditary: `globalDimension Rᵐᵒᵖ = weakGlobalDimension R = 1 < globalDimension R`
+  ([Lam-LMR, (5.62b), p. 185]; the facts on `R` are cited there to (2.33), not read). Auslander's
   theorem applies to `Rᵐᵒᵖ`; for `R` it fails, so `R` is not left Noetherian.
-
-*Needs:* Layers 1 and 2; Mathlib `projectiveDimension`, `injectiveDimension`,
-`Module.finitePresentation_of_finite`; Tau Ceti `TauCeti.globalDimension`,
-`TauCeti.globalDimension_eq_iSup_finite`, `TauCeti.globalDimension_le_tfae`.
+- Osofsky's Boolean ring: for a set `J` of cardinality `ℵ₂`, the free Boolean ring
+  `B = 𝔽₂[x_j : j ∈ J] ⧸ (x_j² - x_j)` has weak global dimension `0` (it is von Neumann regular:
+  every finitely presented module is projective, so 3.3 applies with `n = 0`) and global dimension
+  `3`: for the ideal `I` generated by the `x_j`, [Osofsky-Card, Thm. A, p. 644] (with the
+  definition of a nice family on p. 641) gives `pd I = 2`, so `pd(B ⧸ I) = 3`. The bound `≤ 3` is
+  the classical bound for rings whose ideals are generated by `ℵ₂` elements; it was not checked
+  here. So Auslander's theorem needs the Noetherian hypothesis.
+- Jategaonkar's rings: for each `1 ≤ n ≤ ∞` there is a principal left ideal domain `D` with right
+  global dimension `n` ([Jategaonkar, Thm. 4.10, pp. 438–439]). `D` is left Noetherian with left
+  global dimension `1`, so `weakGlobalDimension D = 1`; for `n ≥ 2` the right global dimension
+  differs. The symmetry corollary needs both Noetherian hypotheses.
+- The `k`-linear category of the linear quiver `⋯ → 3 → 2 → 1` is hereditary on both sides, so
+  its global and weak global dimensions are `1`; the Bass module of 2.5 is flat, not projective,
+  with projective dimension `1` (telescope).
 
 ### Examples
 
-`ℤ`, `k[ε]/(ε²)`, `T₂(k)` (weak and global dimension `1`), and Small's ring.
+Fields, `ℤ`, `k[ε]/(ε²)`, `T₂(k)` and the quiver category of `0 → 1`; Small's ring, Osofsky's
+Boolean ring and Jategaonkar's rings as limits of the hypotheses; quiver categories, which are
+hereditary.
 
 ### Dependencies
 
@@ -1318,7 +1560,9 @@ Layers 1 and 2.
 rings. The categorical summit is Simson's Theorem 5.4 for small preadditive categories (Summary);
 Layer 2 supplies the categorical Bass module (2.5) for it. A flat module with a projective cover
 is projective by the argument of [Simson, Thm. 5.4, (9′) ⇒ (1′), pp. 109–110], which uses
-[Mares, Thm. 2.4, proof part (i), p. 349].*
+[Mares, Thm. 2.4, proof part (i), p. 349]. Equality of flat and projective dimension over a
+perfect `C` is a condition of Theorem P (4.5) and is handled there; Layer 3 supplies flat
+dimension (3.1) and the `FP_∞` lemma (3.4).*
 
 ### 4.1 T-nilpotence
 
@@ -1511,7 +1755,7 @@ and (5) here; [AF, 28.4, pp. 315–317], left-handed as here; [Lam-FC, (24.18), 
   `[IsLeftPerfectRing A]` and `[Small.{v} A]`, `globalDimension A = weakGlobalDimension A`
   (4.5 (5), in the universe `v` through 4.4; [Lam-LMR, (5.70), p. 187]).
 - (`TauCeti.globalDimension_mulOpposite_of_isLeftPerfectRing`) For `[IsLeftPerfectRing A]` and
-  `[IsLeftPerfectRing Aᵐᵒᵖ]`, `globalDimension Aᵐᵒᵖ = globalDimension A` (with 3.2). In
+  `[IsLeftPerfectRing Aᵐᵒᵖ]`, `globalDimension Aᵐᵒᵖ = globalDimension A` (with 3.3). In
   particular, for every semiprimary ring the left, right and weak global dimensions agree, with no
   Noetherian hypothesis ([Au, Cor. 9, p. 73]; [Lam-LMR, (5.71), p. 188]).
 
@@ -1542,16 +1786,21 @@ perfect; `ℤ` is not semiperfect.
 ### Dependencies
 
 4.1 and 4.2 need only Mathlib and Tau Ceti; 4.3 needs 4.1; 4.4 needs 4.1, 4.2 and 4.3; 4.5 needs
-Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
+Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.3.
 
 ## Downstream consumers
 
 - [ArtinAlgebras](../RepresentationTheory/ArtinAlgebras/README.md), §7.2: Auslander's theorem
-  (3.3) gives the left-right symmetry of global dimension for Noetherian rings through weak
-  dimension, and 4.6 gives it for semiprimary rings without a Noetherian hypothesis.
+  (3.4) gives the left-right symmetry of global dimension for Noetherian rings through weak
+  dimension, and 4.6 gives it for semiprimary rings without a Noetherian hypothesis. Main's
+  `TauCeti/RingTheory/GlobalDimension/MulOpposite.lean` is a refactor consumer: statements kept,
+  proofs replaced by the weak-dimension route (3.4).
+- Tau Ceti's `TauCeti.globalDimension` (`TauCeti/RingTheory/GlobalDimension.lean`) becomes the
+  case `ModuleCat A` of `TauCeti.Abelian.globalDimension` (3.2); its cyclic and finite
+  characterizations become corollaries of Auslander's lemma.
 - ArtinAlgebras, §7.5, the forward direction: for an additive generator `M` of `mod A`, every
   finitely presented right `End_A(M)`-module has projective dimension at most two, and
-  `TauCeti.globalDimension_le_of_forall_finitePresentation_mulOpposite` (3.3) turns this into
+  `TauCeti.globalDimension_le_of_forall_finitePresentation_mulOpposite` (3.4) turns this into
   `globalDimension (Module.End A M) ≤ 2` using only that `End_A(M)` is left Noetherian.
 - ArtinAlgebras, §§4.1–4.2, through Tau Ceti's
   `LinearMap.auslanderReitenTransposeTensorEquivCokernel`
@@ -1616,6 +1865,9 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
   pp. 339–340 (Bass's module over the ring with enough idempotents of a category; p. 339 checked on
   the page image, the rest through a reading of the text extraction). *Perfect categories II*,
   ibid., 343–355: Theorem 2′, p. 346, stated without proof. Parts III–IV have no flatness.
+- [Jategaonkar] A. V. Jategaonkar, *A counter-example in ring theory and homological algebra*,
+  J. Algebra 12 (1969), 418–440. Thm. 4.10, pp. 438–439 (principal left ideal domains of any right
+  global dimension).
 - [JL] C. U. Jensen, H. Lenzing, *Model Theoretic Algebra*, Gordon and Breach (1989). Appendix B,
   Theorems B.12 and B.14, read in an electronic text whose page numbers were not checked.
 - [Krause] H. Krause, *Krull-Schmidt categories and projective covers*, Expo. Math. 33 (2015),
@@ -1661,17 +1913,24 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
   projective resolution of one variable; §7, pp. 33–38: the ring `[C]` of an additive category
   (p. 33), triangular matrix rings for a finite totally ordered set (Example 1, p. 33), Thm. 7.1
   (pp. 33–35: modules over `C` and over `[C]`, an equivalence when `C` has finitely many objects),
-  and the compatibility with `⊗` and `Tor` (p. 37, (1)); §10, Prop. 10.1 and Cor. 10.2, p. 47:
-  projectives are retracts of free functors, and tensoring with a projective is exact; §10,
-  pp. 48–49: flat functors, Thm. 10.1b and Cor. 10.2b, p. 48 (Lazard–Govorov), Cor. 10.4b,
-  p. 49, and finitely presented flat functors are projective, p. 49; §11,
-  pp. 50–52: `K`-categories, `K`-linear functors to `K`-modules as additive functors to abelian
-  groups (p. 51), the tensor product over `K` and its independence of `K` (p. 52). Mitchell writes
-  morphisms on the right and his modules are covariant; the statements are mirrored here.
+  and the compatibility with `⊗` and `Tor` (p. 37, (1)); §9, pp. 42–45: homological and global
+  dimension of an abelian category, the right and left global dimension of a small additive
+  category, `gl dim 𝒜ᵒᵖ = gl dim 𝒜` (p. 42), and the comparison with the ring `[C]` (p. 45, (6));
+  §10, Prop. 10.1 and Cor. 10.2, p. 47: projectives are retracts of free functors, and tensoring
+  with a projective is exact; §10, pp. 48–50: flat functors, Thm. 10.1b and Cor. 10.2b, p. 48
+  (Lazard–Govorov), Cor. 10.4b, p. 49, finitely presented flat functors are projective, p. 49, and
+  the dimension of flat functors, pp. 49–50 (Jensen's countable case, Osofsky's `ℵ_n` case,
+  Lazard's slightly erroneous countable argument and its correction); §11, pp. 50–52:
+  `K`-categories, `K`-linear functors to `K`-modules as additive functors to abelian groups
+  (p. 51), the tensor product over `K` and its independence of `K` (p. 52). Pages 57–161 were not
+  read. Mitchell writes morphisms on the right and his modules are covariant; the statements are
+  mirrored here.
 - [OR] U. Oberst, H. Röhrl, *Flat and coherent functors*, J. Algebra 14 (1970), 91–105. (1.1),
   p. 93 (the adjunction over a commutative base ring); Lemma 1.2, p. 94; Lemma 2.4, p. 95;
   Lemma 3.1 and Thm. 3.2 (1)–(6), pp. 96–98, with proof; Cor. 3.3–3.5 and Remark, p. 99;
   Thm. 4.1, p. 101.
+- [Osofsky-Card] B. L. Osofsky, *Homological dimension and cardinality*, Trans. Amer. Math. Soc.
+  151 (1970), 641–649. Nice families, p. 641; Thm. A, p. 644.
 - [Rump] W. Rump, *Flat covers in abelian and in non-abelian categories*, Adv. Math. 225 (2010),
   1589–1615. Theorem 2 and Corollary 2, pp. 1603–1604, read in a transcription. Pointer only.
 - [Sandomierski] F. L. Sandomierski, *On semiperfect and perfect rings*, Proc. Amer. Math. Soc. 21
@@ -1679,12 +1938,12 @@ Layers 2 and 3 and 4.1–4.4; 4.6 needs 4.5 and 3.2.
   modules).
 - [Simson] D. Simson, *On pure global dimension of locally finitely presented Grothendieck
   categories*, Fund. Math. 96 (1977), 91–116. §1, pp. 92–93: "additive" means preadditive (finite
-  sums are added only in Cor. 1.3 (b), p. 94), the radical `J(C)`, and semisimple categories;
-  Thm. 2.1, pp. 94–95; Def. 3.1, pp. 98–99 (factorizable inverse systems); Thm. 5.4, p. 108
-  (statement checked on the page image), with the proofs of (3′) ⇒ (4), (7) ⇒ (8) and
-  (9′) ⇒ (1′), pp. 108–110; Thm. 5.6, p. 110. The steps through Thm. 3.16 and (5) ⇒ (4) were not
-  fully read. The earlier paper *Functor categories in which every flat object is projective*,
-  Bull. Acad. Polon. Sci. 22 (1974), 375–380, was not obtained.
+  sums are added only in Cor. 1.3 (b), p. 94), the radical `J(C)`, and semisimple categories; Thm.
+  2.1, pp. 94–95; Thm. 2.12 (c), p. 98 (`ℵ_n`-presented flat functors); Def. 3.1, pp. 98–99
+  (factorizable inverse systems); Thm. 5.4, p. 108 (statement checked on the page image), with the
+  proofs of (3′) ⇒ (4), (7) ⇒ (8) and (9′) ⇒ (1′), pp. 108–110; Thm. 5.6, p. 110. The steps through
+  Thm. 3.16 and (5) ⇒ (4) were not fully read. The earlier paper *Functor categories in which every
+  flat object is projective*, Bull. Acad. Polon. Sci. 22 (1974), 375–380, was not obtained.
 - [St] B. Stenström, *Purity in functor categories*, J. Algebra 8 (1968), 352–361. §2 and
   Lemmas 7–8, pp. 353–354; Thm. 3, pp. 357–359.
 - [Weibel] C. A. Weibel, *An Introduction to Homological Algebra*, Cambridge Studies in Advanced
